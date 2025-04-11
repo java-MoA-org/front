@@ -1,6 +1,16 @@
 import "./style.css";
 import userImage from "../../assets/images/ex-user1.png";
+import { useNavigate } from "react-router-dom";
 export default function MyUserPage() {
+  // function: 네비게이터 함수 //
+  const navigator = useNavigate();
+
+  // event handler: 팔로워, 팔로잉잉 처리 //
+  const onFollowClickHandler = () => {
+    // navigator();
+  };
+
+  // render: 공통 레이아웃 컴포넌트 렌더링 //
   return (
     <div id="my-user-page">
       <div className="my-container">
@@ -18,11 +28,11 @@ export default function MyUserPage() {
               <div className="nickname">닉네임 :</div>
               <div className="follower-followee-container">
                 <div className="follower">
-                  <div className="follower">팔로워</div>
+                  <div className="follower-text">팔로워</div>
                   <div className="number">0</div>
                 </div>
-                <div className="following">
-                  <div className="followee">팔로잉</div>
+                <div className="followee">
+                  <div className="followee-text">팔로잉</div>
                   <div className="number">0</div>
                 </div>
               </div>
