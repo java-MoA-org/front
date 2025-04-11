@@ -1,0 +1,109 @@
+/* 전체 배경 래퍼 */
+.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+  background-color: #f5f5f5;
+}
+
+/* 🔹 슬라이더 배너 */
+.top-banner-container {
+  width: 100%;
+  max-width: 1000px;
+  height: 280px;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+/* 🔹 본문 컨테이너 */
+.home-container {
+  display: flex;
+  justify-content: center;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+/* 🔸 본문 메인 영역 */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 700px;
+}
+
+/* 공통 카드 스타일 */
+.post-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  margin-bottom: 0.5rem;
+}
+
+.post-title {
+  font-weight: 600;
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
+  line-height: 1.2;
+  height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.post-info {
+  display: flex;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #666;
+  height: 20px;
+  align-items: center;
+}
+
+/* 🔵 게시판 리스트 */
+.board-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+/* 🟢 감정 일기 리스트 */
+.daily-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+/* 🔸 사이드바 */
+.sidebar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.2s ease;
+}
+
+.section-title:hover {
+  color: #1877f2;
+}
+
+.profile-box,
+.news-box {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}

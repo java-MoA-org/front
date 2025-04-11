@@ -1,0 +1,13 @@
+.my-page {
+    padding: 2rem;
+  }
+  
+  .my-page h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .my-page p {
+    font-size: 1rem;
+    color: #444;
+  }
