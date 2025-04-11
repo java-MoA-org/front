@@ -6,4 +6,4 @@ export const MY_USER_FOLLOW_PATH = "follow-list";
 // variable: 절대 path 상수 //
 export const ROOT_ABSOULTE_PATH = ROOT_PATH;
 export const MY_USER_ABSOULTE_PATH = `${ROOT_PATH}${MY_USER_PATH}`;
-export const MY_USER_FOLLOW_ABSOULTE_PATH = `${ROOT_PATH}${MY_USER_PATH}${MY_USER_FOLLOW_PATH}`;
+export const MY_USER_FOLLOW_ABSOULTE_PATH = `${ROOT_PATH}${MY_USER_PATH}/${MY_USER_FOLLOW_PATH}`;

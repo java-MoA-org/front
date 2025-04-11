@@ -1,136 +1,216 @@
-/* 🔹 자막 컨테이너 */
+/* 공지사항 자막 */
 .marquee-container {
-    position: relative;
-    z-index: 1010;
-    background-color: #111;
-    color: #fff;
-    font-size: 1rem;
-  }
-  
-  /* 🔹 헤더 전체 */
-  .header-wrapper {
-    height: 230px;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    position: relative;
-    z-index: 1000;
-  }
-  
-  /* 🔹 헤더 상단 (로고 + 유저 정보) */
-  .header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 3rem;
-    height: 150px;
-  }
-  
-  /* 로고 설정 */
-  .logo {
-    cursor: pointer;
-  }
-  
-  .logo-img {
-    height: 150px;
-    width: 150px;
-    object-fit: contain;
-  }
-  
-  /* 🔹 유저 아이콘 (우측) */
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    font-size: 1.25rem;
-    padding-right: 0.5rem;
-  }
-  
-  .user-info span {
-    cursor: pointer;
-    transition: transform 0.2s ease, color 0.2s ease;
-  }
-  
-  .user-info span:hover {
-    transform: scale(1.1);
-    color: #1877f2;
-  }
-  
-  /* 사용자 프로필 이미지 */
-  .profile-img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    object-fit: cover;
-    cursor: pointer;
-  }
-  
-  /* 🔹 카테고리 메뉴 컨테이너 */
-  .nav-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60px;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    background-color: white;
-  }
-  
-  /* 메뉴 목록 */
-  .nav {
-    display: flex;
-    gap: 3rem;
-  }
-  
-  /* 각 항목 */
-  .nav-item {
-    position: relative;
-  }
-  
-  .nav-item button {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #222;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    transition: color 0.2s ease;
-  }
-  
-  .nav-item button:hover {
-    color: #1877f2;
-  }
-  
-  /* 🔹 드롭다운 */
-  .dropdown-fix {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: white;
-    padding: 1rem 1.5rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    z-index: 999;
-    white-space: nowrap;
-    min-width: 160px;
-  }
-  
-  .dropdown-fix h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
-  
-  .dropdown-fix p {
-    font-size: 0.95rem;
-    margin: 0.25rem 0;
-    cursor: pointer;
-  }
-  
-  .dropdown-fix p:hover {
-    background-color: #f6f6f6;
-    color: #1877f2;
-  }
+  position: relative;
+  z-index: 1010;
+  background-color: #111;
+  color: #fff;
+  font-size: 1rem;
+}
+
+/* 헤더 전체 */
+.header-wrapper {
+  position: relative;
+  z-index: 1000;
+  height: 230px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 헤더 상단: 로고 + 유저 아이콘 */
+.header-top {
+  height: 150px;
+  padding: 0 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  cursor: pointer;
+}
+.logo-img {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 1.25rem;
+  padding-right: 0.5rem;
+}
+.user-info span {
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.user-info span:hover {
+  transform: scale(1.1);
+  color: #1877f2;
+}
+
+.profile-img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
+.profile-wrapper {
+  position: relative;
+}
+
+/* 프로필 드롭다운 */
+.user-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 240px;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+
+.profile-img-container {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 0.75rem auto;
+}
+
+.dropdown-profile-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+
+  cursor: pointer;
+}
+
+.camera-icon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.dropdown-info {
+  text-align: center;
+}
+
+.dropdown-info strong {
+  font-size: 1rem;
+}
+
+.dropdown-email {
+  font-size: 0.9rem;
+  margin: 0.25rem 0;
+  color: #555;
+}
+
+.user-dropdown button {
+  margin-top: 0.5rem;
+  width: 100%;
+  background: #1877f2;
+  border: none;
+  color: white;
+  font-size: 0.85rem;
+  padding: 0.45rem 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.user-dropdown button:hover {
+  background-color: #145fd3;
+}
+
+/* 카테고리 바 */
+.nav-container {
+  position: relative;
+  height: 60px;
+  background-color: white;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.nav {
+  display: flex;
+  gap: 3rem;
+}
+.nav-item {
+  position: relative;
+}
+.nav-item button {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #222;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.2s ease;
+}
+.nav-item button:hover {
+  color: #1877f2;
+}
+
+/* 드롭다운 하위 카테고리 */
+.dropdown-fix {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 999;
+  background: white;
+  padding: 1rem 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  white-space: nowrap;
+  min-width: 160px;
+}
+.dropdown-fix h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.dropdown-fix p {
+  font-size: 0.95rem;
+  margin: 0.25rem 0;
+  cursor: pointer;
+}
+.dropdown-fix p:hover {
+  background-color: #f6f6f6;
+  color: #1877f2;
+}
+
+/* 우측: 세션 + 검색 */
+.nav-right {
+  position: absolute;
+  right: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.session-time {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+}
+.friend-search {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
