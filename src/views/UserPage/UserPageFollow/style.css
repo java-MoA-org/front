@@ -1,44 +1,21 @@
-/* 
-.follow-container {
-  display: flex;
-  justify-content: center;
-  margin: 100px;
-  border: 1px solid rgba(0, 0, 0, 1);
-
-  height: 1000px;
-}
-.follow-container .follower-part,
-.follow-container .followee-part {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-  height: 100px;
-  text-align: center;
-  padding: 40px;
-  border: 1px solid rgba(0, 0, 0, 1);
-}
-.follow-container .follower-part .follower-list {
-  display: flex;
-}
-
-.follow-container .followee-part .followee-list {
-  display: flex;
-} */
-
 #my-user-follow {
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.follow-container {
-  height: 1000px;
+/* .follow-container {
+  height: 500px;
   display: flex;
 }
 
 .follow-container .follower-part,
 .follow-container .followee-part {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  width: 50%;
+
+  box-sizing: border-box;
   height: 100%;
   text-align: center;
   padding: 40px;
@@ -48,14 +25,22 @@
 .follow-container .follower-part .follower-list,
 .follow-container .followee-part .followee-list {
   margin-top: 50px;
-  padding-top: 30px;
+  padding-top: 10px;
   padding-bottom: 10px;
   border-top: 1px solid rgba(0, 0, 0, 1);
   border-bottom: 1px solid rgba(0, 0, 0, 1);
 
   display: flex;
   justify-content: space-between;
-  gap: 500px;
+  text-align: center;
+  align-items: center;
+  gap: 50px;
+}
+
+.profile-image-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .followee-list .introduce-self,
@@ -79,8 +64,53 @@
 
   cursor: pointer;
   background-color: rgba(0, 132, 255, 1);
+  color: white;
 }
 
 .follow:hover {
   opacity: 0.85;
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+} */
+
+.follow-type {
+  width: 80%;
+  padding: 25px;
+  gap: 100px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  justify-content: center;
+}
+
+.follow-type :hover {
+  cursor: pointer;
+}
+
+/* .type-follower.disable {
+  color: grey;
+} */
+
+.type-follower,
+.type-followee {
+  color: grey;
+
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 30%;
+
+  cursor: pointer;
+}
+
+.type-follower.active,
+.type-followee.active {
+  color: blue;
+
+  cursor: default;
 }
