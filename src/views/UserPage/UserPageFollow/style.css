@@ -1,0 +1,86 @@
+/* 
+.follow-container {
+  display: flex;
+  justify-content: center;
+  margin: 100px;
+  border: 1px solid rgba(0, 0, 0, 1);
+
+  height: 1000px;
+}
+.follow-container .follower-part,
+.follow-container .followee-part {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  height: 100px;
+  text-align: center;
+  padding: 40px;
+  border: 1px solid rgba(0, 0, 0, 1);
+}
+.follow-container .follower-part .follower-list {
+  display: flex;
+}
+
+.follow-container .followee-part .followee-list {
+  display: flex;
+} */
+
+#my-user-follow {
+  display: flex;
+}
+
+.follow-container {
+  height: 1000px;
+  display: flex;
+}
+
+.follow-container .follower-part,
+.follow-container .followee-part {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  height: 100%;
+  text-align: center;
+  padding: 40px;
+  border: 1px solid rgba(0, 0, 0, 1);
+}
+
+.follow-container .follower-part .follower-list,
+.follow-container .followee-part .followee-list {
+  margin-top: 50px;
+  padding-top: 30px;
+  padding-bottom: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 1);
+  border-bottom: 1px solid rgba(0, 0, 0, 1);
+
+  display: flex;
+  justify-content: space-between;
+  gap: 500px;
+}
+
+.followee-list .introduce-self,
+.follower-list .introduce-self {
+  display: flex;
+  flex-direction: column;
+}
+
+.follow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 6px;
+  width: 92px;
+  height: 44px;
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 175%;
+
+  cursor: pointer;
+  background-color: rgba(0, 132, 255, 1);
+}
+
+.follow:hover {
+  opacity: 0.85;
+}
