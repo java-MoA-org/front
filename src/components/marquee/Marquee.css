@@ -1,0 +1,29 @@
+.marquee-container {
+  width: 100vw;
+  overflow: hidden;
+  background-color: #111;
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 6px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  white-space: nowrap;
+}
+
+.marquee-text {
+  display: inline-block;
+  animation: scroll-single 15s linear infinite;
+  will-change: transform;
+}
+
+/* 핵심 애니메이션 */
+@keyframes scroll-single {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
