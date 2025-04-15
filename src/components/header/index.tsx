@@ -1,7 +1,7 @@
 import "./style.css";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import moaLogo from "../../assets/images/moa-logo-little.png";
+import moaHeaderLogo from "../../assets/images/moa_main_logo.png";
 import userImg from "../../assets/images/ex-user1.png";
 import cameraIcon from "../../assets/images/camera.png";
 
@@ -45,7 +45,7 @@ const Header = () => {
     <div className="header-wrapper">
       <div className="header-top">
         <div className="logo" onClick={() => navigate("/")}>
-          <img src={moaLogo} className="logo-img" alt="로고" />
+          <img src={moaHeaderLogo} className="logo-img" alt="로고" />
         </div>
 
         <div className="user-info">

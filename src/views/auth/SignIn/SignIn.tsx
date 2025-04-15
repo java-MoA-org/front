@@ -11,6 +11,14 @@ interface Props {
 export default function SignIn({ setActiveTab }: Props) {
     const navigate = useNavigate();
 
+    const handleKakaoLogin = () => {
+        window.location.href = "https://kauth.kakao.com/oauth/authorize?..."; 
+      };
+      
+      const handleGoogleLogin = () => {
+        alert("구글 로그인 연동 예정");
+      };
+
     return (
         <div id="auth-login-container">
             <div className="login-logo-container">
@@ -41,7 +49,7 @@ export default function SignIn({ setActiveTab }: Props) {
             <div className="login-sns-container">
                 <div className="login-sns">SNS 로그인</div>
                 <div className="login-sns-buttons-container">
-                    <div className="login-kakao button"></div>
+                    <div className="login-kakao button" onClick={handleKakaoLogin}></div>
                     <div className="login-google button"></div>
                 </div>
             </div>
