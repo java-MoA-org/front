@@ -8,9 +8,15 @@ import Trade from "./views/category/trade/Trade";
 import Notice from "./views/category/notice/Notice";
 // import Message from './pages/message/Message'
 import Daily from "./views/category/daily/Daily";
-import { MY_USER_FOLLOW_ABSOULTE_PATH, MY_USER_FOLLOW_PATH, MY_USER_PATH } from "./constants";
+import {
+  MY_USER_BOARD_PATH,
+  MY_USER_FOLLOW_ABSOULTE_PATH,
+  MY_USER_FOLLOW_PATH,
+  MY_USER_PATH
+} from "./constants";
 import MyUserPage from "./views/UserPage";
 import UserPageFollow from "./views/UserPage/UserPageFollow";
+import UserBoard from "./views/UserPage/UserBoard";
 
 function App() {
   return (
@@ -27,6 +33,7 @@ function App() {
         <Route path={MY_USER_PATH}>
           <Route index element={<MyUserPage />} />
           <Route path={MY_USER_FOLLOW_PATH} element={<UserPageFollow />} />
+          <Route path={MY_USER_BOARD_PATH} element={<UserBoard />} />
         </Route>
         {/* <Route path="/message" element={<Message />} /> */}
       </Routes>

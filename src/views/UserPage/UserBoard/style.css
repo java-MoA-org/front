@@ -1,0 +1,93 @@
+#my-user-board {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+#my-user-board .board-type {
+  width: 80%;
+  padding: 25px;
+  gap: 100px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  justify-content: center;
+}
+
+#my-user-board .board-type .board,
+#my-user-board .board-type .daily,
+#my-user-board .board-type .used {
+  color: grey;
+
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 30%;
+
+  cursor: pointer;
+}
+
+#my-user-board .board-type .board.active,
+#my-user-board .board-type .daily.active,
+#my-user-board .board-type .used.active {
+  color: blue;
+  cursor: default;
+}
+
+#my-user-board .board-container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+}
+
+#my-user-board .board-container .board-name {
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #aaa;
+  font-weight: 600;
+  font-size: 15px;
+  text-align: center;
+}
+
+#my-user-board .board-container .board-content {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: space-between;
+}
+
+#my-user-board .board-container .board-name > div,
+#my-user-board .board-container .board-content > div {
+  border-left: 1px solid black;
+  padding: 10px 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#my-user-board .board-container .board-name .board-numbers,
+#my-user-board .board-container .board-content .board-numbers {
+  width: 10%;
+  border-left: none; /* 첫 번째는 border 제거 */
+}
+
+#my-user-board .board-container .board-name .board-titles,
+#my-user-board .board-container .board-content .board-titles {
+  width: 35%;
+}
+
+#my-user-board .board-container .board-name .board-views,
+#my-user-board .board-container .board-content .board-views {
+  width: 15%;
+}
+
+#my-user-board .board-container .board-name .board-likes,
+#my-user-board .board-container .board-content .board-likes {
+  width: 15%;
+}
+
+#my-user-board .board-container .board-name .board-date-time,
+#my-user-board .board-container .board-content .board-date-time {
+  width: 20%;
+}
