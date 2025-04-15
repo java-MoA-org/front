@@ -1,0 +1,32 @@
+.do {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 6px;
+  width: 92px;
+  height: 44px;
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 175%;
+  cursor: pointer;
+}
+
+.follow {
+  background-color: rgba(0, 132, 255, 1);
+  color: white;
+}
+
+.follow:hover {
+  opacity: 0.85;
+}
+
+.following {
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.following:hover {
+  opacity: 0.7;
+}

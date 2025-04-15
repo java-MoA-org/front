@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 /* .follow-container {
@@ -49,28 +50,6 @@
   flex-direction: column;
 }
 
-.follow {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  border-radius: 6px;
-  width: 92px;
-  height: 44px;
-
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 175%;
-
-  cursor: pointer;
-  background-color: rgba(0, 132, 255, 1);
-  color: white;
-}
-
-.follow:hover {
-  opacity: 0.85;
-}
-
 .profile-image {
   width: 50px;
   height: 50px;
@@ -79,7 +58,7 @@
   cursor: pointer;
 } */
 
-.follow-type {
+#my-user-follow .follow-type {
   width: 80%;
   padding: 25px;
   gap: 100px;
@@ -89,7 +68,7 @@
   justify-content: center;
 }
 
-.follow-type :hover {
+#my-user-follow .follow-type :hover {
   cursor: pointer;
 }
 
@@ -97,8 +76,8 @@
   color: grey;
 } */
 
-.type-follower,
-.type-followee {
+#my-user-follow .follow-type .type-follower,
+#my-user-follow .follow-type .type-followee {
   color: grey;
 
   font-size: 16px;
@@ -108,9 +87,38 @@
   cursor: pointer;
 }
 
-.type-follower.active,
-.type-followee.active {
+#my-user-follow .follow-type .type-follower.active,
+#my-user-follow .follow-type .type-followee.active {
   color: blue;
-
   cursor: default;
+}
+
+/* Followee, Follower 파트 */
+
+.profile-image-container .profile-image {
+  width: 100px;
+  height: 100px;
+}
+
+#my-user-followee .followee-container .followee-part,
+#my-user-follower .follower-container .follower-part {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 105px;
+}
+
+#my-user-followee .followee-container .followee-part .followee-list,
+#my-user-follower .follower-container .follower-part .follower-list {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  min-width: 900px;
+  gap: 10px;
+}
+
+#my-user-followee .followee-container .followee-part .followee-list .nickname,
+#my-user-follower .follower-container .follower-part .follower-list .nickname {
+  font-weight: 600;
 }

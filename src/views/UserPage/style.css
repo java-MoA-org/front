@@ -51,26 +51,6 @@
   justify-content: space-between;
   font-size: 24px;
 }
-.profile-container .profile-line .follow {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  border-radius: 6px;
-  width: 92px;
-  height: 44px;
-
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 175%;
-
-  cursor: pointer;
-  background-color: rgba(0, 132, 255, 1);
-}
-
-.profile-container .profile-line .follow:hover {
-  opacity: 0.85;
-}
 
 .profile-container .profile-image {
   width: 240px;
@@ -121,7 +101,7 @@
   font-size: 20px;
 }
 
-.board-container {
+#my-user-page .board-container {
   display: flex;
   flex-direction: column;
   min-width: 900px;
@@ -129,7 +109,7 @@
   padding-bottom: 20px;
 }
 
-.board-container .board-name {
+#my-user-page .board-container .board-name {
   display: flex;
 
   font-size: 24px;
@@ -139,24 +119,24 @@
   align-items: center;
 }
 
-.board-container .board-name .board-numbers {
+#my-user-page .board-container .board-name .board-numbers {
   width: 70px;
   padding-left: 30px;
   text-align: center;
 }
-.board-container .board-name .board-titles {
+#my-user-page .board-container .board-name .board-titles {
   padding-left: 100px;
 }
 
-.board-container .board-name .board-views {
+#my-user-page .board-container .board-name .board-views {
   padding-left: 150px;
 }
 
-.board-container .board-name .board-likes {
+#my-user-page .board-container .board-name .board-likes {
   padding-left: 30px;
 }
 
-.board-container .board-name .board-date-time {
+#my-user-page .board-container .board-name .board-date-time {
   padding-left: 60px;
 }
 
@@ -164,7 +144,7 @@
   padding-right: 80px;
 }
 
-.board-container .board-type {
+#my-user-page .board-container .board-type {
   display: flex;
   flex-direction: column;
   font-size: 24px;
@@ -173,7 +153,11 @@
   flex: auto;
 }
 
-.board-container .board-type-daily {
+#my-user-page .board-container .board-content :hover {
+  cursor: pointer;
+}
+
+#my-user-page .board-container .board-type-daily {
   display: flex;
   padding-top: 7px;
   flex-direction: column;
@@ -185,7 +169,7 @@
   height: 33.33%; /* 600px 중 1/3씩 차지 */
 }
 
-.board-container .board-content {
+#my-user-page .board-container .board-content {
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -200,7 +184,7 @@
   border-radius: 20px;
   gap: 29px;
 }
-.board-content div {
+#my-user-page .board-container .board-content div {
   white-space: nowrap; /* 줄바꿈 안 함 */
   overflow: hidden; /* 넘치는 내용 숨김 */
   text-overflow: ellipsis; /* 넘치면 ... 표시 */

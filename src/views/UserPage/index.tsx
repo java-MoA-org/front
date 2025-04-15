@@ -1,14 +1,20 @@
 import "./style.css";
 import userImage from "../../assets/images/ex-user1.png";
 import { useNavigate } from "react-router-dom";
-import { MY_USER_FOLLOW_ABSOULTE_PATH } from "../../constants";
+import { MY_USER_BOARD_ABSOLUTE_PATH, MY_USER_FOLLOW_ABSOULTE_PATH } from "../../constants";
+import FollowButton from "../../components/FollowButton";
 export default function MyUserPage() {
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
-  // event handler: 팔로워, 팔로잉잉 처리 //
+  // event handler: 팔로워, 팔로잉 처리 //
   const onFollowClickHandler = () => {
     navigator(MY_USER_FOLLOW_ABSOULTE_PATH);
+  };
+
+  // event handler: 팔로워, 팔로잉 처리 //
+  const onUserBoardClickHandler = () => {
+    navigator(MY_USER_BOARD_ABSOLUTE_PATH);
   };
 
   // render: 공통 레이아웃 컴포넌트 렌더링 //
@@ -21,7 +27,7 @@ export default function MyUserPage() {
             <div className="profile-container">
               <div className="profile-line">
                 <div>프로필</div>
-                <div className="follow">팔로우</div>
+                <FollowButton />
               </div>
               <div className="profile-image">
                 <img src={userImage} alt="User" className="profile-img" />
@@ -54,7 +60,7 @@ export default function MyUserPage() {
               <div className="board-date-time">날짜</div>
             </div>
 
-            <div className="board-type">
+            <div className="board-type" onClick={onUserBoardClickHandler}>
               <div className="board-type-daily">
                 <div className="board-type-daily-text">일상</div>
                 <div className="board-content">
