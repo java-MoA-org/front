@@ -1,0 +1,96 @@
+.input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-box > .label {
+    color: var(--Lightmode-Grey2);
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.input-box > .input-contents {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.input-box .input-area {
+    display: flex;
+    gap: 10px;
+}
+
+.input-box input {
+    flex: 1;
+    outline: none;
+
+    box-sizing: border-box;
+    border-radius: 6px;
+    border: 1px solid rgba(238, 238, 238, 1);
+    padding: 8px 16px;
+    height: 44px;
+
+    color: rgba(64, 64, 64, 1);
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 175%;
+}
+
+.input-box input::placeholder {
+    color: rgba(138, 146, 166, 1);
+}
+
+.input-box .button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 6px;
+    width: 120px;
+    height: 44px;
+
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 175%;
+
+    cursor: pointer;
+}
+
+.input-box .button:hover {
+    opacity: 0.85;
+}
+
+.input-box .posible {
+    cursor: pointer;
+    background-color: rgba(0, 132, 255, 1);
+}
+
+.input-box .disable {
+    cursor: not-allowed;
+    background-color: #aaa;
+    color: white;
+}
+.input-box .disable:hover {
+    opacity: 1;
+}
+
+.input-box .message {
+    height: 16px;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.hint {
+    font-size: 14px;
+    opacity: 0.5;
+}
+
+.input-box .message.success {
+    color: rgba(0, 132, 255, 1);
+}
+
+.input-box .message.error {
+    color: rgba(255, 84, 64, 1);
+}
