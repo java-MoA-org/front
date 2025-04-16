@@ -12,58 +12,69 @@
   position: relative;
   z-index: 1000;
   height: 230px;
-  background-color: white;
   display: flex;
   flex-direction: column;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  overflow: visible;
 }
 
-/* 헤더 상단: 로고 + 유저 아이콘 */
-.header-top {
+/* 헤더 상단 (로고 + 유저) */
+.header-wrapper .header-top {
   height: 150px;
   padding: 0 3rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  position: relative;
+  overflow: visible;
 }
 
-.logo {
+/* 로고 */
+.header-wrapper .logo {
   cursor: pointer;
 }
-.logo-img {
-  width: 150px;
+.header-wrapper .logo .logo-img {
+  width: 200px;
   height: 150px;
   object-fit: contain;
 }
 
-.user-info {
+/* 유저 정보 */
+.header-wrapper .user-info {
+  position: absolute;
+  right: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
   gap: 20px;
   font-size: 1.25rem;
-  padding-right: 0.5rem;
+  z-index: 2;
 }
-.user-info span {
+
+.header-wrapper .user-info span {
   cursor: pointer;
   transition: transform 0.2s ease, color 0.2s ease;
 }
-.user-info span:hover {
+
+.header-wrapper .user-info span:hover {
   transform: scale(1.1);
   color: #1877f2;
 }
 
-.profile-img {
+.header-wrapper .user-info .profile-wrapper {
+  position: relative;
+}
+
+.header-wrapper .user-info .profile-wrapper .profile-img {
   width: 24px;
   height: 24px;
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
 }
-.profile-wrapper {
-  position: relative;
-}
 
-/* 프로필 드롭다운 */
+/* 드롭다운 */
 .user-dropdown {
   position: absolute;
   top: 60px;
@@ -74,28 +85,27 @@
   width: 240px;
   padding: 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 999;
+  z-index: 9999;
 }
 
-.profile-img-container {
+.user-dropdown .profile-img-container {
   position: relative;
   width: 72px;
   height: 72px;
   margin: 0 auto 0.75rem auto;
 }
 
-.dropdown-profile-img {
+.user-dropdown .dropdown-profile-img {
   width: 72px;
   height: 72px;
   border-radius: 50%;
   object-fit: cover;
   display: block;
   margin: 0 auto;
-
   cursor: pointer;
 }
 
-.camera-icon {
+.user-dropdown .camera-icon {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -104,15 +114,15 @@
   cursor: pointer;
 }
 
-.dropdown-info {
+.user-dropdown .dropdown-info {
   text-align: center;
 }
 
-.dropdown-info strong {
+.user-dropdown .dropdown-info strong {
   font-size: 1rem;
 }
 
-.dropdown-email {
+.user-dropdown .dropdown-info .dropdown-email {
   font-size: 0.9rem;
   margin: 0.25rem 0;
   color: #555;
@@ -134,7 +144,7 @@
   background-color: #145fd3;
 }
 
-/* 카테고리 바 */
+/* 네비게이션 바 */
 .nav-container {
   position: relative;
   height: 60px;
@@ -144,15 +154,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 }
-.nav {
+
+/* 메뉴 항목 */
+.nav-container .nav {
   display: flex;
   gap: 3rem;
 }
-.nav-item {
+
+.nav-container .nav .nav-item {
   position: relative;
 }
-.nav-item button {
+
+.nav-container .nav .nav-item button {
   background: none;
   border: none;
   font-size: 0.9rem;
@@ -162,12 +177,13 @@
   padding: 0.25rem 0.5rem;
   transition: color 0.2s ease;
 }
-.nav-item button:hover {
+
+.nav-container .nav .nav-item button:hover {
   color: #1877f2;
 }
 
-/* 드롭다운 하위 카테고리 */
-.dropdown-fix {
+/* 드롭다운 하위 메뉴 */
+.nav-container .nav .dropdown-fix {
   position: absolute;
   top: 100%;
   left: 0;
@@ -180,35 +196,41 @@
   white-space: nowrap;
   min-width: 160px;
 }
-.dropdown-fix h4 {
+
+.nav-container .nav .dropdown-fix h4 {
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
-.dropdown-fix p {
+
+.nav-container .nav .dropdown-fix p {
   font-size: 0.95rem;
   margin: 0.25rem 0;
   cursor: pointer;
 }
-.dropdown-fix p:hover {
+
+.nav-container .nav .dropdown-fix p:hover {
   background-color: #f6f6f6;
   color: #1877f2;
 }
 
-/* 우측: 세션 + 검색 */
-.nav-right {
+/* 우측 영역 */
+.nav-container .nav-right {
   position: absolute;
   right: 3rem;
   display: flex;
   align-items: center;
   gap: 1rem;
+  z-index: 0;
 }
-.session-time {
+
+.nav-container .nav-right .session-time {
   font-size: 0.9rem;
   font-weight: 500;
   color: #555;
 }
-.friend-search {
+
+.nav-container .nav-right .friend-search {
   font-size: 0.9rem;
   padding: 0.4rem 0.7rem;
   border: 1px solid #ccc;

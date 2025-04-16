@@ -1,20 +1,18 @@
-/* 전역 설정 */
+/* 전체 레이아웃 설정 */
 html,
 body {
   background-color: #f5f5f5;
   margin: 0;
   padding: 0;
+  font-family: 'Pretendard', sans-serif;
 }
 
 .home-wrapper {
   display: flex;
   justify-content: center;
   background-color: #f5f5f5;
-  padding: 0;
-  margin: 0;
 }
 
-/* 전체 너비로 확장 */
 .home-container {
   width: 100%;
   display: flex;
@@ -22,99 +20,32 @@ body {
   gap: 2rem;
 }
 
-/* 3단 수평 구조 */
+/* 수평 3단 구조 */
 .content-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1.5rem;
   padding: 0 5%;
+  overflow: visible;
 }
 
-/* 좌우 사이드바 */
+/* 공통 사이드바 설정 */
 .left-sidebar,
 .right-sidebar {
-  width: 180px;
+  width: 20%;
+  min-width: 200px;
+}
+
+/* 왼쪽 사이드바 */
+.left-sidebar {
+  margin-top: 3%;
   background-color: white;
   border-radius: 8px;
   padding: 1rem;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* 중앙 메인 콘텐츠 */
-.main-container {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-/* 광고 슬라이더 */
-.top-banner-container {
-  margin-top: 3%;
-  width: 100%;
-  height: 256px;
-  overflow: hidden;
-  border-radius: 10px;
-}
-
-/* 인기 게시글 / 익명 게시글 / 일상 게시글 / 중고거래 리스트 */
-.board-list,
-.daily-list,
-.trade-list .hot-board-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-
-/* 공통 카드 스타일 */
-.post-card {
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-  margin-bottom: 0.5rem;
-}
-
-.post-title {
-  font-weight: 600;
-  font-size: 0.8rem;
-  margin-bottom: 0.3rem;
-  line-height: 1.2;
-  height: 20px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.post-info {
-  display: flex;
-  gap: 6px;
-  font-size: 0.75rem;
-  color: #666;
-  height: 20px;
-  align-items: center;
-}
-
-/* 각 사이드 위치 */
-.left-sidebar,
-.right-sidebar {
-  margin-top: 3%;
-  width: 20%;
-  min-width: 200px;
-}
-
-/* 뉴스 박스 */
-.news-box {
-  background-color: white;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* 친구 목록 리스트 */
 .friend-list {
   list-style: none;
   padding: 0;
@@ -132,7 +63,42 @@ body {
   color: #1877f2;
 }
 
-/* 섹션 타이틀 */
+/* 오른쪽 사이드바 */
+.right-sidebar {
+  position: relative;
+  align-self: flex-start;
+  margin-top: 3%;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  max-height: none;
+  overflow: visible;
+}
+
+.right-sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* 중앙 콘텐츠 */
+.main-container {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* 상단 배너 */
+.top-banner-container {
+  margin-top: 3%;
+  width: 100%;
+  height: 256px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+/* 공통 섹션 제목 */
 .section-title {
   font-size: 1rem;
   font-weight: 600;
@@ -144,4 +110,109 @@ body {
 
 .section-title:hover {
   color: #1877f2;
+}
+
+/* 게시판 + 일상 병렬 배치 */
+.board-daily-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.board-daily-row .board-list,
+.board-daily-row .daily-list {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* 공통 포스트 카드 스타일 */
+.hot-board-list .post-card,
+.board-list .post-card,
+.daily-list .post-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.hot-board-list .post-title,
+.board-list .post-title,
+.daily-list .post-title {
+  font-weight: 600;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+  height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hot-board-list .post-info,
+.board-list .post-info,
+.daily-list .post-info {
+  display: flex;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #666;
+  height: 20px;
+  align-items: center;
+}
+
+/* ✅ 중고거래: 가로 정렬 */
+.trade-list {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+  width: 100%;
+  padding-top: 0.3rem;
+}
+
+.trade-card {
+  flex: 1 1 18%;
+  max-width: 18%;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.7rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s ease-in-out;
+}
+
+.trade-card:hover {
+  transform: translateY(-2px);
+}
+
+.trade-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.product-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.product-price {
+  font-size: 0.9rem;
+  color: #111;
+  font-weight: bold;
+  margin-bottom: 0.2rem;
+}
+
+.product-time {
+  font-size: 0.75rem;
+  color: #999;
 }
