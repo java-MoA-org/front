@@ -15,12 +15,15 @@ import UserNicknameCheckRequestDto from '../../../apis/dto/request/auth/user-nic
 import UserEmailCheckRequestDto from '../../../apis/dto/request/auth/user-email-check.request.dto';
 import UserPhoneNumberCheckRequestDto from '../../../apis/dto/request/auth/user-phone-number-check.request.dto';
 import UserSignUpRequestDto from '../../../apis/dto/request/auth/user-sign-up.request.dto';
+import { useNavigate } from 'react-router';
 
 interface Props {
     setActiveTab: Dispatch<SetStateAction<'signin' | 'signup'>>;
 }
 
 export default function SignUp({ setActiveTab }: Props) {
+    const navigator = useNavigate();
+
     const [userId, setUserId] = useState('');
     const [userIdMessage, setUserIdMessage] = useState<string>('');
     const [userIdMessageError, setUserIdMessageError] = useState<boolean>(false);
@@ -248,7 +251,7 @@ export default function SignUp({ setActiveTab }: Props) {
             alert(message);
             return;
         }
-        console.log(message);
+        navigator('/');
     };
 
     const onCheckUserIdClickHandler = () => {
