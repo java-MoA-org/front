@@ -9,17 +9,10 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.126",
-<<<<<<< HEAD
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "axios": "^1.8.4",
     "react": "^19.1.0",
-=======
-    "@types/react": "^18.2.14",
-    "@types/react-dom": "^18.2.7",
-    "axios": "^1.8.4",
-    "react": "^18.2.0",
->>>>>>> b06ac5493cec454414a1a27ee44af8dc57ecc577
     "react-daum-postcode": "^3.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.0",
