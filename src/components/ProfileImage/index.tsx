@@ -2,6 +2,7 @@ import { ChangeEvent, useRef, useState } from 'react';
 import './index.css'; // 스타일은 아래에!
 import axios from 'axios';
 import camera from '../../assets/images/camera.png';
+import { userProfileImageUpload } from '../../apis';
 
 interface Props {
     onImageUpload: (url: string) => void; // 업로드된 URL을 SignUp에 넘겨줌
@@ -19,10 +20,10 @@ export default function ProfileImageUploader({ onImageUpload }: Props) {
         formData.append('file', file);
 
         try {
-            const res = await axios.post('/api/v1/upload/profile', formData); // 서버 URL 맞게 수정
-            const imageUrl = res.data; // 응답이 string 형태의 URL이면
+            const res = await userProfileImageUpload(formData); // ✅ await 추가
+            const imageUrl = res.data; // ✅ 서버에서 URL만 string으로 내려오면 res 자체가 string일 수도 있음
             setPreview(imageUrl);
-            onImageUpload(imageUrl); // 부모에게 전달
+            onImageUpload(imageUrl);
         } catch (error) {
             alert('이미지 업로드 실패');
         }

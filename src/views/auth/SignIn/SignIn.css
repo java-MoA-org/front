@@ -60,9 +60,9 @@
 }
 
 #auth-login-container .login-hint {
+    padding-top: 5px;
     font-size: 14px;
-    opacity: 0.5;
-    color: rgba(255, 84, 64, 1);
+    color: rgb(255, 0, 0);
 }
 
 #auth-login-container .login-login {
