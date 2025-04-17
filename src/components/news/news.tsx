@@ -1,26 +1,26 @@
-import './news.css'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import "./news.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 // function: 뉴스 업로드 시간 계산 함수 //
 const getTimeAgo = (uploadTime: string): string => {
   try {
-    if (!uploadTime) return ''
-    const now = new Date()
-    const past = new Date(uploadTime + '+09:00')
-    const diff = (now.getTime() - past.getTime()) / 1000
+    if (!uploadTime) return "";
+    const now = new Date();
+    const past = new Date(uploadTime + "+09:00");
+    const diff = (now.getTime() - past.getTime()) / 1000;
 
-    if (isNaN(diff) || diff < 0) return ''
+    if (isNaN(diff) || diff < 0) return "";
 
-    if (diff < 60 * 5) return '방금 전'
-    if (diff < 3600) return `${Math.floor(diff / 60)}분 전`
+    if (diff < 60 * 5) return "방금 전";
+    if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
 
-    const hours = Math.floor(diff / 3600)
-    return `${hours}시간 전`
+    const hours = Math.floor(diff / 3600);
+    return `${hours}시간 전`;
   } catch (e) {
-    return ''
+    return "";
   }
-}
+};
 
 // interface: 뉴스 항목 타입 정의 //
 interface NewsItem {
@@ -33,42 +33,42 @@ interface NewsItem {
 
 // constant: 카테고리 정의 //
 const categories = [
-  { label: '정치', value: 'politics' },
-  { label: '경제', value: 'economy' },
-  { label: '사회', value: 'society' },
-  { label: '생활/문화', value: 'culture' },
-  { label: '세계', value: 'world' },
-  { label: 'IT/과학', value: 'it' },
-  { label: '랭킹', value: 'ranking' },
-]
+  { label: "정치", value: "politics" },
+  { label: "경제", value: "economy" },
+  { label: "사회", value: "society" },
+  { label: "생활/문화", value: "culture" },
+  { label: "세계", value: "world" },
+  { label: "IT/과학", value: "it" },
+  { label: "랭킹", value: "ranking" }
+];
 
 // component: 뉴스 박스 렌더링 //
 const News = () => {
-  const [newsList, setNewsList] = useState<NewsItem[]>([])
-  const [selectedCategory, setSelectedCategory] = useState('ranking')
-  const [isLoading, setIsLoading] = useState(false)
+  const [newsList, setNewsList] = useState<NewsItem[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("ranking");
+  const [isLoading, setIsLoading] = useState(false);
 
   // function: 뉴스 가져오기 //
-  const fetchNews = async (category: string = 'ranking') => {
+  const fetchNews = async (category: string = "ranking") => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const res = await axios.get<NewsItem[]>(
         `http://localhost:4000/api/news/category?type=${category}`
-      )
-      console.log('선택된 카테고리:', category)
-      console.log('받은 뉴스 리스트:', res.data)
-      setNewsList(res.data)
+      );
+      console.log("선택된 카테고리:", category);
+      console.log("받은 뉴스 리스트:", res.data);
+      setNewsList(res.data);
     } catch (error) {
-      console.error('뉴스 불러오기 실패:', error)
+      console.error("뉴스 불러오기 실패:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   // effect: 카테고리 변경 시 뉴스 새로고침 //
   useEffect(() => {
-    fetchNews(selectedCategory)
-  }, [selectedCategory])
+    fetchNews(selectedCategory);
+  }, [selectedCategory]);
 
   // render: 뉴스 UI 출력 //
   return (
@@ -84,7 +84,7 @@ const News = () => {
         {categories.map((cat) => (
           <button
             key={cat.value}
-            className={`category-btn ${selectedCategory === cat.value ? 'active' : ''}`}
+            className={`category-btn ${selectedCategory === cat.value ? "active" : ""}`}
             onClick={() => setSelectedCategory(cat.value)}
             disabled={isLoading}
           >
@@ -114,7 +114,7 @@ const News = () => {
         ))
       )}
     </div>
-  )
-}
+  );
+};
 
-export default News
+export default News;
