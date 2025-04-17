@@ -17,6 +17,7 @@ import {
 import MyUserPage from "./views/UserPage";
 import UserPageFollow from "./views/UserPage/UserPageFollow";
 import UserBoard from "./views/UserPage/UserBoard";
+import Footer from "./components/footer";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
         </Route>
         {/* <Route path="/message" element={<Message />} /> */}
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
