@@ -6,6 +6,7 @@ import UserNicknameCheckRequestDto from './dto/request/auth/user-nickname-check.
 import UserEmailCheckRequestDto from './dto/request/auth/user-email-check.request.dto';
 import UserPhoneNumberCheckRequestDto from './dto/request/auth/user-phone-number-check.request.dto';
 import UserSignUpRequestDto from './dto/request/auth/user-sign-up.request.dto';
+import UserSignInRequestDto from './dto/request/auth/user-sign-in.request.dto';
 
 const API_DOMAIN = process.env.REACT_APP_API_DOMAIN;
 
@@ -17,6 +18,7 @@ const EMAIL_CHECK_URL = `${AUTH_MODULE_URL}/email/check`;
 const PHONE_NUMBER_CHECK_URL = `${AUTH_MODULE_URL}/phone/check`;
 
 const SIGN_UP_URL = `${AUTH_MODULE_URL}/sign-up`;
+const SIGN_IN_URL = `${AUTH_MODULE_URL}/sign-in`;
 
 export const userIdCheckRequest = async (requestBody: UserIdCheckRequestDto) => {
     const responseBody = await axios
@@ -52,6 +54,14 @@ export const userPhoneNumberCheckRequest = async (requestBody: UserPhoneNumberCh
 export const userSignUpRequest = async (requestBody: UserSignUpRequestDto) => {
     const responseBody = await axios
         .post(SIGN_UP_URL, requestBody)
+        .then(responseSuccessHandler)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+export const userSignInRequest = async (requestBody: UserSignInRequestDto) => {
+    const responseBody = await axios
+        .post(SIGN_IN_URL, requestBody, { withCredentials: true })
         .then(responseSuccessHandler)
         .catch(responseErrorHandler);
     return responseBody;
