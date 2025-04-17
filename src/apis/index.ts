@@ -14,6 +14,7 @@ const AUTH_MODULE_URL = `${API_DOMAIN}/api/v1/auth`;
 
 const ID_CHECK_URL = `${AUTH_MODULE_URL}/id/check`;
 const NICKNAME_CHECK_URL = `${AUTH_MODULE_URL}/nickname/check`;
+const PROFILE_IMAGE_UPLOAD_URL = `${AUTH_MODULE_URL}/profileImage/upload`;
 const EMAIL_CHECK_URL = `${AUTH_MODULE_URL}/email/check`;
 const PHONE_NUMBER_CHECK_URL = `${AUTH_MODULE_URL}/phone/check`;
 
@@ -65,6 +66,11 @@ export const userSignInRequest = async (requestBody: UserSignInRequestDto) => {
         .then(responseSuccessHandler)
         .catch(responseErrorHandler);
     return responseBody;
+};
+
+export const userProfileImageUpload = async (requeestBody: FormData) => {
+    const url = await axios.post(PROFILE_IMAGE_UPLOAD_URL, requeestBody, { withCredentials: true });
+    return url;
 };
 
 const responseSuccessHandler = <T = ResponseDto>(response: AxiosResponse<T>) => {

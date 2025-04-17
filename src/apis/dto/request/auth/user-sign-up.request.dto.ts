@@ -7,4 +7,14 @@ export default interface UserSignUpRequestDto {
     joinType: string;
     profileImage: string;
     userIntroduce: string;
+    interests: {
+        userInterestTrip: boolean;
+        userInterestGame: boolean;
+        userInterestFashion: boolean;
+        userInterestWorkout: boolean;
+        userInterestFood: boolean;
+        userInterestMusic: boolean;
+        userInterestEconomics: boolean;
+        userInterestNull: boolean;
+    };
 }
