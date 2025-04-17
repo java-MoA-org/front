@@ -16,6 +16,8 @@ import UserEmailCheckRequestDto from '../../../apis/dto/request/auth/user-email-
 import UserPhoneNumberCheckRequestDto from '../../../apis/dto/request/auth/user-phone-number-check.request.dto';
 import UserSignUpRequestDto from '../../../apis/dto/request/auth/user-sign-up.request.dto';
 import { useNavigate } from 'react-router';
+import { ROOT_PATH } from '../../../constants';
+import ProfileImageUploader from '../../../components/ProfileImage';
 
 interface Props {
     setActiveTab: Dispatch<SetStateAction<'signin' | 'signup'>>;
@@ -45,6 +47,8 @@ export default function SignUp({ setActiveTab }: Props) {
     const [userNicknameMessageError, setUserNicknameMessageError] = useState<boolean>(false);
     const [userNicknameChecked, setUserNicknameChecked] = useState(false);
     const isUserNicknameCheckButtonActive = /^[A-Za-z0-9]{2,8}$/.test(userNickname);
+
+    const [profileImage, setProfileImage] = useState<string>('');
 
     const [userEmail, setUserEmail] = useState('');
     const [userEmailValid, setUserEmailValid] = useState(false);
@@ -251,7 +255,7 @@ export default function SignUp({ setActiveTab }: Props) {
             alert(message);
             return;
         }
-        navigator('/');
+        navigator(ROOT_PATH);
     };
 
     const onCheckUserIdClickHandler = () => {
@@ -286,7 +290,7 @@ export default function SignUp({ setActiveTab }: Props) {
             userEmail,
             userPhoneNumber,
             joinType: 'NORMAL',
-            profileImage: 'https://cdn.test.com/image.jpg',
+            profileImage,
             userIntroduce,
         };
         userSignUpRequest(requestbody).then(userSignUpResponse);
@@ -353,6 +357,8 @@ export default function SignUp({ setActiveTab }: Props) {
                     isButtonActive={isUserNicknameCheckButtonActive}
                     hint="2자 이상 8자 이하, 특수문자를 포함할 수 없습니다."
                 />
+                <ProfileImageUploader onImageUpload={setProfileImage} />
+
                 <SignUpInputBox
                     label={'이메일'}
                     type={'text'}
