@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./style.css";
 import { useSearchParams } from "react-router-dom";
+import { Board, Daily, Trade } from "../../../types/interfaces";
 
 export default function UserBoard() {
   const [searchParams] = useSearchParams();
@@ -14,6 +15,8 @@ export default function UserBoard() {
     if (typeParam === "board" || typeParam === "daily" || typeParam === "used") {
       setActiveTab(typeParam);
     }
+
+    // 여기서 백에서 받은 정보들을 가져오면 됨!!!! 다음주 월요일에 다시 시작하겠음
   }, [typeParam]);
 
   // variable: board,daily,user 변수 //
