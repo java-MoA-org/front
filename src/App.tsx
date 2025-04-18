@@ -6,24 +6,24 @@ import AuthPage from "./views/auth/AuthPage";
 import Notice from "./views/category/notice/Notice";
 // import Message from './pages/message/Message'
 
-import Board from './views/category/board/Board';
-import BoardWrite from './views/category/board/BoardWrite/BoardWrite';
+import Board from "./views/category/board/Board";
+import BoardWrite from "./views/category/board/BoardWrite/BoardWrite";
 import BoardView from "./views/category/board/BoardView/BoardView";
-import BoardUpdate from './views/category/board/BoardUpdate/BoardUpdate';
+import BoardUpdate from "./views/category/board/BoardUpdate/BoardUpdate";
 
-import Daily from './views/category/daily/Daily';
-import DailyWrite from './views/category/daily/DailyWrite/DailyWrite';
-import DailyView from './views/category/daily/DailyView/DailyView';
-import DailyUpdate from './views/category/daily/DailyUpdate/DailyUpdate';
+import Daily from "./views/category/daily/Daily";
+import DailyWrite from "./views/category/daily/DailyWrite/DailyWrite";
+import DailyView from "./views/category/daily/DailyView/DailyView";
+import DailyUpdate from "./views/category/daily/DailyUpdate/DailyUpdate";
 
-import UsedTrade from './views/category/trade/UsedTrade';
-import UsedTradeWrite from './views/category/trade/UsedTradeWrite/UsedTradeWrite';
-import UsedTradeView from './views/category/trade/UsedTradeView/UsedTradeView';
-import UsedTradeUpdate from './views/category/trade/UsedTradeUpdate/UsedTradeUpdate';
+import UsedTrade from "./views/category/trade/UsedTrade";
+import UsedTradeWrite from "./views/category/trade/UsedTradeWrite/UsedTradeWrite";
+import UsedTradeView from "./views/category/trade/UsedTradeView/UsedTradeView";
+import UsedTradeUpdate from "./views/category/trade/UsedTradeUpdate/UsedTradeUpdate";
 
 import {
   MY_USER_BOARD_PATH,
-  MY_USER_FOLLOW_ABSOULTE_PATH,
+  MY_USER_FOLLOW_ABSOLUTE_PATH,
   MY_USER_FOLLOW_PATH,
   MY_USER_PATH,
   BOARD_PATH,
@@ -39,10 +39,12 @@ import {
   USED_TRADE_VIEW_PATH,
   USED_TRADE_UPDATE_PATH
 } from "./constants";
+
 import MyUserPage from "./views/UserPage";
 import UserPageFollow from "./views/UserPage/UserPageFollow";
 import UserBoard from "./views/UserPage/UserBoard";
 import Footer from "./components/footer";
+import UserPageContainer from "./views/UserPage/UserPageContainer";
 
 function App() {
   return (
@@ -76,9 +78,9 @@ function App() {
 
         <Route path="/notice" element={<Notice />} />
         <Route path={MY_USER_PATH}>
-          <Route index element={<MyUserPage />} />
-          <Route path={MY_USER_FOLLOW_PATH} element={<UserPageFollow />} />
-          <Route path={MY_USER_BOARD_PATH} element={<UserBoard />} />
+          <Route path=":nickname" element={<UserPageContainer />} />
+          <Route path=":nickname/follow" element={<UserPageFollow />} />
+          <Route path=":nickname/board" element={<UserBoard />} />
         </Route>
         {/* <Route path="/message" element={<Message />} /> */}
       </Routes>
