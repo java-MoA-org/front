@@ -1,10 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserPageFollowee from "./Followee";
 import UserPageFollower from "./Follower";
 import "./style.css";
+import { useSearchParams } from "react-router-dom";
 
 export default function UserPageFollow() {
-  const [activeTab, setActiveTab] = useState<"followee" | "follower">("followee");
+  const [searchParams] = useSearchParams();
+  const typeParam = searchParams.get("type");
+  const [activeTab, setActiveTab] = useState<"followee" | "follower">(
+    typeParam === "follower" ? "follower" : "followee"
+  );
+
+  useEffect(() => {
+    if (typeParam === "follower" || typeParam === "followee") {
+      setActiveTab(typeParam);
+    }
+  }, [typeParam]);
 
   // variable: followee, follower 변수 //
   const followeeClass = activeTab === "followee" ? "type-follower active" : "type-follower";
