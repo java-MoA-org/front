@@ -24,8 +24,8 @@ export default function UserPageContainer() {
       // Type narrowing: 응답이 성공적인 경우만 처리
       if (response && "boards" in response) {
         setBoards(response.boards);
-        setDailys(response.dailys);
-        setTrades(response.trades);
+        setDailys(response.dailyBoards);
+        setTrades(response.tradeBoards);
         setInterest(response.interests);
       }
     };

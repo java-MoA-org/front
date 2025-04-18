@@ -4,7 +4,7 @@ import ResponseDto from "../response.dto";
 
 export default interface GetUserPageResponseDto extends ResponseDto {
   boards: Board[];
-  dailys: Daily[];
-  trades: Trade[];
+  dailyBoards: Daily[];
+  tradeBoards: Trade[];
   interests: UserInterest;
 }
