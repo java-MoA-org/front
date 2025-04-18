@@ -15,6 +15,7 @@ export interface BoardSummaryResponseDto {
   creationDate: string;
   tag: BoardTagType;
   views: number;
+  writerId: string;
   likeCount: number;
   commentCount: number;
 }
