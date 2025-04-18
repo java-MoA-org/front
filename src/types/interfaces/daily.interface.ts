@@ -4,4 +4,9 @@ export default interface Daily {
   views: number;
   likeCount: number;
   creationDate: string;
+  content: string;
+  userNickname: string;
+  profileImage: string | null;
+  commentCount: number;
+  images: string[] | null;
 }

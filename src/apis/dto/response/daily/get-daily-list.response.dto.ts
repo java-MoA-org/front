@@ -13,6 +13,7 @@ export interface DailySummaryResponseDto {
   content: string;
   creationDate: string;
   profileImage: string;
+  userNickname: string;
   views: number;
   likeCount: number;
   commentCount: number;
