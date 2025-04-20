@@ -140,7 +140,6 @@ export default function MyUserPage() {
         </div>
       </div>
 
-      <div>Footer</div>
     </div>
   );
 }
