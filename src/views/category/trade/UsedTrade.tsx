@@ -1,7 +1,10 @@
 import React from 'react';
-import './Trade.css'
+import './UsedTrade.css';
 
-const Trade = () => {
+// component: 중고거래 게시판 컴포넌트 //
+export default function UsedTrade() {
+
+  // render: 중고거래 게시판 컴포넌트 렌더링 //
   return (
     <div className="trade-page">
       <h1>💸 중고거래</h1>
@@ -9,5 +12,3 @@ const Trade = () => {
     </div>
   )
 }
-
-export default Trade

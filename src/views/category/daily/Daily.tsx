@@ -1,7 +1,10 @@
-import React from 'react';
-import './Daily.css'
+import React from 'react'
+import './Daily.css';
 
-const Daily = () => {
+// component: 일상 게시판 컴포넌트 //
+export default function Daily() {
+
+  // component: 일상 게시판 컴포넌트 렌더링 //
   return (
     <div className="Daily-page">
       <h1>📔 일상</h1>
@@ -9,5 +12,3 @@ const Daily = () => {
     </div>
   )
 }
-
-export default Daily

@@ -16,6 +16,9 @@ import UserEmailCheckRequestDto from '../../../apis/dto/request/auth/user-email-
 import UserPhoneNumberCheckRequestDto from '../../../apis/dto/request/auth/user-phone-number-check.request.dto';
 import UserSignUpRequestDto from '../../../apis/dto/request/auth/user-sign-up.request.dto';
 import { useNavigate } from 'react-router';
+import { ROOT_PATH } from '../../../constants';
+import ProfileImageUploader from '../../../components/ProfileImage';
+import { InterestsType } from '../../../types/userInterests';
 
 interface Props {
     setActiveTab: Dispatch<SetStateAction<'signin' | 'signup'>>;
@@ -46,6 +49,8 @@ export default function SignUp({ setActiveTab }: Props) {
     const [userNicknameChecked, setUserNicknameChecked] = useState(false);
     const isUserNicknameCheckButtonActive = /^[A-Za-z0-9]{2,8}$/.test(userNickname);
 
+    const [profileImage, setProfileImage] = useState<string>('');
+
     const [userEmail, setUserEmail] = useState('');
     const [userEmailValid, setUserEmailValid] = useState(false);
     const [userEmailMessage, setUserEmailMessage] = useState<string>('');
@@ -72,17 +77,36 @@ export default function SignUp({ setActiveTab }: Props) {
 
     const [userIntroduce, setUserIntroduce] = useState('');
 
-    const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
-
     const [signUpPossible, setSignUpPossible] = useState<boolean>(false);
 
-    const toggleInterest = (interest: string) => {
-        setSelectedInterests((prev) =>
-            prev.includes(interest) ? prev.filter((item) => item !== interest) : [...prev, interest]
-        );
-    };
+    const interests: { label: string; key: keyof InterestsType }[] = [
+        { label: '🛩️여행', key: 'userInterestTrip' },
+        { label: '🎮게임', key: 'userInterestGame' },
+        { label: '👚패션', key: 'userInterestFashion' },
+        { label: '🏀운동', key: 'userInterestWorkout' },
+        { label: '🍗맛집', key: 'userInterestFood' },
+        { label: '🎵음악', key: 'userInterestMusic' },
+        { label: '💸경제', key: 'userInterestEconomics' },
+        { label: '🏠일상', key: 'userInterestNull' }, // ✅ 선택 가능하게 포함
+    ];
 
-    const interests = ['🛩️여행', '🎮게임', '👚패션', '🏀운동', '🍗맛집', '🎵음악', '💸경제', '🏠일상'];
+    const [selectedInterests, setSelectedInterests] = useState<InterestsType>({
+        userInterestTrip: false,
+        userInterestGame: false,
+        userInterestFashion: false,
+        userInterestWorkout: false,
+        userInterestFood: false,
+        userInterestMusic: false,
+        userInterestEconomics: false,
+        userInterestNull: false,
+    });
+
+    const toggleInterest = (key: keyof InterestsType) => {
+        setSelectedInterests((prev: InterestsType) => ({
+            ...prev,
+            [key]: !prev[key],
+        }));
+    };
 
     const userIdChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
@@ -251,7 +275,7 @@ export default function SignUp({ setActiveTab }: Props) {
             alert(message);
             return;
         }
-        navigator('/');
+        navigator(ROOT_PATH);
     };
 
     const onCheckUserIdClickHandler = () => {
@@ -279,17 +303,19 @@ export default function SignUp({ setActiveTab }: Props) {
 
     const onSignUpClickHandler = () => {
         if (!signUpPossible) return;
-        const requestbody: UserSignUpRequestDto = {
+        const requestBody: UserSignUpRequestDto = {
             userId,
             userPassword,
             userNickname,
             userEmail,
             userPhoneNumber,
             joinType: 'NORMAL',
-            profileImage: 'https://cdn.test.com/image.jpg',
+            profileImage,
             userIntroduce,
+            interests: selectedInterests,
         };
-        userSignUpRequest(requestbody).then(userSignUpResponse);
+
+        userSignUpRequest(requestBody).then(userSignUpResponse);
     };
 
     useEffect(() => {
@@ -353,6 +379,8 @@ export default function SignUp({ setActiveTab }: Props) {
                     isButtonActive={isUserNicknameCheckButtonActive}
                     hint="2자 이상 8자 이하, 특수문자를 포함할 수 없습니다."
                 />
+                <ProfileImageUploader onImageUpload={setProfileImage} />
+
                 <SignUpInputBox
                     label={'이메일'}
                     type={'text'}
@@ -426,14 +454,14 @@ export default function SignUp({ setActiveTab }: Props) {
 
                 <label style={{ fontWeight: 'bold' }}>관심사 (복수 선택)</label>
                 <div className="interest-list">
-                    {interests.map((interest) => (
+                    {interests.map(({ label, key }) => (
                         <button
-                            key={interest}
+                            key={key}
                             type="button"
-                            className={`interest-button ${selectedInterests.includes(interest) ? 'selected' : ''}`}
-                            onClick={() => toggleInterest(interest)}
+                            className={`interest-button ${selectedInterests[key] ? 'selected' : ''}`}
+                            onClick={() => toggleInterest(key)}
                         >
-                            {interest}
+                            {label}
                         </button>
                     ))}
                 </div>

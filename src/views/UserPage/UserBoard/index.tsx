@@ -1,8 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./style.css";
+import { useSearchParams } from "react-router-dom";
 
 export default function UserBoard() {
-  const [activeTab, setActiveTab] = useState<"board" | "daily" | "used">("board");
+  const [searchParams] = useSearchParams();
+  const typeParam = searchParams.get("type");
+
+  const [activeTab, setActiveTab] = useState<"board" | "daily" | "used">(
+    typeParam === "board" ? "board" : typeParam === "daily" ? "daily" : "used"
+  );
+
+  useEffect(() => {
+    if (typeParam === "board" || typeParam === "daily" || typeParam === "used") {
+      setActiveTab(typeParam);
+    }
+  }, [typeParam]);
 
   // variable: board,daily,user 변수 //
   const boardClass = activeTab === "board" ? "board active" : "board";

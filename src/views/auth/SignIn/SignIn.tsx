@@ -1,41 +1,110 @@
 import './SignIn.css';
 import { useNavigate } from 'react-router-dom';
-import { Dispatch, SetStateAction } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
+import { ROOT_PATH } from '../../../constants';
 
-// interface: 로그인 컴포넌트 속성 // 
+import UserSignInRequestDto from '../../../apis/dto/request/auth/user-sign-in.request.dto';
+import { userSignInRequest } from '../../../apis';
+import ResponseDto from '../../../apis/dto/response/response.dto';
+import UserSignInResponseDto from '../../../apis/dto/response/auth/user-sign-in.response.dto';
+
+// interface: 로그인 컴포넌트 속성 //
 interface Props {
     setActiveTab: Dispatch<SetStateAction<'signin' | 'signup'>>;
-  }
+}
 
 // component: 로그인 컴포넌트
 export default function SignIn({ setActiveTab }: Props) {
     const navigate = useNavigate();
 
+    const [userId, setUserId] = useState<string>('');
+    const [userPassword, setUserPassword] = useState<string>('');
+    const [signInHint, setSignInHint] = useState<string>('');
+
     const handleKakaoLogin = () => {
-        window.location.href = "https://kauth.kakao.com/oauth/authorize?..."; 
-      };
-      
-      const handleGoogleLogin = () => {
-        alert("구글 로그인 연동 예정");
-      };
+        window.location.href = 'https://kauth.kakao.com/oauth/authorize?...';
+    };
+
+    const handleNaverLogin = () => {
+        alert('네이버 로그인 연동 예정');
+    };
+
+    const handleUserIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        setUserId(value);
+    };
+    const handleUserPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        setUserPassword(value);
+    };
+
+    const userSignInResponse = (responseBody: ResponseDto | UserSignInResponseDto | null) => {
+        const message = !responseBody
+            ? '서버에 문제가 있습니다'
+            : responseBody.code === 'DBE'
+            ? '서버에 문제가 있습니다'
+            : responseBody.code === 'SF'
+            ? '로그인 정보가 일치하지 않습니다.'
+            : '';
+        const isSuccess = responseBody !== null && responseBody.code === 'SU';
+        if (!isSuccess) {
+            setSignInHint(message);
+            return;
+        }
+
+        const { accessToken, expiration } = responseBody as UserSignInResponseDto;
+        const expires = new Date(Date.now() + expiration * 1000);
+
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('accessTokenExpiresAt', (Date.now() + expiration * 1000).toString());
+
+        navigate('/');
+    };
+
+    const onLogoClickHandler = () => {
+        navigate(ROOT_PATH);
+    };
+
+    const onSignInClickHandler = () => {
+        if (userId == '') {
+            setSignInHint('아이디를 입력해주세요');
+            return;
+        }
+        if (userPassword == '') {
+            setSignInHint('비밀번호를 입력해주세요');
+            return;
+        }
+        const requestBody: UserSignInRequestDto = { userId, userPassword };
+        userSignInRequest(requestBody).then(userSignInResponse);
+    };
 
     return (
         <div id="auth-login-container">
             <div className="login-logo-container">
-                <div className="login-logo">MoA</div>
+                <div className="login-logo" onClick={onLogoClickHandler}>
+                    MoA
+                </div>
             </div>
 
             <div className="login-input-container">
                 <div className="login-id-input-container">
-                    <input className="login-id" placeholder="아이디를 입력해주세요" />
+                    <input className="login-id" placeholder="아이디를 입력해주세요" onChange={handleUserIdChange} />
                 </div>
                 <div className="login-password-input-container">
-                    <input className="login-password" type="password" placeholder="비밀번호를 입력해주세요" />
+                    <input
+                        className="login-password"
+                        type="password"
+                        placeholder="비밀번호를 입력해주세요"
+                        onChange={handleUserPasswordChange}
+                    />
                 </div>
+                <div className="login-hint">{signInHint}</div>
             </div>
 
             <div className="login-button-container">
-                <div className="login-login button">로그인</div>
+                <div className="login-login button" onClick={onSignInClickHandler}>
+                    로그인
+                </div>
 
                 <div className="login-others-container">
                     <div className="login-find-id button">아이디 찾기</div> |
