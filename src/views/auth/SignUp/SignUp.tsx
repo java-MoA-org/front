@@ -10,6 +10,7 @@ import {
     userIdCheckRequest,
     userNicknameCheckRequest,
     userPhoneNumberCheckRequest,
+    UserPhoneNumberVerifyRequest,
     userSignUpRequest,
 } from '../../../apis';
 import UserNicknameCheckRequestDto from '../../../apis/dto/request/auth/user-nickname-check.request.dto';
@@ -22,6 +23,8 @@ import ProfileImageUploader from '../../../components/ProfileImage';
 import { InterestsType } from '../../../types/userInterests';
 import UserEmailVerifyRequestDto from '../../../apis/dto/request/auth/user-email-verify.request.dto';
 import EmailVerifyResponseDto from '../../../apis/dto/response/auth/email-verify-response.dto';
+import UserPhoneNumberVerifyRequestDto from '../../../apis/dto/request/auth/user-phone-number-verify.request.dto';
+import VerifyResponseDto from '../../../apis/dto/response/auth/email-verify-response.dto';
 
 interface Props {
     setActiveTab: Dispatch<SetStateAction<'signin' | 'signup'>>;
@@ -69,9 +72,11 @@ export default function SignUp({ setActiveTab }: Props) {
 
     const [userPhoneNumber, setUserPhoneNumber] = useState('');
     const [userPhoneNumberValid, setUserPhoneNumberValid] = useState(false);
+    const [userPhoneNumberToken, setUserPhoneNumberToken] = useState('');
     const [userPhoneNumberMessage, setUserPhoneNumberMessage] = useState<string>('');
     const [userPhoneNumberMessageError, setUserPhoneNumberMessageError] = useState<boolean>(false);
     const [userPhoneNumberChecked, setUserPhoneNumberChecked] = useState(false);
+    const [userPhoneNumberReadOnlyActive, setUserPhoneNumberReadOnlyActive] = useState(false);
 
     const [userPhoneNumberVC, setUserPhoneNumberVC] = useState('');
     const [userPhoneNumberVCValid, setUserPhoneNumberVCValid] = useState(false);
@@ -222,7 +227,7 @@ export default function SignUp({ setActiveTab }: Props) {
         setUserNicknameChecked(isSuccess);
     };
 
-    const userEmailCheckResponse = (responseBody: ResponseDto | EmailVerifyResponseDto | null) => {
+    const userEmailCheckResponse = (responseBody: ResponseDto | VerifyResponseDto | null) => {
         console.log('📦 이메일 중복 확인 응답:', responseBody);
 
         // 메시지 정의
@@ -240,7 +245,7 @@ export default function SignUp({ setActiveTab }: Props) {
 
         // token 안전하게 추출
         const token =
-            isSuccess && responseBody && 'token' in responseBody ? (responseBody as EmailVerifyResponseDto).token : '';
+            isSuccess && responseBody && 'token' in responseBody ? (responseBody as VerifyResponseDto).token : '';
 
         console.log('✅ 추출된 token:', token);
 
@@ -256,8 +261,6 @@ export default function SignUp({ setActiveTab }: Props) {
             ? '서버에 문제가 있습니다'
             : responseBody.code === 'DBE'
             ? '서버에 문제가 있습니다'
-            : responseBody.code === 'VF'
-            ? '이메일을 입력하세요'
             : responseBody.code === 'VCE'
             ? '인증번호가 틀렸습니다.'
             : '인증되었습니다.';
@@ -269,6 +272,8 @@ export default function SignUp({ setActiveTab }: Props) {
         setUserEmailVerified(isSuccess);
         if (isSuccess) {
             setUserEmailReadOnlyActive(true);
+            setUserEmailValid(false);
+            setUserEmailVCValid(false);
         }
     };
 
@@ -285,10 +290,35 @@ export default function SignUp({ setActiveTab }: Props) {
 
         const isSuccess = responseBody !== null && responseBody.code === 'SU';
 
+        const token =
+            isSuccess && responseBody && 'token' in responseBody ? (responseBody as VerifyResponseDto).token : '';
+
+        setUserPhoneNumberToken(token);
         setUserPhoneNumberMessage(message);
         setUserPhoneNumberMessageError(!isSuccess);
         setUserPhoneNumberChecked(isSuccess);
     };
+
+    const userPhoneNumberVerifyResponse = (responseBody: ResponseDto | null) => {
+        const message = !responseBody
+            ? '서버에 문제가 있습니다'
+            : responseBody.code === 'DBE'
+            ? '서버에 문제가 있습니다'
+            : responseBody.code === 'VCE'
+            ? '인증번호가 틀렸습니다.'
+            : '인증되었습니다.';
+
+        const isSuccess = responseBody !== null && responseBody.code === 'SU';
+
+        setUserPhoneNumberVCMessage(message);
+        setUserPhoneNumberVCMessageError(!isSuccess);
+        setUserPhoneNumberVerified(isSuccess);
+
+        setUserPhoneNumberReadOnlyActive(isSuccess);
+        setUserPhoneNumberValid(!isSuccess);
+        setUserPhoneNumberVCValid(!isSuccess);
+    };
+
     const userSignUpResponse = (responseBody: ResponseDto | null) => {
         const message = !responseBody
             ? '서버에 문제가 있습니다'
@@ -337,7 +367,12 @@ export default function SignUp({ setActiveTab }: Props) {
     };
 
     const onCheckUserPhoneNumberVCClickHandler = () => {
-        setUserPhoneNumberVerified(true);
+        const requestBody: UserPhoneNumberVerifyRequestDto = {
+            userPhoneNumber,
+            userPhoneNumberVC,
+            userPhoneNumberToken,
+        };
+        UserPhoneNumberVerifyRequest(requestBody).then(userPhoneNumberVerifyResponse);
     };
 
     const onSignUpClickHandler = () => {
@@ -461,6 +496,7 @@ export default function SignUp({ setActiveTab }: Props) {
                     // button click 시 중복확인, 중복이면 에러메시지 //, 아니면 인증번호 보내기
                     onButtonClick={onCheckUserPhoneNumberClickHandler}
                     isButtonActive={userPhoneNumberValid}
+                    readOnly={userPhoneNumberReadOnlyActive}
                 />
                 {userPhoneNumberChecked && (
                     <SignUpInputBox
@@ -474,6 +510,7 @@ export default function SignUp({ setActiveTab }: Props) {
                         buttonName="인증하기"
                         onButtonClick={onCheckUserPhoneNumberVCClickHandler}
                         isButtonActive={userPhoneNumberVCValid}
+                        readOnly={userPhoneNumberReadOnlyActive}
                     />
                 )}
             </div>
@@ -485,7 +522,7 @@ export default function SignUp({ setActiveTab }: Props) {
                     </label>
                     <textarea
                         id="introduce"
-                        className="signup-introduce"
+                        className="signup-introduction"
                         placeholder="자신을 소개해 주세요. (최대 200자)"
                         maxLength={200}
                         value={userIntroduce}
