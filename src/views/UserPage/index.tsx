@@ -84,7 +84,6 @@ export default function MyUserPage({ boards, dailys, trades, interests }: MyUser
                     {interest}
                   </div>
                 ))}
-                <div className="interest">운동</div>
               </div>
             </div>
           </div>
@@ -107,7 +106,8 @@ export default function MyUserPage({ boards, dailys, trades, interests }: MyUser
                 {dailys.length === 0 ? (
                   <div className="no-content">아직 작성한 글이 없습니다.</div>
                 ) : (
-                  dailys
+                  [...dailys]
+                    .reverse()
                     .slice(0, 3)
                     .map(({ dailySequence, title, views, likeCount, creationDate }) => (
                       <div className="board-content" key={dailySequence}>
@@ -115,7 +115,7 @@ export default function MyUserPage({ boards, dailys, trades, interests }: MyUser
                         <div className="board-title">{title}</div>
                         <div className="board-view">{views}</div>
                         <div className="board-like">{likeCount}</div>
-                        <div className="board-date">{creationDate}</div>
+                        <div className="board-date">{creationDate.split("T")[0]}</div>
                       </div>
                     ))
                 )}
@@ -130,7 +130,8 @@ export default function MyUserPage({ boards, dailys, trades, interests }: MyUser
                 {trades.length === 0 ? (
                   <div className="no-content">아직 작성한 글이 없습니다.</div>
                 ) : (
-                  trades
+                  [...trades]
+                    .reverse()
                     .slice(0, 3)
                     .map(({ tradeSequence, title, views, likeCount, creationDate }) => (
                       <div className="board-content" key={tradeSequence}>
@@ -138,7 +139,7 @@ export default function MyUserPage({ boards, dailys, trades, interests }: MyUser
                         <div className="board-title">{title}</div>
                         <div className="board-view">{views}</div>
                         <div className="board-like">{likeCount}</div>
-                        <div className="board-date">{creationDate}</div>
+                        <div className="board-date">{creationDate.split("T")[0]}</div>
                       </div>
                     ))
                 )}
@@ -153,7 +154,8 @@ export default function MyUserPage({ boards, dailys, trades, interests }: MyUser
                 {boards.length === 0 ? (
                   <div className="no-content">아직 작성한 글이 없습니다.</div>
                 ) : (
-                  boards
+                  [...boards]
+                    .reverse()
                     .slice(0, 3)
                     .map(({ boardSequence, title, views, likeCount, creationDate }) => (
                       <div className="board-content" key={boardSequence}>
@@ -161,7 +163,7 @@ export default function MyUserPage({ boards, dailys, trades, interests }: MyUser
                         <div className="board-title">{title}</div>
                         <div className="board-view">{views}</div>
                         <div className="board-like">{likeCount}</div>
-                        <div className="board-date">{creationDate}</div>
+                        <div className="board-date">{creationDate.split("T")[0]}</div>
                       </div>
                     ))
                 )}
