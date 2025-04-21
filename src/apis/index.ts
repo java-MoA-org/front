@@ -21,6 +21,7 @@ import { PatchUsedTradeRequestDto, PostUsedTradeRequestDto } from './dto/request
 import { GetUsedTradeListResponseDto, GetUsedTradeResponseDto } from './dto/response/usedtrade';
 import GetUserPageResponseDto from './dto/response/userpage/get-user-page.response.dto';
 import UserEmailVerifyRequestDto from './dto/request/auth/user-email-verify.request.dto';
+import UserPhoneNumberVerifyRequestDto from './dto/request/auth/user-phone-number-verify.request.dto';
 
 const API_DOMAIN = process.env.REACT_APP_API_DOMAIN;
 
@@ -31,7 +32,8 @@ const NICKNAME_CHECK_URL = `${AUTH_MODULE_URL}/nickname/check`;
 const PROFILE_IMAGE_UPLOAD_URL = `${AUTH_MODULE_URL}/profileImage/upload`;
 const EMAIL_CHECK_URL = `${AUTH_MODULE_URL}/email/verify/require`;
 const EMAIL_VERIFY_URL = `${AUTH_MODULE_URL}/email/verify`;
-const PHONE_NUMBER_CHECK_URL = `${AUTH_MODULE_URL}/phone/check`;
+const PHONE_NUMBER_CHECK_URL = `${AUTH_MODULE_URL}/phone/verify/require`;
+const PHONE_NUMBER_VERIFY_URL = `${AUTH_MODULE_URL}/phone/verify`;
 
 const SIGN_UP_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_URL = `${AUTH_MODULE_URL}/sign-in`;
@@ -126,6 +128,14 @@ export const UserEmailVerifyRequest = async (requestBody: UserEmailVerifyRequest
 export const userPhoneNumberCheckRequest = async (requestBody: UserPhoneNumberCheckRequestDto) => {
     const responseBody = await axios
         .post(PHONE_NUMBER_CHECK_URL, requestBody)
+        .then(responseSuccessHandler)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+export const UserPhoneNumberVerifyRequest = async (requestBody: UserPhoneNumberVerifyRequestDto) => {
+    const responseBody = await axios
+        .post(PHONE_NUMBER_VERIFY_URL, requestBody)
         .then(responseSuccessHandler)
         .catch(responseErrorHandler);
     return responseBody;
