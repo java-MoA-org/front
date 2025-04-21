@@ -1,8 +1,8 @@
 import React from 'react';
-import './UsedTrade.css';
+import './UsedTradeMain.css';
 
 // component: 중고거래 게시판 컴포넌트 //
-export default function UsedTrade() {
+export default function UsedTradeMain() {
 
   // render: 중고거래 게시판 컴포넌트 렌더링 //
   return (
