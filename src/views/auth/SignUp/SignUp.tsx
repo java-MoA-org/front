@@ -6,6 +6,7 @@ import ResponseDto from '../../../apis/dto/response/response.dto';
 import IdCheckRequestDto from '../../../apis/dto/request/auth/user-id-check.request.dto';
 import {
     userEmailCheckRequest,
+    UserEmailVerifyRequest,
     userIdCheckRequest,
     userNicknameCheckRequest,
     userPhoneNumberCheckRequest,
@@ -19,6 +20,8 @@ import { useNavigate } from 'react-router';
 import { ROOT_PATH } from '../../../constants';
 import ProfileImageUploader from '../../../components/ProfileImage';
 import { InterestsType } from '../../../types/userInterests';
+import UserEmailVerifyRequestDto from '../../../apis/dto/request/auth/user-email-verify.request.dto';
+import EmailVerifyResponseDto from '../../../apis/dto/response/auth/email-verify-response.dto';
 
 interface Props {
     setActiveTab: Dispatch<SetStateAction<'signin' | 'signup'>>;
@@ -43,7 +46,6 @@ export default function SignUp({ setActiveTab }: Props) {
     const [confirmPasswordChecked, setConfirmPasswordChecked] = useState(false);
 
     const [userNickname, setUserNickname] = useState('');
-    const [userNicknameValid, setUserNicknameValid] = useState(false);
     const [userNicknameMessage, setUserNicknameMessage] = useState<string>('');
     const [userNicknameMessageError, setUserNicknameMessageError] = useState<boolean>(false);
     const [userNicknameChecked, setUserNicknameChecked] = useState(false);
@@ -56,9 +58,11 @@ export default function SignUp({ setActiveTab }: Props) {
     const [userEmailMessage, setUserEmailMessage] = useState<string>('');
     const [userEmailMessageError, setUserEmailMessageError] = useState<boolean>(false);
     const [userEmailChecked, setUserEmailChecked] = useState(false);
+    const [userEmailReadOnlyActive, setUserEmailReadOnlyActive] = useState(false);
 
     const [userEmailVC, setUserEmailVC] = useState('');
     const [userEmailVCValid, setUserEmailVCValid] = useState(false);
+    const [emailToken, setEmailToken] = useState('');
     const [userEmailVCMessage, setUserEmailVCMessage] = useState<string>('');
     const [userEmailVCMessageError, setUserEmailVCMessageError] = useState<boolean>(false);
     const [userEmailVerified, setUserEmailVerified] = useState(false);
@@ -139,8 +143,6 @@ export default function SignUp({ setActiveTab }: Props) {
     const handleUserNicknameChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setUserNickname(value);
-        const isValid = /^[A-Za-z0-9]{2,8}$/.test(value) || value == '';
-        setUserNicknameValid(isValid);
         setUserNicknameChecked(false);
     };
 
@@ -220,7 +222,10 @@ export default function SignUp({ setActiveTab }: Props) {
         setUserNicknameChecked(isSuccess);
     };
 
-    const userEmailCheckResponse = (responseBody: ResponseDto | null) => {
+    const userEmailCheckResponse = (responseBody: ResponseDto | EmailVerifyResponseDto | null) => {
+        console.log('📦 이메일 중복 확인 응답:', responseBody);
+
+        // 메시지 정의
         const message = !responseBody
             ? '서버에 문제가 있습니다'
             : responseBody.code === 'DBE'
@@ -233,10 +238,40 @@ export default function SignUp({ setActiveTab }: Props) {
 
         const isSuccess = responseBody !== null && responseBody.code === 'SU';
 
+        // token 안전하게 추출
+        const token =
+            isSuccess && responseBody && 'token' in responseBody ? (responseBody as EmailVerifyResponseDto).token : '';
+
+        console.log('✅ 추출된 token:', token);
+
+        // 상태 업데이트
+        setEmailToken(token);
         setUserEmailMessage(message);
         setUserEmailMessageError(!isSuccess);
         setUserEmailChecked(isSuccess);
     };
+
+    const userEmailVerifyResponse = (responseBody: ResponseDto | null) => {
+        const message = !responseBody
+            ? '서버에 문제가 있습니다'
+            : responseBody.code === 'DBE'
+            ? '서버에 문제가 있습니다'
+            : responseBody.code === 'VF'
+            ? '이메일을 입력하세요'
+            : responseBody.code === 'VCE'
+            ? '인증번호가 틀렸습니다.'
+            : '인증되었습니다.';
+
+        const isSuccess = responseBody !== null && responseBody.code === 'SU';
+
+        setUserEmailVCMessage(message);
+        setUserEmailVCMessageError(!isSuccess);
+        setUserEmailVerified(isSuccess);
+        if (isSuccess) {
+            setUserEmailReadOnlyActive(true);
+        }
+    };
+
     const userPhoneNumberCheckResponse = (responseBody: ResponseDto | null) => {
         const message = !responseBody
             ? '서버에 문제가 있습니다'
@@ -290,13 +325,17 @@ export default function SignUp({ setActiveTab }: Props) {
         const requestbody: UserEmailCheckRequestDto = { userEmail };
         userEmailCheckRequest(requestbody).then(userEmailCheckResponse);
     };
+
     const onCheckUserEmailVCClickHandler = () => {
-        setUserEmailVerified(true);
+        const requestBody: UserEmailVerifyRequestDto = { userEmail, userEmailVC, emailToken };
+        UserEmailVerifyRequest(requestBody).then(userEmailVerifyResponse);
     };
+
     const onCheckUserPhoneNumberClickHandler = () => {
         const requestbody: UserPhoneNumberCheckRequestDto = { userPhoneNumber };
         userPhoneNumberCheckRequest(requestbody).then(userPhoneNumberCheckResponse);
     };
+
     const onCheckUserPhoneNumberVCClickHandler = () => {
         setUserPhoneNumberVerified(true);
     };
@@ -393,6 +432,7 @@ export default function SignUp({ setActiveTab }: Props) {
                     // button click 시 중복확인, 중복이면 에러메시지, 아니면 인증번호 보내기
                     onButtonClick={onCheckUserEmailClickHandler}
                     isButtonActive={userEmailValid}
+                    readOnly={userEmailReadOnlyActive}
                 />
                 {userEmailChecked && (
                     <SignUpInputBox
@@ -406,6 +446,7 @@ export default function SignUp({ setActiveTab }: Props) {
                         buttonName="인증하기"
                         onButtonClick={onCheckUserEmailVCClickHandler}
                         isButtonActive={userEmailVCValid}
+                        readOnly={userEmailReadOnlyActive}
                     />
                 )}
                 <SignUpInputBox
