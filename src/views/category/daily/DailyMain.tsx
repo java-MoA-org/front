@@ -1,8 +1,8 @@
 import React from 'react'
-import './Daily.css';
+import './DailyMain.css';
 
 // component: 일상 게시판 컴포넌트 //
-export default function Daily() {
+export default function DailyMain() {
 
   // component: 일상 게시판 컴포넌트 렌더링 //
   return (
