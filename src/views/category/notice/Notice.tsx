@@ -1,9 +1,47 @@
-// src/pages/category/notice/Notice.tsx
-import './Notice.css'
-import { useState } from 'react'
+import './Notice.css';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import {
+  NOTICE_VIEW_ABSOLUTE_PATH,
+  NOTICE_WRITE_ABSOLUTE_PATH,
+} from '../../../constants';
+
+interface NoticeItem {
+  notificationSequence: number;
+  title: string;
+  creationDate: string;
+  views: number;
+}
 
 const Notice = () => {
-  const [activeTab, setActiveTab] = useState<'설명' | '공지사항'>('설명')
+  const [activeTab, setActiveTab] = useState<'설명' | '공지사항'>('설명');
+  const [noticeList, setNoticeList] = useState<NoticeItem[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [page, setPage] = useState<number>(0);
+  const navigate = useNavigate();
+
+  // 유저 권한 체크
+  useEffect(() => {
+    const role = localStorage.getItem('userRole');
+    if (role === 'ADMIN') setIsAdmin(true);
+  }, []);
+
+  // 공지사항 리스트 가져오기
+  useEffect(() => {
+    if (activeTab === '공지사항') {
+      axios
+        .get(`/api/v1/notice/list?page=${page}`)
+        .then((res) => {
+          const { data } = res;
+          console.log('✅ 공지사항 리스트:', data);
+          setNoticeList(data.data);
+        })
+        .catch((err) => {
+          console.error('❌ 공지사항 목록 조회 실패:', err);
+        });
+    }
+  }, [activeTab, page]);
 
   return (
     <div className="notice-wrapper">
@@ -24,39 +62,92 @@ const Notice = () => {
           </h2>
         </div>
 
-        {/* 설명 영역 */}
+        {/* ✏️ 공지 작성 버튼 (관리자 전용) */}
+        {activeTab === '공지사항' && isAdmin && (
+          <div className="notice-write-button-wrapper">
+            <button
+              className="notice-write-button"
+              onClick={() => navigate(NOTICE_WRITE_ABSOLUTE_PATH)}
+            >
+              ✏️ 공지 작성
+            </button>
+          </div>
+        )}
+
+        {/* 📌 설명 영역 */}
         {activeTab === '설명' && (
           <div className="notice-content post-card">
             <p>이곳은 사이트 이용 방법이나 주요 안내사항을 알려주는 공간입니다.</p>
             <ul>
               <li>회원가입은 이메일 또는 SNS 계정으로 가능합니다.</li>
-              <li>게시판은 자유롭게 의견을 공유하는 공간입니다.</li>
-              <li>게시판은 익명으로 운영되며, 표현의 자유는 존중하지만 타인의 인격이나 권리를 침해하는 행위는 금지됩니다. </li>
-              <li>게시판은 익명으로 자유롭게 의견을 나누는 공간입니다. 다만, 타인을 비방하거나 모욕하는 글은 제재 대상이 될 수 있습니다.</li>
-              <li>일상 카테고리는 여러분의 하루를 기록하고 나누는 공간입니다. 사진 한 장, 짧은 글 한 줄도 가능합니다. </li>
-              <li>중고거래 시 안전에 유의해주세요.</li>
+              <li>게시판은 익명으로 운영되며 자유롭게 의견을 나눌 수 있습니다.</li>
+              <li>중고거래는 반드시 유저 정보를 확인 후 이용해주세요.</li>
             </ul>
           </div>
         )}
 
-        {/* 공지사항 영역 */}
+        {/* 🔍 검색 */}
+        {activeTab === '공지사항' && (
+          <div className="board-search">
+            <select className="board-search-select">
+              <option>제목</option>
+            </select>
+            <input
+              type="text"
+              placeholder="검색어를 입력해주세요."
+              className="board-search-input"
+              disabled
+            />
+            <button className="board-search-button" disabled>
+              검색
+            </button>
+          </div>
+        )}
+
+        {/* 📋 공지사항 리스트 */}
         {activeTab === '공지사항' && (
           <section className="notice-list">
-            {[1, 2, 3, 4].map((item) => (
-              <div className="post-card" key={item}>
-                <div className="post-title">[공지] 서비스 점검 안내 {item}</div>
-                <div className="post-info">
-                  <span>운영자</span>
-                  <span>📢</span>
-                  <span>2025.04.07</span>
+            {noticeList.length === 0 ? (
+              <div>📭 등록된 공지사항이 없습니다.</div>
+            ) : (
+              noticeList.map((item) => (
+                <div
+                  className="post-card notice-item"
+                  key={item.notificationSequence}
+                  onClick={() =>
+                    navigate(NOTICE_VIEW_ABSOLUTE_PATH(item.notificationSequence))
+                  }
+                >
+                  <div className="post-title">[공지] {item.title}</div>
+                  <div className="post-info">
+                    <span>운영자</span>
+                    <span>📢</span>
+                    <span>{item.creationDate.slice(0, 10)}</span>
+                    <span>조회수: {item.views}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </section>
+        )}
+
+        {/* 📄 페이지네이션 */}
+        {activeTab === '공지사항' && (
+          <div className="board-pagination">
+            <button className="board-page-btn" onClick={() => setPage((prev) => Math.max(prev - 1, 0))}>
+              &lt; 이전
+            </button>
+            <button className="board-page-btn" disabled>
+              {page + 1}
+            </button>
+            <button className="board-page-btn" onClick={() => setPage((prev) => prev + 1)}>
+              다음 &gt;
+            </button>
+          </div>
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Notice
+export default Notice;

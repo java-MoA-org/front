@@ -3,8 +3,6 @@ import Home from "./views/home/Home";
 import Marquee from "./components/marquee/Marquee";
 import Header from "./components/header/";
 import AuthPage from "./views/auth/AuthPage";
-import Notice from "./views/category/notice/Notice";
-// import Message from './pages/message/Message'
 
 import Board from "./views/category/board/Board";
 import BoardWrite from "./views/category/board/BoardWrite/BoardWrite";
@@ -20,6 +18,11 @@ import UsedTrade from "./views/category/trade/UsedTrade";
 import UsedTradeWrite from "./views/category/trade/UsedTradeWrite/UsedTradeWrite";
 import UsedTradeView from "./views/category/trade/UsedTradeView/UsedTradeView";
 import UsedTradeUpdate from "./views/category/trade/UsedTradeUpdate/UsedTradeUpdate";
+
+import Notice from "./views/category/notice/Notice";
+import NoticeWrite from "./views/category/notice/NoticeWrite/NoticeWrite";
+import NoticeView from "./views/category/notice/NoticeView/NoticeView";
+import NoticeUpdate from "./views/category/notice/NoticeUpdate/NoticeUpdate";
 
 import {
   MY_USER_BOARD_PATH,
@@ -37,7 +40,11 @@ import {
   USED_TRADE_PATH,
   USED_TRADE_WRITE_PATH,
   USED_TRADE_VIEW_PATH,
-  USED_TRADE_UPDATE_PATH
+  USED_TRADE_UPDATE_PATH,
+  NOTICE_PATH,
+  NOTICE_WRITE_PATH,
+  NOTICE_VIEW_PATH,
+  NOTICE_UPDATE_PATH
 } from "./constants";
 
 import MyUserPage from "./views/UserPage";
@@ -76,13 +83,18 @@ function App() {
           <Route path={USED_TRADE_UPDATE_PATH} element={<UsedTradeUpdate />} />
         </Route>
 
-        <Route path="/notice" element={<Notice />} />
+        <Route path={NOTICE_PATH}>
+          <Route index element={<Notice />} />
+          <Route path={NOTICE_WRITE_PATH} element={<NoticeWrite />} /> 
+          <Route path={NOTICE_VIEW_PATH} element={<NoticeView />} />
+          <Route path={`${NOTICE_VIEW_PATH}/${NOTICE_UPDATE_PATH}`} element={<NoticeUpdate />} />
+        </Route>
+
         <Route path={MY_USER_PATH}>
           <Route path=":nickname" element={<UserPageContainer />} />
           <Route path=":nickname/follow" element={<UserPageFollow />} />
           <Route path=":nickname/board" element={<UserBoard />} />
         </Route>
-        {/* <Route path="/message" element={<Message />} /> */}
       </Routes>
       <Footer />
     </BrowserRouter>
