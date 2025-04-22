@@ -3,13 +3,14 @@ import './index.css'; // 스타일은 아래에!
 import axios from 'axios';
 import camera from '../../assets/images/camera.png';
 import { userProfileImageUpload } from '../../apis';
-
+// ✅ 변경: Props에 initialImage 추가
 interface Props {
-    onImageUpload: (url: string) => void; // 업로드된 URL을 SignUp에 넘겨줌
+    onImageUpload: (url: string) => void;
+    initialImage?: string;
 }
-export default function ProfileImageUploader({ onImageUpload }: Props) {
-    const [preview, setPreview] = useState(camera);
 
+export default function ProfileImageUploader({ onImageUpload, initialImage }: Props) {
+    const [preview, setPreview] = useState(initialImage || camera); // ✅ 초기 이미지 반영
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -20,8 +21,8 @@ export default function ProfileImageUploader({ onImageUpload }: Props) {
         formData.append('file', file);
 
         try {
-            const res = await userProfileImageUpload(formData); // ✅ await 추가
-            const imageUrl = res.data; // ✅ 서버에서 URL만 string으로 내려오면 res 자체가 string일 수도 있음
+            const res = await userProfileImageUpload(formData);
+            const imageUrl = res.data;
             setPreview(imageUrl);
             onImageUpload(imageUrl);
         } catch (error) {

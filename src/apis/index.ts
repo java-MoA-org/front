@@ -22,6 +22,7 @@ import { GetUsedTradeListResponseDto, GetUsedTradeResponseDto } from './dto/resp
 import GetUserPageResponseDto from './dto/response/userpage/get-user-page.response.dto';
 import UserEmailVerifyRequestDto from './dto/request/auth/user-email-verify.request.dto';
 import UserPhoneNumberVerifyRequestDto from './dto/request/auth/user-phone-number-verify.request.dto';
+import { ACCESS_TOKEN } from '../constants';
 
 const API_DOMAIN = process.env.REACT_APP_API_DOMAIN;
 
@@ -37,6 +38,8 @@ const PHONE_NUMBER_VERIFY_URL = `${AUTH_MODULE_URL}/phone/verify`;
 
 const SIGN_UP_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_URL = `${AUTH_MODULE_URL}/sign-in`;
+export const SNS_SIGN_IN_URL = (sns: 'kakao' | 'naver') => `${AUTH_MODULE_URL}/sns/${sns}`;
+const SIGN_OUT_URL = `${AUTH_MODULE_URL}/sign-out`;
 
 const BOARD_MODULE_URL = `${API_DOMAIN}/api/v1/board`;
 
@@ -157,8 +160,12 @@ export const userSignInRequest = async (requestBody: UserSignInRequestDto) => {
     return responseBody;
 };
 
-export const userProfileImageUpload = async (requeestBody: FormData) => {
-    const url = await axios.post(PROFILE_IMAGE_UPLOAD_URL, requeestBody, { withCredentials: true });
+export const userSignOutRequest = async (accessToken: string) => {
+    await axios.post(SIGN_OUT_URL, bearerAuthorization(accessToken));
+};
+
+export const userProfileImageUpload = async (requestBody: FormData) => {
+    const url = await axios.post(PROFILE_IMAGE_UPLOAD_URL, requestBody, { withCredentials: true });
     return url;
 };
 

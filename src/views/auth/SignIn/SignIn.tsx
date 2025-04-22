@@ -4,7 +4,7 @@ import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 import { ROOT_PATH } from '../../../constants';
 
 import UserSignInRequestDto from '../../../apis/dto/request/auth/user-sign-in.request.dto';
-import { userSignInRequest } from '../../../apis';
+import { SNS_SIGN_IN_URL, userSignInRequest } from '../../../apis';
 import ResponseDto from '../../../apis/dto/response/response.dto';
 import UserSignInResponseDto from '../../../apis/dto/response/auth/user-sign-in.response.dto';
 
@@ -22,11 +22,11 @@ export default function SignIn({ setActiveTab }: Props) {
     const [signInHint, setSignInHint] = useState<string>('');
 
     const handleKakaoLogin = () => {
-        window.location.href = 'https://kauth.kakao.com/oauth/authorize?...';
+        window.location.href = SNS_SIGN_IN_URL('kakao');
     };
 
     const handleNaverLogin = () => {
-        alert('네이버 로그인 연동 예정');
+        window.location.href = SNS_SIGN_IN_URL('naver');
     };
 
     const handleUserIdChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -119,7 +119,7 @@ export default function SignIn({ setActiveTab }: Props) {
                 <div className="login-sns">SNS 로그인</div>
                 <div className="login-sns-buttons-container">
                     <div className="login-kakao button" onClick={handleKakaoLogin}></div>
-                    <div className="login-google button"></div>
+                    <div className="login-naver button" onClick={handleNaverLogin}></div>
                 </div>
             </div>
         </div>
