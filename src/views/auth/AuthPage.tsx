@@ -30,6 +30,7 @@ export default function AuthPage() {
     const onPageChangeHandler = (page: AuthPages) => {
         setPage(page);
     };
+
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
         const joinType = localStorage.getItem('joinType');

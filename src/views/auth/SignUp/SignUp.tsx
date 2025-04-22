@@ -355,19 +355,6 @@ export default function SignUp({ setActiveTab }: Props) {
             alert(message);
             return;
         }
-        const cookieKeys = [
-            'userId',
-            'userPassword',
-            'userNickname',
-            'userEmail',
-            'userPhoneNumber',
-            'profileImage',
-            'joinType',
-        ] as const;
-
-        type CookieKey = (typeof cookieKeys)[number];
-
-        cookieKeys.forEach((key: CookieKey) => removeCookie(key, { path: '/' }));
 
         navigator(ROOT_PATH);
     };
