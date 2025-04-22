@@ -13,6 +13,7 @@ const Header = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [timeLeft, setTimeLeft] = useState(30 * 60);
 
+  // session timer
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -26,6 +27,7 @@ const Header = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -65,20 +67,36 @@ const Header = () => {
                   <img
                     src={userImg}
                     className="dropdown-profile-img"
-                    onClick={() => navigate("/mypage")}
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      navigate("/mypage");
+                    }}
                     alt="드롭다운 프로필"
                   />
                   <img
                     src={cameraIcon}
                     className="camera-icon"
-                    onClick={() => navigate("/mypage")}
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      navigate("/mypage");
+                    }}
                     alt="카메라 변경 아이콘"
                   />
                 </div>
                 <div className="dropdown-info">
-                  <strong>LYS</strong>님<p className="dropdown-email">sella45@naver.com</p>
-                  <button onClick={() => navigate("/mypage")}>마이페이지</button>
-                  <button onClick={() => alert("로그아웃 기능 구현 예정")}>로그아웃</button>
+                  <strong>LYS</strong>님
+                  <p className="dropdown-email">sella45@naver.com</p>
+                  <button
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      navigate("/mypage");
+                    }}
+                  >
+                    마이페이지
+                  </button>
+                  <button onClick={() => alert("로그아웃 기능 구현 예정")}>
+                    로그아웃
+                  </button>
                 </div>
               </div>
             )}

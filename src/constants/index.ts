@@ -16,6 +16,10 @@ export const USED_TRADE_PATH = "usedtrade";
 export const USED_TRADE_WRITE_PATH = "write";
 export const USED_TRADE_VIEW_PATH = ":usedTradeSequence";
 export const USED_TRADE_UPDATE_PATH = "update";
+export const NOTICE_PATH = "notice";
+export const NOTICE_WRITE_PATH = "write";
+export const NOTICE_VIEW_PATH = ":noticeId";
+export const NOTICE_UPDATE_PATH = "update";
 
 // variable: 절대 path 상수 //
 export const ROOT_ABSOULTE_PATH = ROOT_PATH;
@@ -65,3 +69,11 @@ export const USED_TRADE_UPDATE_ABSOLUTE_PATH = (usedTradeSequence: number | stri
 
 // variable: access token 속성명 //
 export const ACCESS_TOKEN = "accessToken";
+
+// 공지사항 
+export const NOTICE_ABSOLUTE_PATH = `${ROOT_PATH}${NOTICE_PATH}`;
+export const NOTICE_WRITE_ABSOLUTE_PATH = `${NOTICE_ABSOLUTE_PATH}/${NOTICE_WRITE_PATH}`;
+export const NOTICE_VIEW_ABSOLUTE_PATH = (id: number | string) =>
+  `${NOTICE_ABSOLUTE_PATH}/${id}`;
+export const NOTICE_UPDATE_ABSOLUTE_PATH = (id: number | string) =>
+  `${NOTICE_ABSOLUTE_PATH}/${id}/${NOTICE_UPDATE_PATH}`;
