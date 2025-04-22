@@ -27,8 +27,8 @@
 /* 상단 게시글 정보 */
 #board-view-wrapper .bulletin-info-container {
   padding: 20px 0px;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #BBBFCA;
+  border-bottom: 1px solid #BBBFCA;
   margin-bottom: 20px;
 }
 
@@ -115,7 +115,7 @@
   box-sizing: border-box;
   padding: 0px 10px;
   font-size: 16px;
-  color: #333;
+  color: #000000;
 }
 
 #board-view-wrapper .bulletin-content img {
@@ -142,7 +142,7 @@
 
 /* 댓글 영역 */
 #board-view-wrapper .bulletin-comment-container {
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #BBBFCA;
   padding-top: 24px;
 }
 
@@ -156,7 +156,7 @@
 #board-view-wrapper .comment-write-content {
   flex: 1;
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #BBBFCA;
   border-radius: 8px;
   margin-right: 12px;
   font-size: 14px;
@@ -178,7 +178,7 @@
   margin-bottom: 16px;
   border-radius: 12px;
   padding: 10px;
-  border: 1px solid #aaa;
+  border: 1px solid #BBBFCA;
 }
 
 #board-view-wrapper .comment .default-user-image {

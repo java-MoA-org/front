@@ -17,7 +17,7 @@
   font-weight: 600;
   margin-bottom: 24px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #dcdcdc;
+  border-bottom: 1px solid #BBBFCA;
 }
 
 #board-write-wrapper .contents-container {
@@ -36,28 +36,28 @@
   flex-wrap: wrap;
   gap: 12px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #dcdcdc;
+  border-bottom: 1px solid #BBBFCA;
 }
 
 #board-write-wrapper .content {
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
-  border: 1px solid #dcdcdc;
-  color: #7f8c8d;
-  background-color: #f9f9f9;
+  border: 1px solid #8EACCD;
+  color: white;
+  background-color: #8EACCD;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 #board-write-wrapper .content:hover {
-  background-color: #eee;
+  background-color: #007BBD;
 }
 
 #board-write-wrapper .content.active {
   color: #ffffff;
-  background-color: #8EACCD;
-  border: 1px solid #8EACCD;
+  background-color: #007BBD;
+  border: 1px solid #007BBD;
 }
 
 #board-write-wrapper .input-column-box {
@@ -73,7 +73,7 @@
 
 #board-write-wrapper .input-column-box input[type='text'] {
   padding: 10px 14px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid #BBBFCA;
   border-radius: 8px;
   font-size: 14px;
 }
@@ -93,7 +93,7 @@
 }
 
 #board-write-wrapper .button.middle.primary {
-  background-color: #00A8FF;
+  background-color: #8EACCD;
   color: white;
   cursor: pointer;
 }
@@ -103,7 +103,7 @@
 }
 
 #board-write-wrapper .button.middle.disable {
-  background-color: #ccc;
+  background-color: #BBBFCA;
   color: white;
   cursor: not-allowed;
 }

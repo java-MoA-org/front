@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import moaHeaderLogo from "../../assets/images/moa_main_logo.png";
 import userImg from "../../assets/images/ex-user1.png";
 import cameraIcon from "../../assets/images/camera.png";
-import { BOARD_ABSOLUTE_PATH, BOARD_PATH, DAILY_ABSOLUTE_PATH, DAILY_PATH, USED_TRADE_ABSOLUTE_PATH, USED_TRADE_PATH } from "../../constants";
+import { BOARD_ABSOLUTE_PATH, BOARD_WRITE_ABSOLUTE_PATH, DAILY_ABSOLUTE_PATH, DAILY_WRITE_ABSOLUTE_PATH, USED_TRADE_ABSOLUTE_PATH, USED_TRADE_WRITE_ABSOLUTE_PATH } from "../../constants";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -128,28 +128,20 @@ const Header = () => {
                   <h4>{menu}</h4>
                   {menu === "게시판" && (
                     <>
-                      <p onClick={() => navigate("/board")}>게임게시판</p>
-                      <p onClick={() => navigate("/board")}>여행게시판</p>
-                      <p onClick={() => navigate("/board")}>운동게시판</p>
-                      <p onClick={() => navigate("/board")}>음악게시판</p>
-                      <p onClick={() => navigate("/board")}>경제게시판</p>
-                      <p onClick={() => navigate("/board")}>패션게시판</p>
-                      <p onClick={() => navigate("/board")}>음식게시판</p>
-                      <p onClick={() => navigate("/board")}>자유게시판</p>
+                      <p onClick={() => navigate(BOARD_WRITE_ABSOLUTE_PATH)}>게시글 작성</p>
+                      <p onClick={() => navigate("/board")}>내 게시글 보기</p>
                     </>
                   )}
                   {menu === "일상" && (
                     <>
-                      <p onClick={() => navigate("/daily")}>일상게시판</p>
-                      <p onClick={() => navigate("/daily")}>일상글 작성</p>
+                      <p onClick={() => navigate(DAILY_WRITE_ABSOLUTE_PATH)}>일상글 작성</p>
                       <p onClick={() => navigate("/daily")}>내 일상글 보기</p>
                     </>
                   )}
                   {menu === "중고거래" && (
                     <>
-                      <p onClick={() => navigate("/trade")}>판매글</p>
-                      <p onClick={() => navigate("/trade")}>판매글 작성</p>
-                      <p onClick={() => navigate("/trade")}>거래완료</p>
+                      <p onClick={() => navigate(USED_TRADE_WRITE_ABSOLUTE_PATH)}>판매글 작성</p>
+                      <p onClick={() => navigate("/trade")}>내 판매글 관리</p>
                     </>
                   )}
                   {menu === "공지사항" && (
