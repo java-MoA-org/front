@@ -7,4 +7,5 @@ export default interface GetUserPageResponseDto extends ResponseDto {
   dailyBoards: Daily[];
   tradeBoards: Trade[];
   interests: UserInterest;
+  userIntroduce: string;
 }
