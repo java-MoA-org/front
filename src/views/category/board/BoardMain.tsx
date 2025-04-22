@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import './BoardMain.css';
 import { Board } from '../../../types/interfaces';
-import { ACCESS_TOKEN, BOARD_VIEW_ABSOLUTE_PATH, BOARD_WRITE_ABSOLUTE_PATH, BOARD_ABSOLUTE_PATH, GET_BOARD_LIST_URL } from '../../../constants';
+import { ACCESS_TOKEN, BOARD_VIEW_ABSOLUTE_PATH, BOARD_WRITE_ABSOLUTE_PATH, GET_BOARD_LIST_ABSOLUTE_PATH } from '../../../constants';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { GetBoardListResponseDto } from '../../../apis/dto/response/board';
@@ -69,15 +69,24 @@ function TableItem({ board }: TableItemProps) {
 
 // component: 게시판 컴포넌트 //
 export default function BoardMain() {
+  // state: 쿠키 상태 //
   const [cookies] = useCookies();
+
+  // state: 현재 위치(주소) 정보 //
   const location = useLocation();
+
+  // function: 네비게이션 함수 //
   const navigate = useNavigate();
 
-  // 쿼리 파라미터에서 값을 가져오기
+  // state: 쿼리 파라미터에서 값을 가져오기 //
   const queryParams = new URLSearchParams(location.search);
+  // state: 쿼리 파라미터에서 정렬 기준을 가져오기, 없으면 'LATEST'로 기본값 설정 //
   const sort = queryParams.get('sort') || 'LATEST';
+  // state: 쿼리 파라미터에서 카테고리 태그를 가져오기, 없으면 'ALL'로 기본값 설정 //
   const tag = queryParams.get('tag') || 'ALL';
+  // state: 쿼리 파라미터에서 페이지 번호를 가져오기, 없으면 1로 기본값 설정 //
   const page = parseInt(queryParams.get('page') || '1', 10);
+
 
   // 페이지네이션 상태
   const {
@@ -116,21 +125,13 @@ export default function BoardMain() {
 
   // event handler: 카테고리 탭 클릭 이벤트 처리 //
   const onCategoryClick = (category: string) => {
-    // GET_BOARD_LIST_URL 사용하여 URL 생성
-    const url = GET_BOARD_LIST_URL(category, 1, sort);
-    navigate(url);
-  };
-
-  // event handler: 페이지 변경 시 처리 //
-  const onPageChange = (page: number) => {
-    setCurrentPage(page);
-    const url = GET_BOARD_LIST_URL(tag, page, sort);
-    navigate(url);
+    navigate(GET_BOARD_LIST_ABSOLUTE_PATH(category));
+    getBoardListRequest(category, 1, sort, accessToken).then(getBoardListResponse);
   };
 
   // effect: 컴포넌트 로드시 실행할 함수 //
   useEffect(() => {
-    console.log(GET_BOARD_LIST_URL('ALL', 1, 'LATEST'));
+    console.log(GET_BOARD_LIST_ABSOLUTE_PATH('ALL'));
     getBoardListRequest(tag, page, sort, accessToken)
       .then(getBoardListResponse);
   }, [tag, page, sort, accessToken]);
