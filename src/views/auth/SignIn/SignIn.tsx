@@ -126,7 +126,7 @@ export default function SignIn({ setActiveTab }: Props) {
                 <div className="login-sns">SNS 로그인</div>
                 <div className="login-sns-buttons-container">
                     <div className="login-kakao button" onClick={handleKakaoLogin}></div>
-                    <div className="login-google button"></div>
+                    <div className="login-naver button" onClick={handleNaverLogin}></div>
                 </div>
             </div>
         </div>

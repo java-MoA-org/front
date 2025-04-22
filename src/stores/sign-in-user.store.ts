@@ -2,11 +2,11 @@ import { create } from 'zustand';
 
 interface SignInUserState {
     userId: string;
-    name: string;
+    userNickname: string;
     profileImage: string | null;
 
     setUserId: (userId: string) => void;
-    setName: (name: string) => void;
+    setUserNickname: (name: string) => void;
     setProfileImage: (profileImage: string | null) => void;
 
     resetUser: () => void;
@@ -14,14 +14,14 @@ interface SignInUserState {
 
 const useSignInUserStore = create<SignInUserState>((set) => ({
     userId: '',
-    name: '',
+    userNickname: '',
     profileImage: null,
 
     setUserId: (userId) => set({ userId }),
-    setName: (name) => set({ name }),
+    setUserNickname: (userNickname) => set({ userNickname }),
     setProfileImage: (profileImage) => set({ profileImage }),
 
-    resetUser: () => set({ userId: '', name: '', profileImage: null }),
+    resetUser: () => set({ userId: '', userNickname: '', profileImage: null }),
 }));
 
 export default useSignInUserStore;

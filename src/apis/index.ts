@@ -23,6 +23,7 @@ import GetUserPageResponseDto from './dto/response/userpage/get-user-page.respon
 import UserEmailVerifyRequestDto from './dto/request/auth/user-email-verify.request.dto';
 import UserPhoneNumberVerifyRequestDto from './dto/request/auth/user-phone-number-verify.request.dto';
 import { ACCESS_TOKEN } from '../constants';
+import GetUserInfoResponseDto from './dto/response/user/get-user-info.response.dto';
 
 const API_DOMAIN = process.env.REACT_APP_API_DOMAIN;
 
@@ -40,6 +41,10 @@ const SIGN_UP_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_URL = `${AUTH_MODULE_URL}/sign-in`;
 export const SNS_SIGN_IN_URL = (sns: 'kakao' | 'naver') => `${AUTH_MODULE_URL}/sns/${sns}`;
 const SIGN_OUT_URL = `${AUTH_MODULE_URL}/sign-out`;
+
+const USER_MODULE_URL = `${API_DOMAIN}/api/v1/user`;
+
+const GET_USER_INFO_URL = `${USER_MODULE_URL}/info`;
 
 const BOARD_MODULE_URL = `${API_DOMAIN}/api/v1/board`;
 
@@ -167,6 +172,14 @@ export const userSignOutRequest = async (accessToken: string) => {
 export const userProfileImageUpload = async (requestBody: FormData) => {
     const url = await axios.post(PROFILE_IMAGE_UPLOAD_URL, requestBody, { withCredentials: true });
     return url;
+};
+
+export const getUserInfoRequest = async (accessToken: string) => {
+    const responseBody = await axios
+        .get(GET_USER_INFO_URL, bearerAuthorization(accessToken))
+        .then(responseSuccessHandler<GetUserInfoResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 };
 
 // function: user page API 요청 함수 //

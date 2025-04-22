@@ -12,6 +12,7 @@ import {
     DAILY_ABSOLUTE_PATH,
     DAILY_PATH,
     DAILY_WRITE_ABSOLUTE_PATH,
+    REFRESH_TOKEN,
     ROOT_PATH,
     USED_TRADE_ABSOLUTE_PATH,
     USED_TRADE_PATH,
@@ -33,11 +34,12 @@ const Header = () => {
     const { resetUser } = useSignInUserStore();
 
     const accessToken = cookies[ACCESS_TOKEN];
+    const refreshToken = cookies[REFRESH_TOKEN];
 
     const onSignOutClickHandler = () => {
         userSignOutRequest(accessToken);
         removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
-        removeCookie('refreshToken', { path: ROOT_PATH, httpOnly: true });
+        removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
         resetUser();
     };
 
@@ -121,7 +123,7 @@ const Header = () => {
                                     >
                                         마이페이지
                                     </button>
-                                    <button onClick={() => alert('로그아웃 기능 구현 예정')}>로그아웃</button>
+                                    <button onClick={onSignOutClickHandler}>로그아웃</button>
                                 </div>
                             </div>
                         )}
