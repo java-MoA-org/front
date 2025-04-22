@@ -3,12 +3,12 @@ import { BoardTagType } from "../enums/BoardTagType";
 export default interface Board {
   boardSequence: number;
   title: string;
-  views: number;
-  likeCount: number;
+  content: string;
   creationDate: string;
   tag: BoardTagType;
-  content: string;
-  userNickname: string;
-  images: string[];
+  views: number;
+  writerId: string;
+  likeCount: number;
   commentCount: number;
+  images: string[];
 }

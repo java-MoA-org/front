@@ -47,6 +47,9 @@ export const BOARD_VIEW_ABSOLUTE_PATH = (boardSequence: number | string) =>
 export const BOARD_UPDATE_ABSOLUTE_PATH = (boardSequence: number | string) =>
   `${ROOT_PATH}${BOARD_PATH}/${boardSequence}/${BOARD_UPDATE_PATH}`;
 
+export const GET_BOARD_LIST_URL = (tag: string, page: number, sort: string = 'LATEST') =>
+  `${BOARD_ABSOLUTE_PATH}/${tag}/${page}?sortOption=${sort}`;
+
 export const DAILY_ABSOLUTE_PATH = `${ROOT_PATH}${DAILY_PATH}`;
 
 export const DAILY_WRITE_ABSOLUTE_PATH = `${ROOT_PATH}${DAILY_PATH}/${DAILY_WRITE_PATH}`;
