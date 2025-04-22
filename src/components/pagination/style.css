@@ -14,11 +14,11 @@
 }
 
 .pagination-box .pagination-button.left {
-  background-image: url(src/assets/images/page-left.png);
+  background-image: url(/src/assets/images/page-left.png);
 }
 
 .pagination-box .pagination-button.right {
-  background-image: url(src/assets/images/page-right.png);
+  background-image: url(/src/assets/images/page-right.png);
 }
 
 .pagination-box .pagination {

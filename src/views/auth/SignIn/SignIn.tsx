@@ -29,15 +29,16 @@ export default function SignIn({ setActiveTab }: Props) {
         window.location.href = SNS_SIGN_IN_URL('naver');
     };
 
+    // 입력 핸들러
     const handleUserIdChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { value } = e.target;
-        setUserId(value);
-    };
-    const handleUserPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { value } = e.target;
-        setUserPassword(value);
+        setUserId(e.target.value);
     };
 
+    const handleUserPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setUserPassword(e.target.value);
+    };
+
+    // 서버 응답 처리
     const userSignInResponse = (responseBody: ResponseDto | UserSignInResponseDto | null) => {
         const message = !responseBody
             ? '서버에 문제가 있습니다'
@@ -47,16 +48,20 @@ export default function SignIn({ setActiveTab }: Props) {
             ? '로그인 정보가 일치하지 않습니다.'
             : '';
         const isSuccess = responseBody !== null && responseBody.code === 'SU';
+
         if (!isSuccess) {
             setSignInHint(message);
             return;
         }
 
-        const { accessToken, expiration } = responseBody as UserSignInResponseDto;
+        const { accessToken, expiration, userRole } = responseBody as UserSignInResponseDto;
+        localStorage.setItem('userRole', userRole); // ✅ "ADMIN" 또는 "USER"
         const expires = new Date(Date.now() + expiration * 1000);
 
+        // 토큰 + 권한 저장
         localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('accessTokenExpiresAt', (Date.now() + expiration * 1000).toString());
+        localStorage.setItem('accessTokenExpiresAt', expires.getTime().toString());
+        localStorage.setItem('userRole', userRole); // 관리자 여부 판단용
 
         navigate('/');
     };
@@ -65,15 +70,17 @@ export default function SignIn({ setActiveTab }: Props) {
         navigate(ROOT_PATH);
     };
 
+    // 로그인 요청
     const onSignInClickHandler = () => {
-        if (userId == '') {
+        if (userId.trim() === '') {
             setSignInHint('아이디를 입력해주세요');
             return;
         }
-        if (userPassword == '') {
+        if (userPassword.trim() === '') {
             setSignInHint('비밀번호를 입력해주세요');
             return;
         }
+
         const requestBody: UserSignInRequestDto = { userId, userPassword };
         userSignInRequest(requestBody).then(userSignInResponse);
     };
@@ -119,7 +126,7 @@ export default function SignIn({ setActiveTab }: Props) {
                 <div className="login-sns">SNS 로그인</div>
                 <div className="login-sns-buttons-container">
                     <div className="login-kakao button" onClick={handleKakaoLogin}></div>
-                    <div className="login-naver button" onClick={handleNaverLogin}></div>
+                    <div className="login-google button"></div>
                 </div>
             </div>
         </div>

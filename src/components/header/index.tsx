@@ -8,11 +8,14 @@ import {
     ACCESS_TOKEN,
     BOARD_ABSOLUTE_PATH,
     BOARD_PATH,
+    BOARD_WRITE_ABSOLUTE_PATH,
     DAILY_ABSOLUTE_PATH,
     DAILY_PATH,
+    DAILY_WRITE_ABSOLUTE_PATH,
     ROOT_PATH,
     USED_TRADE_ABSOLUTE_PATH,
     USED_TRADE_PATH,
+    USED_TRADE_WRITE_ABSOLUTE_PATH,
 } from '../../constants';
 import { Cookies, useCookies } from 'react-cookie';
 import useSignInUserStore from '../../stores/sign-in-user.store';
@@ -38,6 +41,7 @@ const Header = () => {
         resetUser();
     };
 
+    // session timer
     useEffect(() => {
         const timer = setInterval(() => {
             setTimeLeft((prev) => {
@@ -51,6 +55,7 @@ const Header = () => {
         return () => clearInterval(timer);
     }, []);
 
+    // click outside to close dropdown
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -90,20 +95,33 @@ const Header = () => {
                                     <img
                                         src={userImg}
                                         className="dropdown-profile-img"
-                                        onClick={() => navigate('/mypage')}
+                                        onClick={() => {
+                                            setDropdownOpen(false);
+                                            navigate('/mypage');
+                                        }}
                                         alt="드롭다운 프로필"
                                     />
                                     <img
                                         src={cameraIcon}
                                         className="camera-icon"
-                                        onClick={() => navigate('/mypage')}
+                                        onClick={() => {
+                                            setDropdownOpen(false);
+                                            navigate('/mypage');
+                                        }}
                                         alt="카메라 변경 아이콘"
                                     />
                                 </div>
                                 <div className="dropdown-info">
                                     <strong>LYS</strong>님<p className="dropdown-email">sella45@naver.com</p>
-                                    <button onClick={() => navigate('/mypage')}>마이페이지</button>
-                                    <button onClick={onSignOutClickHandler}>로그아웃</button>
+                                    <button
+                                        onClick={() => {
+                                            setDropdownOpen(false);
+                                            navigate('/mypage');
+                                        }}
+                                    >
+                                        마이페이지
+                                    </button>
+                                    <button onClick={() => alert('로그아웃 기능 구현 예정')}>로그아웃</button>
                                 </div>
                             </div>
                         )}
@@ -135,28 +153,20 @@ const Header = () => {
                                     <h4>{menu}</h4>
                                     {menu === '게시판' && (
                                         <>
-                                            <p onClick={() => navigate('/board')}>게임게시판</p>
-                                            <p onClick={() => navigate('/board')}>여행게시판</p>
-                                            <p onClick={() => navigate('/board')}>운동게시판</p>
-                                            <p onClick={() => navigate('/board')}>음악게시판</p>
-                                            <p onClick={() => navigate('/board')}>경제게시판</p>
-                                            <p onClick={() => navigate('/board')}>패션게시판</p>
-                                            <p onClick={() => navigate('/board')}>음식게시판</p>
-                                            <p onClick={() => navigate('/board')}>자유게시판</p>
+                                            <p onClick={() => navigate(BOARD_WRITE_ABSOLUTE_PATH)}>게시글 작성</p>
+                                            <p onClick={() => navigate('/board')}>내 게시글 보기</p>
                                         </>
                                     )}
                                     {menu === '일상' && (
                                         <>
-                                            <p onClick={() => navigate('/daily')}>일상게시판</p>
-                                            <p onClick={() => navigate('/daily')}>일상글 작성</p>
+                                            <p onClick={() => navigate(DAILY_WRITE_ABSOLUTE_PATH)}>일상글 작성</p>
                                             <p onClick={() => navigate('/daily')}>내 일상글 보기</p>
                                         </>
                                     )}
                                     {menu === '중고거래' && (
                                         <>
-                                            <p onClick={() => navigate('/trade')}>판매글</p>
-                                            <p onClick={() => navigate('/trade')}>판매글 작성</p>
-                                            <p onClick={() => navigate('/trade')}>거래완료</p>
+                                            <p onClick={() => navigate(USED_TRADE_WRITE_ABSOLUTE_PATH)}>판매글 작성</p>
+                                            <p onClick={() => navigate('/trade')}>내 판매글 관리</p>
                                         </>
                                     )}
                                     {menu === '공지사항' && (

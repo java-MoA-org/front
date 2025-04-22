@@ -169,6 +169,7 @@ export const userProfileImageUpload = async (requestBody: FormData) => {
     return url;
 };
 
+// function: user page API 요청 함수 //
 export const getUserPageRequest = async (nickname: string) => {
     const url = GET_USER_PAGE_URL(nickname);
     const responseBody = await axios

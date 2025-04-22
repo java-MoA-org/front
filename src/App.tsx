@@ -3,8 +3,6 @@ import Home from "./views/home/Home";
 import Marquee from "./components/marquee/Marquee";
 import Header from "./components/header/";
 import AuthPage from "./views/auth/AuthPage";
-import Notice from "./views/category/notice/Notice";
-// import Message from './pages/message/Message'
 
 import BoardMain from "./views/category/board/BoardMain";
 import BoardWrite from "./views/category/board/BoardWrite/BoardWrite";
@@ -20,6 +18,11 @@ import UsedTradeMain from "./views/category/trade/UsedTradeMain";
 import UsedTradeWrite from "./views/category/trade/UsedTradeWrite/UsedTradeWrite";
 import UsedTradeView from "./views/category/trade/UsedTradeView/UsedTradeView";
 import UsedTradeUpdate from "./views/category/trade/UsedTradeUpdate/UsedTradeUpdate";
+
+import Notice from "./views/category/notice/Notice";
+import NoticeWrite from "./views/category/notice/NoticeWrite/NoticeWrite";
+import NoticeView from "./views/category/notice/NoticeView/NoticeView";
+import NoticeUpdate from "./views/category/notice/NoticeUpdate/NoticeUpdate";
 
 import {
   MY_USER_BOARD_PATH,
@@ -37,7 +40,11 @@ import {
   USED_TRADE_PATH,
   USED_TRADE_WRITE_PATH,
   USED_TRADE_VIEW_PATH,
-  USED_TRADE_UPDATE_PATH
+  USED_TRADE_UPDATE_PATH,
+  NOTICE_PATH,
+  NOTICE_WRITE_PATH,
+  NOTICE_VIEW_PATH,
+  NOTICE_UPDATE_PATH
 } from "./constants";
 
 import MyUserPage from "./views/UserPage";
@@ -45,11 +52,14 @@ import UserPageFollow from "./views/UserPage/UserPageFollow";
 import UserBoard from "./views/UserPage/UserBoard";
 import Footer from "./components/footer";
 import UserPageContainer from "./views/UserPage/UserPageContainer";
+import UserPageUpdate from "./views/UserPage/UserPageUpdate";
 import { CookiesProvider } from "react-cookie";
 
 function App() {
   return (
-    <CookiesProvider>  {/* CookiesProvider로 애플리케이션 감싸기 */}
+    <CookiesProvider>
+      {" "}
+      {/* CookiesProvider로 애플리케이션 감싸기 */}
       <BrowserRouter>
         <Marquee />
         <Header />
@@ -82,8 +92,10 @@ function App() {
           <Route path={MY_USER_PATH}>
             <Route path=":nickname" element={<UserPageContainer />} />
             <Route path=":nickname/follow" element={<UserPageFollow />} />
-            <Route path=":nickname/board" element={<UserBoard />} />
+            <Route path=":nickname/user-board" element={<UserBoard />} />
+            {/* <Route path=":nickname/user-update" element={<UserPageUpdate />} /> */}
           </Route>
+          <Route path="/user-update" element={<UserPageUpdate />} />
           {/* <Route path="/message" element={<Message />} /> */}
         </Routes>
         <Footer />

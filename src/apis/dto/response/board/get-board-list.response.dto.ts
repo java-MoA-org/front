@@ -18,4 +18,5 @@ export interface BoardSummaryResponseDto {
   writerId: string;
   likeCount: number;
   commentCount: number;
+  images: string[];
 }
