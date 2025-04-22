@@ -62,3 +62,6 @@ export const USED_TRADE_VIEW_ABSOLUTE_PATH = (usedTradeSequence: number | string
 
 export const USED_TRADE_UPDATE_ABSOLUTE_PATH = (usedTradeSequence: number | string) =>
   `${ROOT_PATH}${USED_TRADE_PATH}/${usedTradeSequence}/${USED_TRADE_UPDATE_PATH}`;
+
+// variable: access token 속성명 //
+export const ACCESS_TOKEN = "accessToken";

@@ -1,0 +1,120 @@
+#board-main-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 32px 0;
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f9f9f9;
+} 
+
+/* 카테고리 탭 */
+#board-main-wrapper .board-tag-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+#board-main-wrapper .board-tab {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: #f9f9f9;
+  color: #555;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#board-main-wrapper .board-tab:hover {
+  background-color: #e0e0e0;
+}
+
+/* 검색 바 */
+#board-main-wrapper .board-search-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+#board-main-wrapper .board-search-select,
+#board-main-wrapper .board-search-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+#board-main-wrapper .board-search-input {
+  width:800px;
+}
+
+#board-main-wrapper .board-search-button {
+  padding: 10px 16px;
+  background-color: #8EACCD;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* 작성 버튼 + 정렬 */
+#board-main-wrapper .board-item-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+#board-main-wrapper .board-write-button {
+  padding: 10px 20px;
+  background-color: #8EACCD;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#board-main-wrapper .board-order-list {
+  font-size: 14px;
+  color: #888;
+}
+
+/* 사이드바 */
+#board-main-wrapper .board-sidebar {
+  width: 280px;
+  background-color: white;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  padding: 20px;
+  height: fit-content;
+}
+
+#board-main-wrapper .board-sidebar-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+#board-main-wrapper .board-sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#board-main-wrapper .board-sidebar-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eaeaea;
+  font-size: 14px;
+  color: #444;
+}
+
+#board-main-wrapper .board-sidebar-item:last-child {
+  border-bottom: none;
+}
