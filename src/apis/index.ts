@@ -45,7 +45,7 @@ const BOARD_MODULE_URL = `${API_DOMAIN}/api/v1/board`;
 
 const POST_BOARD_URL = BOARD_MODULE_URL;
 const GET_BOARD_LIST_URL = (tag: string, page: number, sort = 'LATEST') =>
-    `${BOARD_MODULE_URL}/list/${tag}/${page}?sortOption=${sort}`;
+    `${BOARD_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
 const GET_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
 const PATCH_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
 const DELETE_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
@@ -63,7 +63,7 @@ const DAILY_MODULE_URL = `${API_DOMAIN}/api/v1/daily`;
 
 const POST_DAILY_URL = DAILY_MODULE_URL;
 const GET_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
-const GET_DAILY_LIST_URL = (page: number, sort = 'LATEST') => `${DAILY_MODULE_URL}/list/${page}?sortOption=${sort}`;
+const GET_DAILY_LIST_URL = (page: number, sort = 'LATEST') => `${DAILY_MODULE_URL}/${page}?sortOption=${sort}`;
 const PATCH_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
 const DELETE_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
 
@@ -79,7 +79,7 @@ const USED_TRADE_MODULE_URL = `${API_DOMAIN}/api/v1/used-trade`;
 const POST_USED_TRADE_URL = USED_TRADE_MODULE_URL;
 const GET_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
 const GET_USED_TRADE_LIST_URL = (tag: string, page: number, sort = 'LATEST') =>
-    `${USED_TRADE_MODULE_URL}/list/${tag}/${page}?sortOption=${sort}`;
+    `${USED_TRADE_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
 const PATCH_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
 const DELETE_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
 const SEARCH_USED_TRADE_LIST_URL = (tag: string, keyword: string, page: number) =>
