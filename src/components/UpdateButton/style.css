@@ -1,0 +1,22 @@
+.update-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 6px;
+  width: 92px;
+  height: 44px;
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 175%;
+  cursor: pointer;
+
+  background-color: rgba(69, 69, 69, 1);
+  color: rgba(223, 223, 223, 1);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.update-button:hover {
+  opacity: 0.7;
+}

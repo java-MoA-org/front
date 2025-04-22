@@ -45,6 +45,7 @@ import UserPageFollow from "./views/UserPage/UserPageFollow";
 import UserBoard from "./views/UserPage/UserBoard";
 import Footer from "./components/footer";
 import UserPageContainer from "./views/UserPage/UserPageContainer";
+import UserPageUpdate from "./views/UserPage/UserPageUpdate";
 
 function App() {
   return (
@@ -80,8 +81,10 @@ function App() {
         <Route path={MY_USER_PATH}>
           <Route path=":nickname" element={<UserPageContainer />} />
           <Route path=":nickname/follow" element={<UserPageFollow />} />
-          <Route path=":nickname/board" element={<UserBoard />} />
+          <Route path=":nickname/user-board" element={<UserBoard />} />
+          {/* <Route path=":nickname/user-update" element={<UserPageUpdate />} /> */}
         </Route>
+        <Route path="/user-update" element={<UserPageUpdate />} />
         {/* <Route path="/message" element={<Message />} /> */}
       </Routes>
       <Footer />

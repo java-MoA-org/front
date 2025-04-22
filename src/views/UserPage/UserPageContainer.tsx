@@ -14,6 +14,7 @@ export default function UserPageContainer() {
   const [dailys, setDailys] = useState<Daily[]>([]);
   const [trades, setTrades] = useState<Trade[]>([]);
   const [interests, setInterest] = useState<UserInterest>();
+  const [userIntroduce, setUserIntroduce] = useState<string>("");
 
   useEffect(() => {
     if (!nickname) return;
@@ -27,6 +28,7 @@ export default function UserPageContainer() {
         setDailys(response.dailyBoards);
         setTrades(response.tradeBoards);
         setInterest(response.interests);
+        setUserIntroduce(response.userIntroduce);
       }
     };
 
@@ -35,5 +37,13 @@ export default function UserPageContainer() {
 
   if (!interests) return null;
 
-  return <MyUserPage boards={boards} dailys={dailys} trades={trades} interests={interests} />;
+  return (
+    <MyUserPage
+      boards={boards}
+      dailys={dailys}
+      trades={trades}
+      interests={interests}
+      userIntroduce={userIntroduce}
+    />
+  );
 }

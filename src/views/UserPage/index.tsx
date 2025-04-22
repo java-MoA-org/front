@@ -5,6 +5,7 @@ import { MY_USER_BOARD_ABSOLUTE_PATH, MY_USER_FOLLOW_ABSOLUTE_PATH } from "../..
 import FollowButton from "../../components/FollowButton";
 import { Board, Daily, Trade } from "../../types/interfaces";
 import UserInterest from "../../types/interfaces/user-interest.interface";
+import UpdateButton from "../../components/UpdateButton";
 
 // interface: 게시판, 일상, 중고거래 레코드 컴포넌트 속성 //
 interface MyUserPageProps {
@@ -12,9 +13,16 @@ interface MyUserPageProps {
   dailys: Daily[];
   trades: Trade[];
   interests: UserInterest;
+  userIntroduce: string;
 }
 
-export default function MyUserPage({ boards, dailys, trades, interests }: MyUserPageProps) {
+export default function MyUserPage({
+  boards,
+  dailys,
+  trades,
+  interests,
+  userIntroduce
+}: MyUserPageProps) {
   const { nickname } = useParams(); // ✅ URL에서 :nickname 추출
 
   const activeInterests = Object.entries(interests)
@@ -59,6 +67,7 @@ export default function MyUserPage({ boards, dailys, trades, interests }: MyUser
               <div className="profile-line">
                 <div>프로필</div>
                 <FollowButton />
+                <UpdateButton />
               </div>
               <div className="profile-image">
                 <img src={userImage} alt="User" className="profile-img" />
@@ -73,10 +82,7 @@ export default function MyUserPage({ boards, dailys, trades, interests }: MyUser
                   <div className="number">0</div>
                 </div>
               </div>
-              <div className="self-introdction-container">
-                반갑습니다반갑습니다반갑습니다반갑습니다반갑습니다반갑습니다
-                반갑습니다반갑습니다반갑습니다반갑습니다
-              </div>
+              <div className="self-introdction-container">{userIntroduce}</div>
               <div className="self-interest-container">
                 <div className="interest">관심사 |</div>
                 {activeInterests.map((interest, index) => (
