@@ -15,7 +15,11 @@ interface NoticeItem {
 }
 
 const Notice = () => {
-  const [activeTab, setActiveTab] = useState<'설명' | '공지사항'>('설명');
+  // localStorage에서 탭 상태 불러오기
+  const [activeTab, setActiveTab] = useState<'설명' | '공지사항'>(() => {
+    return (localStorage.getItem('noticeTab') as '설명' | '공지사항') || '설명';
+  });
+
   const [noticeList, setNoticeList] = useState<NoticeItem[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [page, setPage] = useState<number>(0);
@@ -27,7 +31,7 @@ const Notice = () => {
     if (role === 'ADMIN') setIsAdmin(true);
   }, []);
 
-  // 공지사항 리스트 가져오기
+  // 공지사항 목록 가져오기
   useEffect(() => {
     if (activeTab === '공지사항') {
       axios
@@ -43,6 +47,12 @@ const Notice = () => {
     }
   }, [activeTab, page]);
 
+  // 탭 클릭 핸들러
+  const handleTabClick = (tab: '설명' | '공지사항') => {
+    setActiveTab(tab);
+    localStorage.setItem('noticeTab', tab); // 상태 기억
+  };
+
   return (
     <div className="notice-wrapper">
       <div className="notice-container">
@@ -50,19 +60,19 @@ const Notice = () => {
         <div className="notice-tabs">
           <h2
             className={`section-title ${activeTab === '설명' ? 'active' : ''}`}
-            onClick={() => setActiveTab('설명')}
+            onClick={() => handleTabClick('설명')}
           >
             설명
           </h2>
           <h2
             className={`section-title ${activeTab === '공지사항' ? 'active' : ''}`}
-            onClick={() => setActiveTab('공지사항')}
+            onClick={() => handleTabClick('공지사항')}
           >
             공지사항
           </h2>
         </div>
 
-        {/* ✏️ 공지 작성 버튼 (관리자 전용) */}
+        {/* ✏️ 공지 작성 버튼 */}
         {activeTab === '공지사항' && isAdmin && (
           <div className="notice-write-button-wrapper">
             <button
@@ -86,7 +96,7 @@ const Notice = () => {
           </div>
         )}
 
-        {/* 🔍 검색 */}
+        {/* 🔍 검색 영역 */}
         {activeTab === '공지사항' && (
           <div className="board-search">
             <select className="board-search-select">
@@ -122,7 +132,7 @@ const Notice = () => {
                   <div className="post-info">
                     <span>운영자</span>
                     <span>📢</span>
-                    <span>{item.creationDate.slice(0, 10)}</span>
+                    <span>{item.creationDate.replace('T', ' ').slice(0, 16)}</span>
                     <span>조회수: {item.views}</span>
                   </div>
                 </div>
@@ -134,13 +144,19 @@ const Notice = () => {
         {/* 📄 페이지네이션 */}
         {activeTab === '공지사항' && (
           <div className="board-pagination">
-            <button className="board-page-btn" onClick={() => setPage((prev) => Math.max(prev - 1, 0))}>
+            <button
+              className="board-page-btn"
+              onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
+            >
               &lt; 이전
             </button>
             <button className="board-page-btn" disabled>
               {page + 1}
             </button>
-            <button className="board-page-btn" onClick={() => setPage((prev) => prev + 1)}>
+            <button
+              className="board-page-btn"
+              onClick={() => setPage((prev) => prev + 1)}
+            >
               다음 &gt;
             </button>
           </div>
