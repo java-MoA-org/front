@@ -89,6 +89,14 @@ function App() {
           </Route>
 
           <Route path="/notice" element={<Notice />} />
+            <Route path={NOTICE_PATH}>
+            <Route index element={<Notice />} />
+            <Route path={NOTICE_WRITE_PATH} element={<NoticeWrite />} /> 
+            <Route path={NOTICE_VIEW_PATH} element={<NoticeView />} />
+            <Route path={`${NOTICE_VIEW_PATH}/${NOTICE_UPDATE_PATH}`} element={<NoticeUpdate />} />
+        </Route>
+
+
           <Route path={MY_USER_PATH}>
             <Route path=":nickname" element={<UserPageContainer />} />
             <Route path=":nickname/follow" element={<UserPageFollow />} />

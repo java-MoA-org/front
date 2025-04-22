@@ -1,11 +1,12 @@
 import './NoticeWrite.css';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 import { NOTICE_ABSOLUTE_PATH } from '../../../../constants';
+import { postNoticeRequest } from '../../../../apis';
+import { PostNoticeRequestDto } from '../../../../apis/dto/request/notice';
 
 const NoticeWrite = () => {
   const [title, setTitle] = useState('');
@@ -21,7 +22,7 @@ const NoticeWrite = () => {
     }
   }, []);
 
-  // function: 공지 등록 요청 //
+  // 공지 등록 처리
   const handleSubmit = async () => {
     if (!title || !content) {
       alert('제목과 내용을 모두 입력해주세요.');
@@ -34,16 +35,10 @@ const NoticeWrite = () => {
       return;
     }
 
+    const requestBody: PostNoticeRequestDto = { title, content };
+
     try {
-      await axios.post(
-        '/api/v1/notice',
-        { title, content },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      await postNoticeRequest(requestBody, accessToken);
       alert('공지 등록 완료');
       navigate(NOTICE_ABSOLUTE_PATH);
     } catch (e) {

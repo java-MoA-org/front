@@ -1,3 +1,4 @@
+/* 전체 래퍼 */
 .notice-update-wrapper {
     display: flex;
     justify-content: center;
@@ -5,6 +6,7 @@
     background-color: #f9f9f9;
   }
   
+  /* 콘텐츠 박스 */
   .notice-update-container {
     width: 100%;
     max-width: 800px;
@@ -14,11 +16,13 @@
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   }
   
+  /* 제목 텍스트 */
   .notice-update-title {
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
   }
   
+  /* 제목 입력 필드 */
   .notice-update-title-input {
     width: 100%;
     font-size: 1.2rem;
@@ -28,15 +32,18 @@
     border-radius: 6px;
   }
   
+  /* ReactQuill 에디터 영역 */
   .notice-update-editor {
     height: 300px;
     margin-bottom: 1.5rem;
   }
   
+  /* 버튼 영역 정렬 */
   .notice-update-button-wrapper {
     text-align: right;
   }
   
+  /* 수정 완료 버튼 */
   .notice-update-button {
     background-color: #1877f2;
     color: white;
@@ -45,6 +52,7 @@
     font-size: 1rem;
     border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
   }
   
   .notice-update-button:hover {

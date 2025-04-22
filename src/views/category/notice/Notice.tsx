@@ -1,62 +1,55 @@
 import './Notice.css';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getNoticeListRequest } from '../../../apis';
 import {
   NOTICE_VIEW_ABSOLUTE_PATH,
   NOTICE_WRITE_ABSOLUTE_PATH,
 } from '../../../constants';
 
-interface NoticeItem {
-  notificationSequence: number;
-  title: string;
-  creationDate: string;
-  views: number;
-}
+import { NoticeItem } from '../../../types/interfaces/notice.interface';
 
 const Notice = () => {
-  // localStorage에서 탭 상태 불러오기
-  const [activeTab, setActiveTab] = useState<'설명' | '공지사항'>(() => {
-    return (localStorage.getItem('noticeTab') as '설명' | '공지사항') || '설명';
-  });
+  const [activeTab, setActiveTab] = useState<'설명' | '공지사항'>(
+    () => (localStorage.getItem('noticeTab') as '설명' | '공지사항') || '설명'
+  );
 
   const [noticeList, setNoticeList] = useState<NoticeItem[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [page, setPage] = useState<number>(0);
   const navigate = useNavigate();
 
-  // 유저 권한 체크
+  // effect: 관리자 권한 확인
   useEffect(() => {
     const role = localStorage.getItem('userRole');
     if (role === 'ADMIN') setIsAdmin(true);
   }, []);
 
-  // 공지사항 목록 가져오기
+  // effect: 공지사항 목록 요청
   useEffect(() => {
     if (activeTab === '공지사항') {
-      axios
-        .get(`/api/v1/notice/list?page=${page}`)
+      getNoticeListRequest()
         .then((res) => {
-          const { data } = res;
-          console.log('✅ 공지사항 리스트:', data);
-          setNoticeList(data.data);
+          if (res && 'data' in res) {
+            setNoticeList(res.data as NoticeItem[]);
+          } else {
+            console.warn('공지사항 응답 구조 이상:', res);
+          }
         })
         .catch((err) => {
-          console.error('❌ 공지사항 목록 조회 실패:', err);
+          console.error('공지사항 목록 조회 실패:', err);
         });
     }
-  }, [activeTab, page]);
-
-  // 탭 클릭 핸들러
+  }, [activeTab]);
   const handleTabClick = (tab: '설명' | '공지사항') => {
     setActiveTab(tab);
-    localStorage.setItem('noticeTab', tab); // 상태 기억
+    localStorage.setItem('noticeTab', tab);
   };
 
   return (
     <div className="notice-wrapper">
       <div className="notice-container">
-        {/* 🔹 탭 메뉴 */}
+        {/* 탭 메뉴 */}
         <div className="notice-tabs">
           <h2
             className={`section-title ${activeTab === '설명' ? 'active' : ''}`}
@@ -72,7 +65,7 @@ const Notice = () => {
           </h2>
         </div>
 
-        {/* ✏️ 공지 작성 버튼 */}
+        {/* 공지 작성 버튼 */}
         {activeTab === '공지사항' && isAdmin && (
           <div className="notice-write-button-wrapper">
             <button
@@ -84,7 +77,7 @@ const Notice = () => {
           </div>
         )}
 
-        {/* 📌 설명 영역 */}
+        {/* 설명 탭 */}
         {activeTab === '설명' && (
           <div className="notice-content post-card">
             <p>이곳은 사이트 이용 방법이나 주요 안내사항을 알려주는 공간입니다.</p>
@@ -96,25 +89,22 @@ const Notice = () => {
           </div>
         )}
 
-        {/* 🔍 검색 영역 */}
+        {/* 검색바 (추후 구현용) */}
         {activeTab === '공지사항' && (
-          <div className="board-search">
-            <select className="board-search-select">
+          <div className="notice-search-bar">
+            <select className="notice-search-select">
               <option>제목</option>
             </select>
             <input
               type="text"
               placeholder="검색어를 입력해주세요."
-              className="board-search-input"
-              disabled
+              className="notice-search-input"
             />
-            <button className="board-search-button" disabled>
-              검색
-            </button>
+            <button className="notice-search-button">검색</button>
           </div>
         )}
 
-        {/* 📋 공지사항 리스트 */}
+        {/* 공지사항 리스트 */}
         {activeTab === '공지사항' && (
           <section className="notice-list">
             {noticeList.length === 0 ? (
@@ -141,7 +131,7 @@ const Notice = () => {
           </section>
         )}
 
-        {/* 📄 페이지네이션 */}
+        {/* 페이지네이션 */}
         {activeTab === '공지사항' && (
           <div className="board-pagination">
             <button
