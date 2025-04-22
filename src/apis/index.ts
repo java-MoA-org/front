@@ -230,12 +230,7 @@ export const getBoardRequest = async (boardSequence: number | string, accessToke
 };
 
 // function: get board list API 요청 함수 //
-export const getBoardListRequest = async (
-  tag: string,
-  page: number,
-  sort: string = "LATEST",
-  accessToken: string
-) => {
+export const getBoardListRequest = async (tag: string, page: number, sort: string = "LATEST", accessToken: string) => {
   const responseBody = await axios
     .get(GET_BOARD_LIST_URL(tag, page, sort), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetBoardListResponseDto>)
