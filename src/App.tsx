@@ -4,7 +4,7 @@ import Marquee from "./components/marquee/Marquee";
 import Header from "./components/header/";
 import AuthPage from "./views/auth/AuthPage";
 
-import Board from "./views/category/board/BoardMain";
+import BoardMain from "./views/category/board/BoardMain";
 import BoardWrite from "./views/category/board/BoardWrite/BoardWrite";
 import BoardView from "./views/category/board/BoardView/BoardView";
 import BoardUpdate from "./views/category/board/BoardUpdate/BoardUpdate";
@@ -52,53 +52,55 @@ import UserPageFollow from "./views/UserPage/UserPageFollow";
 import UserBoard from "./views/UserPage/UserBoard";
 import Footer from "./components/footer";
 import UserPageContainer from "./views/UserPage/UserPageContainer";
+import UserPageUpdate from "./views/UserPage/UserPageUpdate";
+import { CookiesProvider } from "react-cookie";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Marquee />
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/auth" element={<AuthPage />} />
+    <CookiesProvider>
+      {" "}
+      {/* CookiesProvider로 애플리케이션 감싸기 */}
+      <BrowserRouter>
+        <Marquee />
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/auth" element={<AuthPage />} />
 
-        <Route path={BOARD_PATH}>
-          <Route index element={<Board />} />
-          <Route path={BOARD_WRITE_PATH} element={<BoardWrite />} />
-          <Route path={BOARD_VIEW_PATH} element={<BoardView />} />
-          <Route path={BOARD_UPDATE_PATH} element={<BoardUpdate />} />
-        </Route>
+          <Route path={BOARD_PATH}>
+            <Route index element={<BoardMain />} />
+            <Route path={BOARD_WRITE_PATH} element={<BoardWrite />} />
+            <Route path={BOARD_VIEW_PATH} element={<BoardView />} />
+            <Route path={BOARD_UPDATE_PATH} element={<BoardUpdate />} />
+          </Route>
 
-        <Route path={DAILY_PATH}>
-          <Route index element={<DailyMain />} />
-          <Route path={DAILY_WRITE_PATH} element={<DailyWrite />} />
-          <Route path={DAILY_VIEW_PATH} element={<DailyView />} />
-          <Route path={DAILY_UPDATE_PATH} element={<DailyUpdate />} />
-        </Route>
+          <Route path={DAILY_PATH}>
+            <Route index element={<DailyMain />} />
+            <Route path={DAILY_WRITE_PATH} element={<DailyWrite />} />
+            <Route path={DAILY_VIEW_PATH} element={<DailyView />} />
+            <Route path={DAILY_UPDATE_PATH} element={<DailyUpdate />} />
+          </Route>
 
-        <Route path={USED_TRADE_PATH}>
-          <Route index element={<UsedTradeMain />} />
-          <Route path={USED_TRADE_WRITE_PATH} element={<UsedTradeWrite />} />
-          <Route path={USED_TRADE_VIEW_PATH} element={<UsedTradeView />} />
-          <Route path={USED_TRADE_UPDATE_PATH} element={<UsedTradeUpdate />} />
-        </Route>
+          <Route path={USED_TRADE_PATH}>
+            <Route index element={<UsedTradeMain />} />
+            <Route path={USED_TRADE_WRITE_PATH} element={<UsedTradeWrite />} />
+            <Route path={USED_TRADE_VIEW_PATH} element={<UsedTradeView />} />
+            <Route path={USED_TRADE_UPDATE_PATH} element={<UsedTradeUpdate />} />
+          </Route>
 
-        <Route path={NOTICE_PATH}>
-          <Route index element={<Notice />} />
-          <Route path={NOTICE_WRITE_PATH} element={<NoticeWrite />} /> 
-          <Route path={NOTICE_VIEW_PATH} element={<NoticeView />} />
-          <Route path={`${NOTICE_VIEW_PATH}/${NOTICE_UPDATE_PATH}`} element={<NoticeUpdate />} />
-        </Route>
-
-        <Route path={MY_USER_PATH}>
-          <Route path=":nickname" element={<UserPageContainer />} />
-          <Route path=":nickname/follow" element={<UserPageFollow />} />
-          <Route path=":nickname/board" element={<UserBoard />} />
-        </Route>
-        
-      </Routes>
-      <Footer />
-    </BrowserRouter>
+          <Route path="/notice" element={<Notice />} />
+          <Route path={MY_USER_PATH}>
+            <Route path=":nickname" element={<UserPageContainer />} />
+            <Route path=":nickname/follow" element={<UserPageFollow />} />
+            <Route path=":nickname/user-board" element={<UserBoard />} />
+            {/* <Route path=":nickname/user-update" element={<UserPageUpdate />} /> */}
+          </Route>
+          <Route path="/user-update" element={<UserPageUpdate />} />
+          {/* <Route path="/message" element={<Message />} /> */}
+        </Routes>
+        <Footer />
+      </BrowserRouter>
+    </CookiesProvider>
   );
 }
 
