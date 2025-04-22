@@ -25,6 +25,7 @@ import UserEmailVerifyRequestDto from '../../../apis/dto/request/auth/user-email
 import EmailVerifyResponseDto from '../../../apis/dto/response/auth/email-verify-response.dto';
 import UserPhoneNumberVerifyRequestDto from '../../../apis/dto/request/auth/user-phone-number-verify.request.dto';
 import VerifyResponseDto from '../../../apis/dto/response/auth/email-verify-response.dto';
+import { Cookies, useCookies } from 'react-cookie';
 
 interface Props {
     setActiveTab: Dispatch<SetStateAction<'signin' | 'signup'>>;
@@ -33,15 +34,29 @@ interface Props {
 export default function SignUp({ setActiveTab }: Props) {
     const navigator = useNavigate();
 
+    const [cookies, removeCookie] = useCookies([
+        'userId',
+        'userPassword',
+        'userNickname',
+        'userEmail',
+        'userPhoneNumber',
+        'profileImage',
+        'joinType',
+    ]);
+
+    const [joinType, setJoinType] = useState<'NORMAL' | 'KAKAO' | 'NAVER'>('NORMAL');
+
     const [userId, setUserId] = useState('');
     const [userIdMessage, setUserIdMessage] = useState<string>('');
     const [userIdMessageError, setUserIdMessageError] = useState<boolean>(false);
-    const [UserIdChecked, setUserIdChecked] = useState(false); // 확인 여부
+    const [userIdChecked, setUserIdChecked] = useState(false); // 확인 여부
     const isUserIdCheckButtonActive = /^[A-Za-z0-9]{4,12}$/.test(userId);
+    const [userIdReadOnlyActive, setUserIdReadOnlyActive] = useState(false);
 
     const [userPassword, setUserPassword] = useState('');
     const [userPasswordMessage, setUserPasswordMessage] = useState('');
     const [userPasswordValid, setUserPasswordValid] = useState(false);
+    const [userPasswordReadOnlyActive, setUserPasswordReadOnlyActive] = useState(false);
 
     const [confirmPassword, setConfirmPassword] = useState('');
     const [confirmPasswordValid, setConfirmPasswordValid] = useState(false);
@@ -52,7 +67,7 @@ export default function SignUp({ setActiveTab }: Props) {
     const [userNicknameMessage, setUserNicknameMessage] = useState<string>('');
     const [userNicknameMessageError, setUserNicknameMessageError] = useState<boolean>(false);
     const [userNicknameChecked, setUserNicknameChecked] = useState(false);
-    const isUserNicknameCheckButtonActive = /^[A-Za-z0-9]{2,8}$/.test(userNickname);
+    const isUserNicknameCheckButtonActive = /^[가-힣a-zA-Z0-9]{2,8}$/.test(userNickname);
 
     const [profileImage, setProfileImage] = useState<string>('');
 
@@ -340,6 +355,7 @@ export default function SignUp({ setActiveTab }: Props) {
             alert(message);
             return;
         }
+
         navigator(ROOT_PATH);
     };
 
@@ -394,14 +410,65 @@ export default function SignUp({ setActiveTab }: Props) {
 
     useEffect(() => {
         const canSubmit =
-            UserIdChecked &&
+            userIdChecked &&
             confirmPasswordChecked &&
             userNicknameChecked &&
             userEmailVerified &&
             userPhoneNumberVerified;
 
         setSignUpPossible(canSubmit);
-    }, [UserIdChecked, confirmPasswordChecked, userNicknameChecked, userEmailVerified, userPhoneNumberVerified]);
+    }, [userIdChecked, confirmPasswordChecked, userNicknameChecked, userEmailVerified, userPhoneNumberVerified]);
+
+    useEffect(() => {
+        const userIdFromCookie = cookies['userId'];
+        const userPasswordFromCookie = cookies['userPassword'];
+        const userNicknameFromCookie = cookies['userNickname'];
+        const userEmailFromCookie = cookies['userEmail'];
+        const userPhoneNumberFromCookie = cookies['userPhoneNumber'];
+        const profileImageFromCookie = cookies['profileImage'];
+        const joinTypeFromCookie = cookies['joinType'];
+
+        if (userIdFromCookie) {
+            setUserId(userIdFromCookie);
+            setUserIdChecked(true);
+            setUserIdReadOnlyActive(true);
+        }
+
+        if (userPasswordFromCookie) {
+            setUserPassword(userPasswordFromCookie);
+            setUserPasswordValid(true);
+            setConfirmPassword(userPasswordFromCookie);
+            setConfirmPasswordChecked(true);
+            setUserPasswordReadOnlyActive(true);
+        }
+
+        if (userNicknameFromCookie) {
+            setUserNickname(userNicknameFromCookie);
+            setUserNicknameChecked(true);
+        }
+
+        if (userEmailFromCookie) {
+            setUserEmail(userEmailFromCookie);
+            setUserEmailChecked(false);
+            setUserEmailVerified(true);
+            setUserEmailReadOnlyActive(true); // 수정 불가능하게
+        }
+
+        if (userPhoneNumberFromCookie) {
+            setUserPhoneNumber(userPhoneNumberFromCookie);
+            setUserPhoneNumberChecked(false);
+            setUserPhoneNumberVerified(true);
+            setUserPhoneNumberReadOnlyActive(true); // 수정 불가능하게
+        }
+
+        if (profileImageFromCookie) {
+            setProfileImage(profileImageFromCookie);
+        }
+
+        if (joinTypeFromCookie) {
+            setJoinType(joinTypeFromCookie); // 'KAKAO' 또는 'NAVER'
+        }
+    }, []);
 
     return (
         <div id="auth-signup-container">
@@ -419,6 +486,7 @@ export default function SignUp({ setActiveTab }: Props) {
                     isErrorMessage={userIdMessageError}
                     isButtonActive={isUserIdCheckButtonActive}
                     hint={'4자 이상 13자 미만 영문자 및 숫자로 구성'}
+                    readOnly={userIdReadOnlyActive}
                 />
                 <SignUpInputBox
                     label={'비밀번호'}
@@ -429,6 +497,7 @@ export default function SignUp({ setActiveTab }: Props) {
                     message={userPasswordMessage}
                     isErrorMessage={!userPasswordValid}
                     hint={'8자 이상 13자 미만 영문 및 숫자, 특수문자로 구성'}
+                    readOnly={userPasswordReadOnlyActive}
                 />
                 <SignUpInputBox
                     label={'비밀번호 확인'}
@@ -439,6 +508,7 @@ export default function SignUp({ setActiveTab }: Props) {
                     message={confirmPasswordMessage}
                     isErrorMessage={!confirmPasswordValid}
                     hint="같은 비밀번호를 입력하세요."
+                    readOnly={userPasswordReadOnlyActive}
                 />
                 <SignUpInputBox
                     label={'닉네임'}
@@ -453,7 +523,10 @@ export default function SignUp({ setActiveTab }: Props) {
                     isButtonActive={isUserNicknameCheckButtonActive}
                     hint="2자 이상 8자 이하, 특수문자를 포함할 수 없습니다."
                 />
-                <ProfileImageUploader onImageUpload={setProfileImage} />
+                <ProfileImageUploader
+                    onImageUpload={setProfileImage}
+                    initialImage={profileImage} // ✅ 여기!
+                />
 
                 <SignUpInputBox
                     label={'이메일'}
