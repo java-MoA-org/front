@@ -130,6 +130,7 @@ export default function BoardMain() {
 
   // effect: 컴포넌트 로드시 실행할 함수 //
   useEffect(() => {
+    console.log(GET_BOARD_LIST_URL('ALL', 1, 'LATEST'));
     getBoardListRequest(tag, page, sort, accessToken)
       .then(getBoardListResponse);
   }, [tag, page, sort, accessToken]);
