@@ -4,17 +4,17 @@ import Marquee from "./components/marquee/Marquee";
 import Header from "./components/header/";
 import AuthPage from "./views/auth/AuthPage";
 
-import Board from "./views/category/board/Board";
+import Board from "./views/category/board/BoardMain";
 import BoardWrite from "./views/category/board/BoardWrite/BoardWrite";
 import BoardView from "./views/category/board/BoardView/BoardView";
 import BoardUpdate from "./views/category/board/BoardUpdate/BoardUpdate";
 
-import Daily from "./views/category/daily/Daily";
+import DailyMain from "./views/category/daily/DailyMain";
 import DailyWrite from "./views/category/daily/DailyWrite/DailyWrite";
 import DailyView from "./views/category/daily/DailyView/DailyView";
 import DailyUpdate from "./views/category/daily/DailyUpdate/DailyUpdate";
 
-import UsedTrade from "./views/category/trade/UsedTrade";
+import UsedTradeMain from "./views/category/trade/UsedTradeMain";
 import UsedTradeWrite from "./views/category/trade/UsedTradeWrite/UsedTradeWrite";
 import UsedTradeView from "./views/category/trade/UsedTradeView/UsedTradeView";
 import UsedTradeUpdate from "./views/category/trade/UsedTradeUpdate/UsedTradeUpdate";
@@ -70,14 +70,14 @@ function App() {
         </Route>
 
         <Route path={DAILY_PATH}>
-          <Route index element={<Daily />} />
+          <Route index element={<DailyMain />} />
           <Route path={DAILY_WRITE_PATH} element={<DailyWrite />} />
           <Route path={DAILY_VIEW_PATH} element={<DailyView />} />
           <Route path={DAILY_UPDATE_PATH} element={<DailyUpdate />} />
         </Route>
 
         <Route path={USED_TRADE_PATH}>
-          <Route index element={<UsedTrade />} />
+          <Route index element={<UsedTradeMain />} />
           <Route path={USED_TRADE_WRITE_PATH} element={<UsedTradeWrite />} />
           <Route path={USED_TRADE_VIEW_PATH} element={<UsedTradeView />} />
           <Route path={USED_TRADE_UPDATE_PATH} element={<UsedTradeUpdate />} />
@@ -95,6 +95,7 @@ function App() {
           <Route path=":nickname/follow" element={<UserPageFollow />} />
           <Route path=":nickname/board" element={<UserBoard />} />
         </Route>
+        
       </Routes>
       <Footer />
     </BrowserRouter>
