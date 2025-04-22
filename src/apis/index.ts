@@ -2,6 +2,11 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import IdCheckRequestDto from './dto/request/auth/user-id-check.request.dto';
 import ResponseDto from './dto/response/response.dto';
 
+
+import PostNoticeRequestDto from './dto/request/notice/post-notice.request.dto';
+import PatchNoticeRequestDto from './dto/request/notice/patch-notice.request.dto';
+import GetNoticeListResponseDto from './dto/response/notice/get-notice-list.response.dto';
+import GetNoticeResponseDto from './dto/response/notice/get-notice.response.dto';
 import UserIdCheckRequestDto from './dto/request/auth/user-id-check.request.dto';
 import UserNicknameCheckRequestDto from './dto/request/auth/user-nickname-check.request.dto';
 import UserEmailCheckRequestDto from './dto/request/auth/user-email-check.request.dto';
@@ -92,6 +97,19 @@ const SEARCH_USED_TRADE_LIST_URL = (tag: string, keyword: string, page: number) 
 
 const TOGGLE_USED_TRADE_LIKE_URL = (tradeSequence: number | string) =>
     `${USED_TRADE_MODULE_URL}/${tradeSequence}/likes`;
+
+
+// notice API URL
+const NOTICE_MODULE_URL = `${API_DOMAIN}/api/v1/notice`;
+const POST_NOTICE_URL = NOTICE_MODULE_URL;
+const GET_NOTICE_LIST_URL = `${NOTICE_MODULE_URL}/list`;
+const GET_NOTICE_URL = (noticeId: number | string) => 
+  `${NOTICE_MODULE_URL}/${noticeId}`;
+const PATCH_NOTICE_URL = (noticeId: number | string) => 
+  `${NOTICE_MODULE_URL}/${noticeId}`;
+const DELETE_NOTICE_URL = (noticeId: number | string) => 
+  `${NOTICE_MODULE_URL}/${noticeId}`;
+
 
 const USER_PAGE_MODULE_URL = `${API_DOMAIN}/api/v1/user-page`;
 const GET_USER_PAGE_URL = (nickname: string) => `${USER_PAGE_MODULE_URL}/boards/${nickname}`;
@@ -472,3 +490,63 @@ export const toggleUsedTradeLikeRequest = async (tradeSequence: number | string,
         .catch(responseErrorHandler);
     return responseBody;
 };
+
+
+// function: post notice API 요청 함수
+export const postNoticeRequest = async (
+  requestBody: PostNoticeRequestDto,
+  accessToken: string
+) => {
+  const responseBody = await axios
+    .post(POST_NOTICE_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: get notice list API 요청 함수
+export const getNoticeListRequest = async () => {
+  const responseBody = await axios
+    .get(GET_NOTICE_LIST_URL)
+    .then(responseSuccessHandler<GetNoticeListResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: get notice API 요청 함수
+export const getNoticeRequest = async (
+  noticeId: number | string,
+  accessToken: string
+) => {
+  const responseBody = await axios
+    .get(GET_NOTICE_URL(noticeId), bearerAuthorization(accessToken))
+    .then(responseSuccessHandler<GetNoticeResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: patch notice API 요청 함수
+export const patchNoticeRequest = async (
+  noticeId: number | string,
+  requestBody: PatchNoticeRequestDto,
+  accessToken: string
+) => {
+  const responseBody = await axios
+    .patch(PATCH_NOTICE_URL(noticeId), requestBody, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: delete notice API 요청 함수
+export const deleteNoticeRequest = async (
+  noticeId: number | string,
+  accessToken: string
+) => {
+  const responseBody = await axios
+    .delete(DELETE_NOTICE_URL(noticeId), bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+

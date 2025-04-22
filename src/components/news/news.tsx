@@ -31,7 +31,7 @@ interface NewsItem {
   thumbnail: string;
 }
 
-// constant: 카테고리 정의 //
+// 카테고리 정의 //
 const categories = [
   { label: "정치", value: "politics" },
   { label: "경제", value: "economy" },

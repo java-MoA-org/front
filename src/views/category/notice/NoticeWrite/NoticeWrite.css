@@ -1,49 +1,54 @@
+/* wrapper: 전체 작성 페이지 래퍼 */
 .notice-write-wrapper {
-    display: flex;
-    justify-content: center;
-    padding: 2rem;
-    background-color: #f9f9f9;
-  }
-  
-  .notice-write-container {
-    width: 100%;
-    max-width: 800px;
-    background-color: white;
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .notice-write-title {
-    width: 100%;
-    font-size: 1.2rem;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  
-  .notice-write-editor {
-    height: 300px;
-    margin-bottom: 1.5rem;
-  }
-  
-  .notice-write-button-wrapper {
-    text-align: right;
-  }
-  
-  .notice-write-button {
-    background-color: #1877f2;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  
-  .notice-write-button:hover {
-    background-color: #125ecb;
-  }
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f9f9f9;
+}
 
-  
+/* container: 작성 폼 박스 */
+.notice-write-container {
+  width: 100%;
+  max-width: 800px;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* input: 제목 입력창 */
+.notice-write-title {
+  width: 100%;
+  font-size: 1.2rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* editor: 본문 에디터 */
+.notice-write-editor {
+  height: 300px;
+  margin-bottom: 1.5rem;
+}
+
+/* button-wrapper: 버튼 정렬 */
+.notice-write-button-wrapper {
+  text-align: right;
+}
+
+/* button: 등록 버튼 */
+.notice-write-button {
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.notice-write-button:hover {
+  background-color: #125ecb;
+}
