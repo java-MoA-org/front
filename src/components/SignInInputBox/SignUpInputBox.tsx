@@ -22,14 +22,14 @@ export default function SignUpInputBox(props: Props) {
         props;
     const { onChange, onButtonClick } = props;
 
-    const messageClass = `message ${isErrorMessage ? 'error' : 'success'}`;
-    const buttonClass = `button ${isButtonActive ? 'posible' : 'disable'}`;
+    const messageClass = `sign-up-message ${isErrorMessage ? 'error' : 'success'}`;
+    const buttonClass = `sign-up-button ${isButtonActive ? 'posible' : 'disable'}`;
 
     return (
-        <div className="input-box">
-            <div className="label">{label}</div>
-            <div className="input-contents">
-                <div className="input-area">
+        <div className="sign-up-input-box">
+            <div className="sign-up-label">{label}</div>
+            <div className="sign-up-input-contents">
+                <div className="sign-up-input-area">
                     <input
                         type={type}
                         value={value}
@@ -49,7 +49,7 @@ export default function SignUpInputBox(props: Props) {
                         </div>
                     )}
                 </div>
-                <div className="hint">{hint}</div>
+                <div className="sign-up-hint">{hint}</div>
                 <div className={messageClass}>{message}</div>
             </div>
         </div>

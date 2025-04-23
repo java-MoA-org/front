@@ -4,10 +4,12 @@ import SignUp from './SignUp/SignUp';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { ROOT_PATH } from '../../constants';
 import AuthPages from '../../types/aliases/auth-page.alias';
+import FindId from './FindId/FindId';
+import FindPassword from './FindPassword/FindPassword';
 
 export default function AuthPage() {
     const [searchParams] = useSearchParams();
-    const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
+    const [activeTab, setActiveTab] = useState<'signin' | 'signup' | 'findid' | 'findpassword'>('signin');
 
     useEffect(() => {
         const tab = searchParams.get('tab');
@@ -41,7 +43,10 @@ export default function AuthPage() {
 
     return (
         <div>
-            {activeTab === 'signin' ? <SignIn setActiveTab={setActiveTab} /> : <SignUp setActiveTab={setActiveTab} />}
+            {activeTab === 'signin' && <SignIn setActiveTab={setActiveTab} />}
+            {activeTab === 'signup' && <SignUp setActiveTab={setActiveTab} />}
+            {activeTab === 'findid' && <FindId setActiveTab={setActiveTab} />}
+            {activeTab === 'findpassword' && <FindPassword setActiveTab={setActiveTab} />}
         </div>
     );
 }

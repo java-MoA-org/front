@@ -40,7 +40,9 @@ const Header = () => {
         userSignOutRequest(accessToken);
         removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
         removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
+        localStorage.clear();
         resetUser();
+        window.location.reload();
     };
 
     // session timer
