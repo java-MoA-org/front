@@ -1,5 +1,5 @@
-import React from 'react';
-import './style.css';
+import React from "react";
+import "./style.css";
 
 // interface: 페이지네이션 컴포넌트 속성 //
 interface Props {
@@ -13,12 +13,16 @@ interface Props {
 
 // component: 페이지네이션 컴포넌트 //
 export default function Pagination({
-  currentPage, currentSection, totalSection, pageList,
-  setCurrentPage, setCurrentSection
+  currentPage,
+  currentSection,
+  totalSection,
+  pageList,
+  setCurrentPage,
+  setCurrentSection,
 }: Props) {
-
   // function: 페이지 클래스 //
-  const pageClass = (page: number) => currentPage === page ? 'page active' : 'page';
+  const pageClass = (page: number) =>
+    currentPage === page ? "page active" : "page";
 
   // event handler: 페이지 변경 이벤트 처리 //
   const onPageClickHandler = (page: number) => {
@@ -41,12 +45,26 @@ export default function Pagination({
 
   // render: 페이지네이션 컴포넌트 렌더링 //
   return (
-    <div className='pagination-box'>
-      <div className='pagination-button left' onClick={onPreSectionClickHandler}></div>
-      <div className='pagination'>
-        {pageList.map((page, index) => <div key={index} className={pageClass(page)} onClick={() => onPageClickHandler(page)}>{page}</div>)}
+    <div className="pagination-box">
+      <div
+        className="pagination-button left"
+        onClick={onPreSectionClickHandler}
+      ></div>
+      <div className="pagination">
+        {pageList.map((page, index) => (
+          <div
+            key={index}
+            className={pageClass(page)}
+            onClick={() => onPageClickHandler(page)}
+          >
+            {page}
+          </div>
+        ))}
       </div>
-      <div className='pagination-button right' onClick={onNextSectionClickHandler}></div>
+      <div
+        className="pagination-button right"
+        onClick={onNextSectionClickHandler}
+      ></div>
     </div>
-  )
+  );
 }

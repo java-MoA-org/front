@@ -44,7 +44,7 @@ import {
   NOTICE_PATH,
   NOTICE_WRITE_PATH,
   NOTICE_VIEW_PATH,
-  NOTICE_UPDATE_PATH
+  NOTICE_UPDATE_PATH,
 } from "./constants";
 
 import MyUserPage from "./views/UserPage";
@@ -54,8 +54,11 @@ import Footer from "./components/footer";
 import UserPageContainer from "./views/UserPage/UserPageContainer";
 import UserPageUpdate from "./views/UserPage/UserPageUpdate";
 import { CookiesProvider } from "react-cookie";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {}, []);
+
   return (
     <CookiesProvider>
       {" "}
@@ -85,23 +88,28 @@ function App() {
             <Route index element={<UsedTradeMain />} />
             <Route path={USED_TRADE_WRITE_PATH} element={<UsedTradeWrite />} />
             <Route path={USED_TRADE_VIEW_PATH} element={<UsedTradeView />} />
-            <Route path={USED_TRADE_UPDATE_PATH} element={<UsedTradeUpdate />} />
+            <Route
+              path={USED_TRADE_UPDATE_PATH}
+              element={<UsedTradeUpdate />}
+            />
           </Route>
 
           <Route path="/notice" element={<Notice />} />
-            <Route path={NOTICE_PATH}>
+          <Route path={NOTICE_PATH}>
             <Route index element={<Notice />} />
-            <Route path={NOTICE_WRITE_PATH} element={<NoticeWrite />} /> 
+            <Route path={NOTICE_WRITE_PATH} element={<NoticeWrite />} />
             <Route path={NOTICE_VIEW_PATH} element={<NoticeView />} />
-            <Route path={`${NOTICE_VIEW_PATH}/${NOTICE_UPDATE_PATH}`} element={<NoticeUpdate />} />
-        </Route>
-
+            <Route
+              path={`${NOTICE_VIEW_PATH}/${NOTICE_UPDATE_PATH}`}
+              element={<NoticeUpdate />}
+            />
+          </Route>
 
           <Route path={MY_USER_PATH}>
             <Route path=":nickname" element={<UserPageContainer />} />
             <Route path=":nickname/follow" element={<UserPageFollow />} />
             <Route path=":nickname/user-board" element={<UserBoard />} />
-            {/* <Route path=":nickname/user-update" element={<UserPageUpdate />} /> */}
+            <Route path=":nickname/user-update" element={<UserPageUpdate />} />
           </Route>
           <Route path="/user-update" element={<UserPageUpdate />} />
           {/* <Route path="/message" element={<Message />} /> */}

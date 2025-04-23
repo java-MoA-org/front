@@ -1,4 +1,4 @@
 export default interface PatchPasswordRequestDto {
-    userId: string;
-    userPassword: string;
+  userId: string;
+  userPassword: string;
 }

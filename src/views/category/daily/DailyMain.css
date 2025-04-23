@@ -1,13 +1,13 @@
 .diary-page {
-    padding: 2rem;
-    text-align: center;
-  }
-  
-  .diary-page h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .diary-page p {
-    color: #555;
-  }
+  padding: 2rem;
+  text-align: center;
+}
+
+.diary-page h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.diary-page p {
+  color: #555;
+}

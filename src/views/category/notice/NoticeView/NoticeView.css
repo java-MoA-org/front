@@ -1,89 +1,89 @@
 /* 전체 레이아웃 래퍼  */
 .notice-view-wrapper {
-    display: flex;
-    justify-content: center;
-    padding: 2rem;
-    background-color: #f9f9f9;
-  }
-  
-  .notice-view-container {
-    width: 100%;
-    max-width: 800px;
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.06);
-  }
-  
-  /* 제목 영역 */
-  .notice-view-title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-    color: #333;
-  }
-  
-  /* 작성자 및 메타 정보 */
-  .notice-view-info {
-    font-size: 0.9rem;
-    color: #777;
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  
-  /* 본문 내용 영역 */
-  .notice-view-content {
-    font-size: 1rem;
-    color: #444;
-    line-height: 1.6;
-    margin-bottom: 2rem;
-  }
-  
-  /* 버튼 그룹 래퍼 */
-  .notice-view-button-wrapper {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-  }
-  
-  /*  버튼 스타일 공통 */
-  .notice-view-back-button,
-  .notice-view-edit-button,
-  .notice-view-delete-button {
-    padding: 0.4rem 1rem;
-    font-size: 0.9rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  
-  /* 버튼 별 개별 색상  */
-  .notice-view-back-button {
-    background-color: #ddd;
-    color: #333;
-  }
-  
-  .notice-view-edit-button {
-    background-color: #4caf50;
-    color: white;
-  }
-  
-  .notice-view-delete-button {
-    background-color: #f44336;
-    color: white;
-  }
-  
-  /*  버튼 hover 효과  */
-  .notice-view-back-button:hover {
-    background-color: #bbb;
-  }
-  
-  .notice-view-edit-button:hover {
-    background-color: #388e3c;
-  }
-  
-  .notice-view-delete-button:hover {
-    background-color: #d32f2f;
-  }
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f9f9f9;
+}
+
+.notice-view-container {
+  width: 100%;
+  max-width: 800px;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.06);
+}
+
+/* 제목 영역 */
+.notice-view-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+/* 작성자 및 메타 정보 */
+.notice-view-info {
+  font-size: 0.9rem;
+  color: #777;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* 본문 내용 영역 */
+.notice-view-content {
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* 버튼 그룹 래퍼 */
+.notice-view-button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/*  버튼 스타일 공통 */
+.notice-view-back-button,
+.notice-view-edit-button,
+.notice-view-delete-button {
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* 버튼 별 개별 색상  */
+.notice-view-back-button {
+  background-color: #ddd;
+  color: #333;
+}
+
+.notice-view-edit-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.notice-view-delete-button {
+  background-color: #f44336;
+  color: white;
+}
+
+/*  버튼 hover 효과  */
+.notice-view-back-button:hover {
+  background-color: #bbb;
+}
+
+.notice-view-edit-button:hover {
+  background-color: #388e3c;
+}
+
+.notice-view-delete-button:hover {
+  background-color: #d32f2f;
+}

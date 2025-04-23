@@ -39,7 +39,7 @@ const categories = [
   { label: "생활/문화", value: "culture" },
   { label: "세계", value: "world" },
   { label: "IT/과학", value: "it" },
-  { label: "랭킹", value: "ranking" }
+  { label: "랭킹", value: "ranking" },
 ];
 
 // component: 뉴스 박스 렌더링 //
@@ -53,7 +53,7 @@ const News = () => {
     try {
       setIsLoading(true);
       const res = await axios.get<NewsItem[]>(
-        `http://localhost:4000/api/news/category?type=${category}`
+        `http://localhost:4000/api/news/category?type=${category}`,
       );
       console.log("선택된 카테고리:", category);
       console.log("받은 뉴스 리스트:", res.data);
@@ -75,7 +75,10 @@ const News = () => {
     <div className="news-box">
       <div className="news-header">
         <h3 className="news-title">주요 뉴스</h3>
-        <button className="refresh-btn" onClick={() => fetchNews(selectedCategory)}>
+        <button
+          className="refresh-btn"
+          onClick={() => fetchNews(selectedCategory)}
+        >
           새로고침
         </button>
       </div>
@@ -100,7 +103,12 @@ const News = () => {
       ) : (
         newsList.map((news, index) => (
           <div key={index} className="news-item">
-            <a href={news.link} target="_blank" rel="noopener noreferrer" className="news-link">
+            <a
+              href={news.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="news-link"
+            >
               <div className="news-thumbnail">
                 <img src={news.thumbnail} alt="썸네일" />
               </div>
