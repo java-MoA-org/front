@@ -45,19 +45,19 @@
   color: rgba(138, 146, 166, 1);
 }
 
-#update-userpage .profile-content-container .nickname-container {
-  display: flex;
-  align-items: end;
+.custom-textarea input {
+  height: 130px;
 }
 
-#update-userpage .profile-content-container .nickname-container .nickname-check {
+#update-userpage .user-update-save-button {
   display: flex;
   justify-content: center;
   align-items: center;
 
-  margin-bottom: 20px;
+  margin-bottom: 50px;
+
   border-radius: 6px;
-  width: 100px;
+  width: 70px;
   height: 44px;
 
   font-size: 16px;
