@@ -22,13 +22,12 @@ import { ROOT_PATH } from '../../../constants';
 import ProfileImageUploader from '../../../components/ProfileImage';
 import { InterestsType } from '../../../types/userInterests';
 import UserEmailVerifyRequestDto from '../../../apis/dto/request/auth/user-email-verify.request.dto';
-import EmailVerifyResponseDto from '../../../apis/dto/response/auth/email-verify-response.dto';
 import UserPhoneNumberVerifyRequestDto from '../../../apis/dto/request/auth/user-phone-number-verify.request.dto';
 import VerifyResponseDto from '../../../apis/dto/response/auth/email-verify-response.dto';
 import { Cookies, useCookies } from 'react-cookie';
 
 interface Props {
-    setActiveTab: Dispatch<SetStateAction<'signin' | 'signup'>>;
+    setActiveTab: Dispatch<SetStateAction<'signin' | 'signup' | 'findid' | 'findpassword'>>;
 }
 
 export default function SignUp({ setActiveTab }: Props) {
@@ -43,6 +42,15 @@ export default function SignUp({ setActiveTab }: Props) {
         'profileImage',
         'joinType',
     ]);
+
+    const getCookie = (name: string): string | null => {
+        const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+        return match ? decodeURIComponent(match[2]) : null;
+    };
+
+    const deleteCookie = (name: string) => {
+        document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+    };
 
     const [joinType, setJoinType] = useState<'NORMAL' | 'KAKAO' | 'NAVER'>('NORMAL');
 
@@ -356,7 +364,9 @@ export default function SignUp({ setActiveTab }: Props) {
             return;
         }
 
-        navigator(ROOT_PATH);
+        ['joinType', 'profileImage', 'userId', 'userNickname', 'userPassword'].forEach(deleteCookie);
+
+        navigator('/');
     };
 
     const onCheckUserIdClickHandler = () => {
@@ -393,13 +403,14 @@ export default function SignUp({ setActiveTab }: Props) {
 
     const onSignUpClickHandler = () => {
         if (!signUpPossible) return;
+        const joinTypeCookie = getCookie('joinType');
         const requestBody: UserSignUpRequestDto = {
             userId,
             userPassword,
             userNickname,
             userEmail,
             userPhoneNumber,
-            joinType: 'NORMAL',
+            joinType: joinTypeCookie ?? 'NORMAL',
             profileImage,
             userIntroduce,
             interests: selectedInterests,

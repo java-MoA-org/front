@@ -10,7 +10,7 @@ import UserSignInResponseDto from '../../../apis/dto/response/auth/user-sign-in.
 
 // interface: 로그인 컴포넌트 속성 //
 interface Props {
-    setActiveTab: Dispatch<SetStateAction<'signin' | 'signup'>>;
+    setActiveTab: Dispatch<SetStateAction<'signin' | 'signup' | 'findid' | 'findpassword'>>;
 }
 
 // component: 로그인 컴포넌트
@@ -114,8 +114,14 @@ export default function SignIn({ setActiveTab }: Props) {
                 </div>
 
                 <div className="login-others-container">
-                    <div className="login-find-id button">아이디 찾기</div> |
-                    <div className="login-find-password button">비밀번호 찾기</div> |
+                    <div className="login-find-id button" onClick={() => setActiveTab('findid')}>
+                        아이디 찾기
+                    </div>{' '}
+                    |
+                    <div className="login-find-password button" onClick={() => setActiveTab('findpassword')}>
+                        비밀번호 찾기
+                    </div>{' '}
+                    |
                     <div className="login-register button" onClick={() => setActiveTab('signup')}>
                         회원가입
                     </div>
