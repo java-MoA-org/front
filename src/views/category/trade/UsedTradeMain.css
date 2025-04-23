@@ -1,13 +1,13 @@
 .trade-page {
-    padding: 2rem;
-    text-align: center;
-  }
-  
-  .trade-page h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .trade-page p {
-    color: #555;
-  }
+  padding: 2rem;
+  text-align: center;
+}
+
+.trade-page h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.trade-page p {
+  color: #555;
+}

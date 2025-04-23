@@ -14,7 +14,6 @@ const Home = () => {
     <div className="home-wrapper">
       <div className="home-container">
         <div className="content-row">
-
           {/* section: 왼쪽 사이드바 - 친구 목록 */}
           <aside className="left-sidebar">
             <h2 className="section-title">친구 목록 (맞팔로우)</h2>
@@ -27,7 +26,6 @@ const Home = () => {
 
           {/* section: 메인 콘텐츠 */}
           <main className="main-container">
-
             {/* component: 상단 배너 */}
             <div className="top-banner-container">
               <ImageSlider />
@@ -52,7 +50,10 @@ const Home = () => {
             <div className="board-daily-row">
               {/* 게시판 */}
               <section className="board-list">
-                <h2 className="section-title" onClick={() => navigate("/board")}>
+                <h2
+                  className="section-title"
+                  onClick={() => navigate("/board")}
+                >
                   게시판
                 </h2>
                 {Array.from({ length: 5 }, (_, i) => (
@@ -69,7 +70,10 @@ const Home = () => {
 
               {/* 일상 */}
               <section className="daily-list">
-                <h2 className="section-title" onClick={() => navigate("/daily")}>
+                <h2
+                  className="section-title"
+                  onClick={() => navigate("/daily")}
+                >
                   일상
                 </h2>
                 {Array.from({ length: 5 }, (_, i) => (
@@ -107,7 +111,6 @@ const Home = () => {
           <aside className="right-sidebar">
             <News />
           </aside>
-
         </div>
       </div>
     </div>

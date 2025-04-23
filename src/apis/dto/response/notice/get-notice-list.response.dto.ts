@@ -1,4 +1,4 @@
-import { NoticeItem } from '../../../../types/interfaces/notice.interface';
+import { NoticeItem } from "../../../../types/interfaces/notice.interface";
 
 interface GetNoticeListResponseDto {
   noticeList: NoticeItem[];

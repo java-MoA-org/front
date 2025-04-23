@@ -1,4 +1,3 @@
-
 import Comment from "../../../../types/interfaces/comment.interface";
 import ResponseDto from "../response.dto";
 

@@ -1,3 +1,3 @@
 export default interface UserPhoneNumberCheckRequestDto {
-    userPhoneNumber: string;
+  userPhoneNumber: string;
 }

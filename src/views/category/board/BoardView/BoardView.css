@@ -6,7 +6,7 @@
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
 /* 돌아가기 버튼 */
@@ -18,7 +18,7 @@
   font-size: 12px;
   font-weight: bold;
   color: white;
-  background-color: #8EACCD;
+  background-color: #8eaccd;
   border-radius: 8px;
   cursor: pointer;
   margin-bottom: 20px;
@@ -27,8 +27,8 @@
 /* 상단 게시글 정보 */
 #board-view-wrapper .bulletin-info-container {
   padding: 20px 0px;
-  border-top: 1px solid #BBBFCA;
-  border-bottom: 1px solid #BBBFCA;
+  border-top: 1px solid #bbbfca;
+  border-bottom: 1px solid #bbbfca;
   margin-bottom: 20px;
 }
 
@@ -142,7 +142,7 @@
 
 /* 댓글 영역 */
 #board-view-wrapper .bulletin-comment-container {
-  border-top: 1px solid #BBBFCA;
+  border-top: 1px solid #bbbfca;
   padding-top: 24px;
 }
 
@@ -156,14 +156,14 @@
 #board-view-wrapper .comment-write-content {
   flex: 1;
   padding: 12px;
-  border: 1px solid #BBBFCA;
+  border: 1px solid #bbbfca;
   border-radius: 8px;
   margin-right: 12px;
   font-size: 14px;
 }
 
 #board-view-wrapper .comment-write-button {
-  background-color: #8EACCD;
+  background-color: #8eaccd;
   color: white;
   padding: 8px 16px;
   border-radius: 8px;
@@ -178,7 +178,7 @@
   margin-bottom: 16px;
   border-radius: 12px;
   padding: 10px;
-  border: 1px solid #BBBFCA;
+  border: 1px solid #bbbfca;
 }
 
 #board-view-wrapper .comment .default-user-image {

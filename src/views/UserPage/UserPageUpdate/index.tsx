@@ -16,8 +16,13 @@ import GetUserInfoResponseDto from "../../../apis/dto/response/user/get-user-inf
 
 export default function UserPageUpdate() {
   // state: 로그인 사용자 정보 //
-  const { userProfileImage, userIntroduce, userInterests, userNickname, userPhoneNumber } =
-    useSignInUserStore();
+  const {
+    userProfileImage,
+    userIntroduce,
+    userInterests,
+    userNickname,
+    userPhoneNumber,
+  } = useSignInUserStore();
 
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
@@ -34,9 +39,12 @@ export default function UserPageUpdate() {
   // state: 수정 사용자 닉네임 상태 //
   const [updateNickName, setUpdateNickName] = useState<string>("");
   const [userNicknameChecked, setUserNicknameChecked] = useState(false);
-  const isUserNicknameCheckButtonActive = /^[가-힣a-zA-Z0-9]{2,8}$/.test(updateNickName);
+  const isUserNicknameCheckButtonActive = /^[가-힣a-zA-Z0-9]{2,8}$/.test(
+    updateNickName,
+  );
   const [userNicknameMessage, setUserNicknameMessage] = useState<string>("");
-  const [userNicknameMessageError, setUserNicknameMessageError] = useState<boolean>(false);
+  const [userNicknameMessageError, setUserNicknameMessageError] =
+    useState<boolean>(false);
 
   // state: 수정 사용자 전화번호 상태 //
   const [updatePhoneNumber, setUpdatePhoneNumber] = useState<string>("");
@@ -49,30 +57,37 @@ export default function UserPageUpdate() {
     userInterestFood: false,
     userInterestMusic: false,
     userInterestEconomics: false,
-    userInterestNull: false
+    userInterestNull: false,
   });
 
   // variable: 프로필 이미지 스타일 //
   const profileImageStyle = {
     cursor: "pointer",
-    backgroundImage: `url(${previewProfile ? previewProfile : DefaultProfile})`
+    backgroundImage: `url(${previewProfile ? previewProfile : DefaultProfile})`,
   };
 
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
 
   // function: 로그인 유저 정보 불러오기 함수 //
-  const getUserInfoResponse = (responseBody: GetUserInfoResponseDto | ResponseDto | null) => {
+  const getUserInfoResponse = (
+    responseBody: GetUserInfoResponseDto | ResponseDto | null,
+  ) => {
     const message = !responseBody
       ? "서버에 문제가 있습니다."
       : responseBody.code === "DBE"
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "AF"
-      ? "인증에 실패했습니다."
-      : "";
+        ? "서버에 문제가 있습니다."
+        : responseBody.code === "AF"
+          ? "인증에 실패했습니다."
+          : "";
 
-    const { userNickname, userProfileImage, userPhoneNumber, userIntroduce, userInterests } =
-      responseBody as GetUserInfoResponseDto;
+    const {
+      userNickname,
+      userProfileImage,
+      userPhoneNumber,
+      userIntroduce,
+      userInterests,
+    } = responseBody as GetUserInfoResponseDto;
 
     setUpdateNickName(userNickname);
     setPreviewProfile(userProfileImage);
@@ -86,12 +101,12 @@ export default function UserPageUpdate() {
     const message = !responseBody
       ? "서버에 문제가 있습니다"
       : responseBody.code === "DBE"
-      ? "서버에 문제가 있습니다"
-      : responseBody.code === "EU"
-      ? "이미 사용중인 닉네임입니다"
-      : responseBody.code === "VF"
-      ? "닉네임을 입력하세요"
-      : "사용 가능한 닉네임입니다";
+        ? "서버에 문제가 있습니다"
+        : responseBody.code === "EU"
+          ? "이미 사용중인 닉네임입니다"
+          : responseBody.code === "VF"
+            ? "닉네임을 입력하세요"
+            : "사용 가능한 닉네임입니다";
 
     const isSuccess = responseBody !== null && responseBody.code === "SU";
     setUserNicknameMessage(message);
@@ -110,10 +125,10 @@ export default function UserPageUpdate() {
     const message = !responseBody
       ? "서버에 문제가 있습니다"
       : responseBody.code === "DBE"
-      ? "서버에 문제가 있습니다"
-      : responseBody.code === "AF"
-      ? "인증에 실패했습니다"
-      : "";
+        ? "서버에 문제가 있습니다"
+        : responseBody.code === "AF"
+          ? "인증에 실패했습니다"
+          : "";
   };
 
   // event handler: 프로필 사진 클릭 이벤트 처리 //
@@ -158,7 +173,11 @@ export default function UserPageUpdate() {
     <div id="update-userpage">
       <div className="profile-container">
         <div className="profile-image-container">
-          <div className="profile-image" style={profileImageStyle} onClick={onProfileClickHandler}>
+          <div
+            className="profile-image"
+            style={profileImageStyle}
+            onClick={onProfileClickHandler}
+          >
             <input
               ref={fileRef}
               style={{ display: "none" }}

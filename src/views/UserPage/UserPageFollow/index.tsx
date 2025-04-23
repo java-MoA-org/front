@@ -8,7 +8,7 @@ export default function UserPageFollow() {
   const [searchParams] = useSearchParams();
   const typeParam = searchParams.get("type");
   const [activeTab, setActiveTab] = useState<"followee" | "follower">(
-    typeParam === "follower" ? "follower" : "followee"
+    typeParam === "follower" ? "follower" : "followee",
   );
 
   useEffect(() => {
@@ -18,8 +18,10 @@ export default function UserPageFollow() {
   }, [typeParam]);
 
   // variable: followee, follower 변수 //
-  const followeeClass = activeTab === "followee" ? "type-follower active" : "type-follower";
-  const followerClass = activeTab === "follower" ? "type-followee active" : "type-followee";
+  const followeeClass =
+    activeTab === "followee" ? "type-follower active" : "type-follower";
+  const followerClass =
+    activeTab === "follower" ? "type-followee active" : "type-followee";
 
   return (
     <div id="my-user-follow">

@@ -11,7 +11,10 @@
   gap: 30px;
   align-items: center;
 }
-#update-userpage .profile-container .profile-image-container .image-update-button {
+#update-userpage
+  .profile-container
+  .profile-image-container
+  .image-update-button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,7 +33,10 @@
   border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
-#update-userpage .profile-container .profile-image-container .image-update-button:hover {
+#update-userpage
+  .profile-container
+  .profile-image-container
+  .image-update-button:hover {
   opacity: 0.7;
 }
 

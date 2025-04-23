@@ -18,17 +18,19 @@ const useSignInUser = (nickname: string) => {
     setUserInterests,
     setUserIntroduce,
     setUserPhoneNumber,
-    resetUser
+    resetUser,
   } = useSignInUserStore();
 
-  const getSignInUserResponse = (responseBody: GetUserInfoResponseDto | ResponseDto | null) => {
+  const getSignInUserResponse = (
+    responseBody: GetUserInfoResponseDto | ResponseDto | null,
+  ) => {
     const message = !responseBody
       ? "서버에 문제가 있습니다."
       : responseBody.code === "DBE"
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "AF"
-      ? "인증에 실패했습니다."
-      : "";
+        ? "서버에 문제가 있습니다."
+        : responseBody.code === "AF"
+          ? "인증에 실패했습니다."
+          : "";
 
     const isSuccess = responseBody !== null && responseBody.code === "SU";
     if (!isSuccess) {
@@ -39,8 +41,13 @@ const useSignInUser = (nickname: string) => {
       return;
     }
 
-    const { userNickname, userProfileImage, userPhoneNumber, userIntroduce, userInterests } =
-      responseBody as GetUserInfoResponseDto;
+    const {
+      userNickname,
+      userProfileImage,
+      userPhoneNumber,
+      userIntroduce,
+      userInterests,
+    } = responseBody as GetUserInfoResponseDto;
     setUserNickname(userNickname);
     setUserProfileImage(userProfileImage);
     setUserInterests(userInterests);

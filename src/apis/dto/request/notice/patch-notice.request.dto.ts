@@ -1,5 +1,5 @@
 interface PatchNoticeRequestDto {
-    title: string;
-    content: string;
-  }
-  export default PatchNoticeRequestDto;
+  title: string;
+  content: string;
+}
+export default PatchNoticeRequestDto;

@@ -1,7 +1,4 @@
-import PostNoticeRequestDto from './post-notice.request.dto';
-import PatchNoticeRequestDto from './patch-notice.request.dto';
+import PostNoticeRequestDto from "./post-notice.request.dto";
+import PatchNoticeRequestDto from "./patch-notice.request.dto";
 
-export type {
-  PostNoticeRequestDto,
-  PatchNoticeRequestDto
-};
+export type { PostNoticeRequestDto, PatchNoticeRequestDto };
