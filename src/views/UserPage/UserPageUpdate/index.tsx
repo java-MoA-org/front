@@ -5,7 +5,8 @@ import "./style.css";
 
 export default function UserPageUpdate() {
   // state: 로그인 사용자 정보 //
-  // const {profileImage, introduce, interests, userNickname, phone-Number} = useSignInUserStore();
+  const { userProfileImage, userIntroduce, userInterests, userNickname, userPhoneNumber } =
+    useSignInUserStore();
 
   // state: 수정 사용자 자기소개 상태 //
   const [updateIntroduce, setUpdateIntroduce] = useState<string>("");
