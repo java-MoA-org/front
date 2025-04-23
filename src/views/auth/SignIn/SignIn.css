@@ -24,16 +24,17 @@
 }
 
 #auth-login-container .login-id {
-    width: 100%;
+    width: 95%;
     height: 50px;
     padding-left: 10px;
+    margin-right: 10px;
 
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border: solid 1px rgb(0, 0, 0);
 }
 #auth-login-container .login-password {
-    width: 100%;
+    width: 95%;
     height: 50px;
     padding-left: 10px;
 

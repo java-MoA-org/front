@@ -1,0 +1,12 @@
+#auth-login-container {
+    padding-top: 100px;
+    margin: 0 auto;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    width: 380px;
+    min-height: max-content;
+}

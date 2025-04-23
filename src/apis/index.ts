@@ -2,7 +2,6 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import IdCheckRequestDto from './dto/request/auth/user-id-check.request.dto';
 import ResponseDto from './dto/response/response.dto';
 
-
 import PostNoticeRequestDto from './dto/request/notice/post-notice.request.dto';
 import PatchNoticeRequestDto from './dto/request/notice/patch-notice.request.dto';
 import GetNoticeListResponseDto from './dto/response/notice/get-notice-list.response.dto';
@@ -29,6 +28,7 @@ import UserEmailVerifyRequestDto from './dto/request/auth/user-email-verify.requ
 import UserPhoneNumberVerifyRequestDto from './dto/request/auth/user-phone-number-verify.request.dto';
 import { ACCESS_TOKEN } from '../constants';
 import GetUserInfoResponseDto from './dto/response/user/get-user-info.response.dto';
+import PatchPasswordRequestDto from './dto/request/auth/patch-password.request.dto';
 
 const API_DOMAIN = process.env.REACT_APP_API_DOMAIN;
 
@@ -39,6 +39,8 @@ const NICKNAME_CHECK_URL = `${AUTH_MODULE_URL}/nickname/check`;
 const PROFILE_IMAGE_UPLOAD_URL = `${AUTH_MODULE_URL}/profileImage/upload`;
 const EMAIL_CHECK_URL = `${AUTH_MODULE_URL}/email/verify/require`;
 const EMAIL_VERIFY_URL = `${AUTH_MODULE_URL}/email/verify`;
+const FIND_ID_EMAIL_CHECK_URL = `${AUTH_MODULE_URL}/find-id/email/verify/require`;
+const FIND_ID_EMAIL_CHECK_VERIFY_URL = `${AUTH_MODULE_URL}/find-id/email/verify`;
 const PHONE_NUMBER_CHECK_URL = `${AUTH_MODULE_URL}/phone/verify/require`;
 const PHONE_NUMBER_VERIFY_URL = `${AUTH_MODULE_URL}/phone/verify`;
 
@@ -46,6 +48,8 @@ const SIGN_UP_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_URL = `${AUTH_MODULE_URL}/sign-in`;
 export const SNS_SIGN_IN_URL = (sns: 'kakao' | 'naver') => `${AUTH_MODULE_URL}/sns/${sns}`;
 const SIGN_OUT_URL = `${AUTH_MODULE_URL}/sign-out`;
+
+const PATCH_PASSWORD_URL = (userId: string) => `${AUTH_MODULE_URL}/${userId}/password`;
 
 const USER_MODULE_URL = `${API_DOMAIN}/api/v1/user`;
 
@@ -98,18 +102,13 @@ const SEARCH_USED_TRADE_LIST_URL = (tag: string, keyword: string, page: number) 
 const TOGGLE_USED_TRADE_LIKE_URL = (tradeSequence: number | string) =>
     `${USED_TRADE_MODULE_URL}/${tradeSequence}/likes`;
 
-
 // notice API URL
 const NOTICE_MODULE_URL = `${API_DOMAIN}/api/v1/notice`;
 const POST_NOTICE_URL = NOTICE_MODULE_URL;
 const GET_NOTICE_LIST_URL = `${NOTICE_MODULE_URL}/list`;
-const GET_NOTICE_URL = (noticeId: number | string) => 
-  `${NOTICE_MODULE_URL}/${noticeId}`;
-const PATCH_NOTICE_URL = (noticeId: number | string) => 
-  `${NOTICE_MODULE_URL}/${noticeId}`;
-const DELETE_NOTICE_URL = (noticeId: number | string) => 
-  `${NOTICE_MODULE_URL}/${noticeId}`;
-
+const GET_NOTICE_URL = (noticeId: number | string) => `${NOTICE_MODULE_URL}/${noticeId}`;
+const PATCH_NOTICE_URL = (noticeId: number | string) => `${NOTICE_MODULE_URL}/${noticeId}`;
+const DELETE_NOTICE_URL = (noticeId: number | string) => `${NOTICE_MODULE_URL}/${noticeId}`;
 
 const USER_PAGE_MODULE_URL = `${API_DOMAIN}/api/v1/user-page`;
 const GET_USER_PAGE_URL = (nickname: string) => `${USER_PAGE_MODULE_URL}/boards/${nickname}`;
@@ -151,6 +150,22 @@ export const UserEmailVerifyRequest = async (requestBody: UserEmailVerifyRequest
     return responseBody;
 };
 
+export const userEmailCheckFindIdRequest = async (requestBody: UserEmailCheckRequestDto) => {
+    const responseBody = await axios
+        .post(FIND_ID_EMAIL_CHECK_URL, requestBody)
+        .then(responseSuccessHandler)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
+export const UserEmailFindIdVerifyRequest = async (requestBody: UserEmailVerifyRequestDto) => {
+    const responseBody = await axios
+        .post(FIND_ID_EMAIL_CHECK_VERIFY_URL, requestBody)
+        .then(responseSuccessHandler)
+        .catch(responseErrorHandler);
+    return responseBody;
+};
+
 export const userPhoneNumberCheckRequest = async (requestBody: UserPhoneNumberCheckRequestDto) => {
     const responseBody = await axios
         .post(PHONE_NUMBER_CHECK_URL, requestBody)
@@ -185,6 +200,14 @@ export const userSignInRequest = async (requestBody: UserSignInRequestDto) => {
 
 export const userSignOutRequest = async (accessToken: string) => {
     await axios.post(SIGN_OUT_URL, bearerAuthorization(accessToken));
+};
+
+export const PatchPasswordRequest = async (requestBody: PatchPasswordRequestDto) => {
+    const responseBody = await axios
+        .patch(PATCH_PASSWORD_URL(requestBody.userId), requestBody)
+        .then(responseSuccessHandler)
+        .catch(responseErrorHandler);
+    return responseBody;
 };
 
 export const userProfileImageUpload = async (requestBody: FormData) => {
@@ -491,62 +514,51 @@ export const toggleUsedTradeLikeRequest = async (tradeSequence: number | string,
     return responseBody;
 };
 
-
 // function: post notice API 요청 함수
-export const postNoticeRequest = async (
-  requestBody: PostNoticeRequestDto,
-  accessToken: string
-) => {
-  const responseBody = await axios
-    .post(POST_NOTICE_URL, requestBody, bearerAuthorization(accessToken))
-    .then(responseSuccessHandler)
-    .catch(responseErrorHandler);
-  return responseBody;
+export const postNoticeRequest = async (requestBody: PostNoticeRequestDto, accessToken: string) => {
+    const responseBody = await axios
+        .post(POST_NOTICE_URL, requestBody, bearerAuthorization(accessToken))
+        .then(responseSuccessHandler)
+        .catch(responseErrorHandler);
+    return responseBody;
 };
 
 // function: get notice list API 요청 함수
 export const getNoticeListRequest = async () => {
-  const responseBody = await axios
-    .get(GET_NOTICE_LIST_URL)
-    .then(responseSuccessHandler<GetNoticeListResponseDto>)
-    .catch(responseErrorHandler);
-  return responseBody;
+    const responseBody = await axios
+        .get(GET_NOTICE_LIST_URL)
+        .then(responseSuccessHandler<GetNoticeListResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 };
 
 // function: get notice API 요청 함수
-export const getNoticeRequest = async (
-  noticeId: number | string,
-  accessToken: string
-) => {
-  const responseBody = await axios
-    .get(GET_NOTICE_URL(noticeId), bearerAuthorization(accessToken))
-    .then(responseSuccessHandler<GetNoticeResponseDto>)
-    .catch(responseErrorHandler);
-  return responseBody;
+export const getNoticeRequest = async (noticeId: number | string, accessToken: string) => {
+    const responseBody = await axios
+        .get(GET_NOTICE_URL(noticeId), bearerAuthorization(accessToken))
+        .then(responseSuccessHandler<GetNoticeResponseDto>)
+        .catch(responseErrorHandler);
+    return responseBody;
 };
 
 // function: patch notice API 요청 함수
 export const patchNoticeRequest = async (
-  noticeId: number | string,
-  requestBody: PatchNoticeRequestDto,
-  accessToken: string
+    noticeId: number | string,
+    requestBody: PatchNoticeRequestDto,
+    accessToken: string
 ) => {
-  const responseBody = await axios
-    .patch(PATCH_NOTICE_URL(noticeId), requestBody, bearerAuthorization(accessToken))
-    .then(responseSuccessHandler)
-    .catch(responseErrorHandler);
-  return responseBody;
+    const responseBody = await axios
+        .patch(PATCH_NOTICE_URL(noticeId), requestBody, bearerAuthorization(accessToken))
+        .then(responseSuccessHandler)
+        .catch(responseErrorHandler);
+    return responseBody;
 };
 
 // function: delete notice API 요청 함수
-export const deleteNoticeRequest = async (
-  noticeId: number | string,
-  accessToken: string
-) => {
-  const responseBody = await axios
-    .delete(DELETE_NOTICE_URL(noticeId), bearerAuthorization(accessToken))
-    .then(responseSuccessHandler)
-    .catch(responseErrorHandler);
-  return responseBody;
+export const deleteNoticeRequest = async (noticeId: number | string, accessToken: string) => {
+    const responseBody = await axios
+        .delete(DELETE_NOTICE_URL(noticeId), bearerAuthorization(accessToken))
+        .then(responseSuccessHandler)
+        .catch(responseErrorHandler);
+    return responseBody;
 };
-
