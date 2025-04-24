@@ -386,7 +386,9 @@ export default function SignUp({ setActiveTab }: Props) {
     }
     const requestBody: UserSignInRequestDto = { userId, userPassword };
     userSignInRequest(requestBody).then(userSignInResponse);
-    ['joinType', 'profileImage', 'userId', 'userNickname', 'userPassword'].forEach(deleteCookie);
+    ['joinType', 'profileImage', 'userId', 'userNickname', 'userPassword', 'userEmail', 'userPhoneNumber'].forEach(
+      deleteCookie
+    );
 
     navigator('/');
   };
@@ -648,8 +650,8 @@ export default function SignUp({ setActiveTab }: Props) {
               {label}
             </button>
           ))}
-          <div className="interest-hint">관심사를 선택하지 않을 시 자동으로 일상을 선택합니다.</div>
         </div>
+        <div className="interest-hint">관심사를 선택하지 않을 시 자동으로 일상을 선택합니다.</div>
       </div>
       <button
         className={signUpPossible ? 'signup-submit' : 'signup-submit-unauthorized'}
