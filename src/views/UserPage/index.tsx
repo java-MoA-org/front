@@ -2,13 +2,19 @@ import "./style.css";
 import userImage from "../../assets/images/ex-user1.png";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  ACCESS_TOKEN,
   MY_USER_BOARD_ABSOLUTE_PATH,
-  MY_USER_FOLLOW_ABSOLUTE_PATH,
+  MY_USER_FOLLOW_ABSOLUTE_PATH
 } from "../../constants";
 import FollowButton from "../../components/FollowButton";
 import { Board, Daily, Trade } from "../../types/interfaces";
 import UserInterest from "../../types/interfaces/user-interest.interface";
 import UpdateButton from "../../components/UpdateButton";
+import useSignInUserStore from "../../stores/sign-in-user.store";
+import { useCookies } from "react-cookie";
+import { useEffect, useState } from "react";
+import { getUserInfoRequest } from "../../apis";
+import GetUserInfoResponseDto from "../../apis/dto/response/user/get-user-info.response.dto";
 
 // interface: 게시판, 일상, 중고거래 레코드 컴포넌트 속성 //
 interface MyUserPageProps {
@@ -24,9 +30,33 @@ export default function MyUserPage({
   dailys,
   trades,
   interests,
-  userIntroduce,
+  userIntroduce
 }: MyUserPageProps) {
   const { nickname } = useParams(); // ✅ URL에서 :nickname 추출
+  const [cookies] = useCookies([ACCESS_TOKEN]);
+  const accessToken = cookies[ACCESS_TOKEN];
+
+  const { userNickname, setUserNickname } = useSignInUserStore();
+  const [isLoading, setIsLoading] = useState(true);
+
+  //! 받아오는걸 기다린 후 비교 하는 형식
+  useEffect(() => {
+    if (!userNickname && accessToken) {
+      getUserInfoRequest(accessToken).then((response) => {
+        if (response && response.code === "SU") {
+          const res = response as GetUserInfoResponseDto; // 타입 좁히기
+
+          setUserNickname(res.userNickname); // 이제 안전하게 접근 가능
+        }
+        setIsLoading(false);
+      });
+    } else {
+      setIsLoading(false);
+    }
+  }, [userNickname, accessToken]);
+
+  console.log("nickname", nickname);
+  console.log("userNickname", userNickname);
 
   const activeInterests = Object.entries(interests)
     .filter(([_, value]) => value)
@@ -70,7 +100,7 @@ export default function MyUserPage({
               <div className="profile-line">
                 <div>프로필</div>
                 <FollowButton />
-                <UpdateButton nickname={nickname!} />
+                {nickname === userNickname && <UpdateButton nickname={nickname!} />}
               </div>
               <div className="profile-image">
                 <img src={userImage} alt="User" className="profile-img" />
@@ -109,9 +139,7 @@ export default function MyUserPage({
             <div className="board-type">
               <div
                 className="board-type-daily"
-                onClick={
-                  dailys.length === 0 ? undefined : onUserDailyClickHandler
-                }
+                onClick={dailys.length === 0 ? undefined : onUserDailyClickHandler}
               >
                 <div className="board-type-text">일상</div>
                 {dailys.length === 0 ? (
@@ -120,33 +148,21 @@ export default function MyUserPage({
                   [...dailys]
                     .reverse()
                     .slice(0, 3)
-                    .map(
-                      ({
-                        dailySequence,
-                        title,
-                        views,
-                        likeCount,
-                        creationDate,
-                      }) => (
-                        <div className="board-content" key={dailySequence}>
-                          <div className="board-number">{dailySequence}</div>
-                          <div className="board-title">{title}</div>
-                          <div className="board-view">{views}</div>
-                          <div className="board-like">{likeCount}</div>
-                          <div className="board-date">
-                            {creationDate.split("T")[0]}
-                          </div>
-                        </div>
-                      ),
-                    )
+                    .map(({ dailySequence, title, views, likeCount, creationDate }) => (
+                      <div className="board-content" key={dailySequence}>
+                        <div className="board-number">{dailySequence}</div>
+                        <div className="board-title">{title}</div>
+                        <div className="board-view">{views}</div>
+                        <div className="board-like">{likeCount}</div>
+                        <div className="board-date">{creationDate.split("T")[0]}</div>
+                      </div>
+                    ))
                 )}
               </div>
 
               <div
                 className="board-type-used"
-                onClick={
-                  trades.length === 0 ? undefined : onUserTradeClickHandler
-                }
+                onClick={trades.length === 0 ? undefined : onUserTradeClickHandler}
               >
                 <div className="board-type-text">중고 거래</div>
 
@@ -156,33 +172,21 @@ export default function MyUserPage({
                   [...trades]
                     .reverse()
                     .slice(0, 3)
-                    .map(
-                      ({
-                        tradeSequence,
-                        title,
-                        views,
-                        likeCount,
-                        creationDate,
-                      }) => (
-                        <div className="board-content" key={tradeSequence}>
-                          <div className="board-number">{tradeSequence}</div>
-                          <div className="board-title">{title}</div>
-                          <div className="board-view">{views}</div>
-                          <div className="board-like">{likeCount}</div>
-                          <div className="board-date">
-                            {creationDate.split("T")[0]}
-                          </div>
-                        </div>
-                      ),
-                    )
+                    .map(({ tradeSequence, title, views, likeCount, creationDate }) => (
+                      <div className="board-content" key={tradeSequence}>
+                        <div className="board-number">{tradeSequence}</div>
+                        <div className="board-title">{title}</div>
+                        <div className="board-view">{views}</div>
+                        <div className="board-like">{likeCount}</div>
+                        <div className="board-date">{creationDate.split("T")[0]}</div>
+                      </div>
+                    ))
                 )}
               </div>
 
               <div
                 className="board-type-just"
-                onClick={
-                  boards.length === 0 ? undefined : onUserBoardClickHandler
-                }
+                onClick={boards.length === 0 ? undefined : onUserBoardClickHandler}
               >
                 <div className="board-type-text">게시글</div>
 
@@ -192,25 +196,15 @@ export default function MyUserPage({
                   [...boards]
                     .reverse()
                     .slice(0, 3)
-                    .map(
-                      ({
-                        boardSequence,
-                        title,
-                        views,
-                        likeCount,
-                        creationDate,
-                      }) => (
-                        <div className="board-content" key={boardSequence}>
-                          <div className="board-number">{boardSequence}</div>
-                          <div className="board-title">{title}</div>
-                          <div className="board-view">{views}</div>
-                          <div className="board-like">{likeCount}</div>
-                          <div className="board-date">
-                            {creationDate.split("T")[0]}
-                          </div>
-                        </div>
-                      ),
-                    )
+                    .map(({ boardSequence, title, views, likeCount, creationDate }) => (
+                      <div className="board-content" key={boardSequence}>
+                        <div className="board-number">{boardSequence}</div>
+                        <div className="board-title">{title}</div>
+                        <div className="board-view">{views}</div>
+                        <div className="board-like">{likeCount}</div>
+                        <div className="board-date">{creationDate.split("T")[0]}</div>
+                      </div>
+                    ))
                 )}
               </div>
             </div>
