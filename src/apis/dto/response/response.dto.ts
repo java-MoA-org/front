@@ -1,4 +1,5 @@
-export default interface ResponseDto {
-    code: string;
-    message: string;
+export default interface ResponseDto<T = any> {
+  code: string;
+  message: string;
+  data: T;
 }

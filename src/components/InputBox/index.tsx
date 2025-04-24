@@ -30,7 +30,7 @@ export default function InputBox(props: Props) {
     isErrorMessage,
     isButtonActive,
     readOnly,
-    disable
+    disable,
   } = props;
   const { onChange, onButtonClick } = props;
 

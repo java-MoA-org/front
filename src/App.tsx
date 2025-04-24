@@ -1,28 +1,28 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./views/home/Home";
-import Marquee from "./components/marquee/Marquee";
-import Header from "./components/header/";
-import AuthPage from "./views/auth/AuthPage";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './views/home/Home';
+import Marquee from './components/marquee/Marquee';
+import Header from './components/header/';
+import AuthPage from './views/auth/AuthPage';
 
-import BoardMain from "./views/category/board/BoardMain";
-import BoardWrite from "./views/category/board/BoardWrite/BoardWrite";
-import BoardView from "./views/category/board/BoardView/BoardView";
-import BoardUpdate from "./views/category/board/BoardUpdate/BoardUpdate";
+import BoardMain from './views/category/board/BoardMain';
+import BoardWrite from './views/category/board/BoardWrite/BoardWrite';
+import BoardView from './views/category/board/BoardView/BoardView';
+import BoardUpdate from './views/category/board/BoardUpdate/BoardUpdate';
 
-import DailyMain from "./views/category/daily/DailyMain";
-import DailyWrite from "./views/category/daily/DailyWrite/DailyWrite";
-import DailyView from "./views/category/daily/DailyView/DailyView";
-import DailyUpdate from "./views/category/daily/DailyUpdate/DailyUpdate";
+import DailyMain from './views/category/daily/DailyMain';
+import DailyWrite from './views/category/daily/DailyWrite/DailyWrite';
+import DailyView from './views/category/daily/DailyView/DailyView';
+import DailyUpdate from './views/category/daily/DailyUpdate/DailyUpdate';
 
-import UsedTradeMain from "./views/category/trade/UsedTradeMain";
-import UsedTradeWrite from "./views/category/trade/UsedTradeWrite/UsedTradeWrite";
-import UsedTradeView from "./views/category/trade/UsedTradeView/UsedTradeView";
-import UsedTradeUpdate from "./views/category/trade/UsedTradeUpdate/UsedTradeUpdate";
+import UsedTradeMain from './views/category/trade/UsedTradeMain';
+import UsedTradeWrite from './views/category/trade/UsedTradeWrite/UsedTradeWrite';
+import UsedTradeView from './views/category/trade/UsedTradeView/UsedTradeView';
+import UsedTradeUpdate from './views/category/trade/UsedTradeUpdate/UsedTradeUpdate';
 
-import Notice from "./views/category/notice/Notice";
-import NoticeWrite from "./views/category/notice/NoticeWrite/NoticeWrite";
-import NoticeView from "./views/category/notice/NoticeView/NoticeView";
-import NoticeUpdate from "./views/category/notice/NoticeUpdate/NoticeUpdate";
+import Notice from './views/category/notice/Notice';
+import NoticeWrite from './views/category/notice/NoticeWrite/NoticeWrite';
+import NoticeView from './views/category/notice/NoticeView/NoticeView';
+import NoticeUpdate from './views/category/notice/NoticeUpdate/NoticeUpdate';
 
 import {
   MY_USER_BOARD_PATH,
@@ -44,31 +44,31 @@ import {
   NOTICE_PATH,
   NOTICE_WRITE_PATH,
   NOTICE_VIEW_PATH,
-  NOTICE_UPDATE_PATH
-} from "./constants";
+  NOTICE_UPDATE_PATH,
+} from './constants';
 
-import MyUserPage from "./views/UserPage";
-import UserPageFollow from "./views/UserPage/UserPageFollow";
-import UserBoard from "./views/UserPage/UserBoard";
-import Footer from "./components/footer";
-import UserPageContainer from "./views/UserPage/UserPageContainer";
-import UserPageUpdate from "./views/UserPage/UserPageUpdate";
-import { CookiesProvider } from "react-cookie";
-import { useEffect } from "react";
+import MyUserPage from './views/UserPage';
+import UserPageFollow from './views/UserPage/UserPageFollow';
+import UserBoard from './views/UserPage/UserBoard';
+import Footer from './components/footer';
+import UserPageContainer from './views/UserPage/UserPageContainer';
+import UserPageUpdate from './views/UserPage/UserPageUpdate';
+import { CookiesProvider } from 'react-cookie';
+import { useEffect } from 'react';
 
 function App() {
   useEffect(() => {}, []);
 
   return (
     <CookiesProvider>
-      {" "}
+      {' '}
       {/* CookiesProvider로 애플리케이션 감싸기 */}
       <BrowserRouter>
         <Marquee />
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/auth*" element={<AuthPage />} />
 
           <Route path={BOARD_PATH}>
             <Route index element={<BoardMain />} />

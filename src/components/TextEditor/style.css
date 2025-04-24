@@ -1,50 +1,65 @@
 #text-editor-menu-bar {
   display: flex;
   gap: 4px;
-
   border-radius: 8px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid #BBBFCA;
 }
 
 #text-editor-menu-bar .item-box {
+  display: flex;
+  gap: 12px;
+  align-items: center;
   padding: 8px;
 }
 
+/* 공통 아이템 스타일 */
 #text-editor-menu-bar .item-box .item {
+  position: relative;
   border-radius: 2px;
   width: 20px;
   height: 20px;
   background-size: 100% 100%;
-
+  background-repeat: no-repeat;
+  background-position: center;
   cursor: pointer;
 }
 
+/* 활성화 시 */
 #text-editor-menu-bar .item-box .item.active {
-  background-color: #8EACCD;
+  background-color: #8eaccd;
 }
 
+/* 구분선 */
 #text-editor-menu-bar .item-box .divider {
   height: 100%;
-  border-left: 1px solid #dcdcdc;
 }
 
+/* bold 아이콘 */
 #text-editor-menu-bar .item-box .item.bold {
   background-image: url(/src/assets/images/text-bold.png);
 }
 
-.tiptap {
-  outline: none;
-
-  box-sizing: border-box;
-  border-radius: 6px;
-  border: 1px solid var #dcdcdc;
-  padding: 8px 16px;
-  min-height: 264px;
+/* 이미지 업로드 아이콘 */
+#text-editor-menu-bar .item-box .item.image-upload {
+  background-image: url(/src/assets/images/image-upload.png);
 }
 
-.editor-content {
-  border: 1px solid #dcdcdc;
-  border-radius: 8px;
+/* hover 효과 */
+#text-editor-menu-bar .item-box .item.image-upload:hover {
+  background-color: #007BBD;
+}
+
+/* 파일 input 숨김 */
+#image-upload-input {
+  display: none;
+}
+
+.tiptap {
+  outline: none;
+  box-sizing: border-box;
+  border-radius: 6px;
+  border: 1px solid #BBBFCA;
+  padding: 8px 16px;
   min-height: 300px;
 }
 
@@ -52,3 +67,9 @@
   margin: 4px 0;
 }
 
+.editor-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px 0;
+}

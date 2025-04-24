@@ -1,14 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './BoardMain.css';
 import { Board } from '../../../types/interfaces';
-import { ACCESS_TOKEN, BOARD_VIEW_ABSOLUTE_PATH, BOARD_WRITE_ABSOLUTE_PATH, GET_BOARD_LIST_ABSOLUTE_PATH } from '../../../constants';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { ACCESS_TOKEN, BOARD_VIEW_ABSOLUTE_PATH, BOARD_WRITE_ABSOLUTE_PATH } from '../../../constants';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { GetBoardListResponseDto } from '../../../apis/dto/response/board';
 import ResponseDto from '../../../apis/dto/response/response.dto';
 import { getBoardListRequest } from '../../../apis';
 import { usePagination } from '../../../hooks';
 import Pagination from '../../../components/pagination';
+import likeIcon from '../../../assets/images/likeClick.png';
+import commentIcon from '../../../assets/images/comment.png';
+import viewsIcon from '../../../assets/images/views.png';
+import imageIcon from '../../../assets/images/image.png'
 
 // interface: 게시판 테이블 레코드 컴포넌트 속성 //
 interface TableItemProps {
@@ -17,50 +21,96 @@ interface TableItemProps {
 
 // component: 게시판 테이블 레코드 컴포넌트 //
 function TableItem({ board }: TableItemProps) {
+  // destructuring: 게시글 정보 추출 //
   const { boardSequence, title, content, creationDate, views, likeCount, tag, writerId, images, commentCount } = board;
 
-  // variable: 태그 타입 클래스 //
-  const tagTypeClass = `board-tag ${
-    tag === '게임' ? 'GAME' :
-    tag === '여행' ? 'TRAVEL' :
-    tag === '운동' ? 'WORKOUT' :
-    tag === '음악' ? 'MUSIC' :
-    tag === '경제' ? 'ECONOMY' :
-    tag === '패션' ? 'FASHION' :
-    tag === '음식' ? 'FOOD' :
-    tag === '자유' ? 'FREE' :
-    tag === '전체' ? 'ALL' : ''
-  }`;
+  // function: 태그를 한글로 변환하는 함수 //
+  const getTagInKorean = (tag: string) => {
+    switch(tag) {
+      case 'GAME':
+        return '게임';
+      case 'TRAVEL':
+        return '여행';
+      case 'WORKOUT':
+        return '운동';
+      case 'MUSIC':
+        return '음악';
+      case 'ECONOMY':
+        return '경제';
+      case 'FASHION':
+        return '패션';
+      case 'FOOD':
+        return '음식';
+      case 'FREE':
+        return '자유';
+      case 'ALL':
+        return '전체';
+      default:
+        return tag; // 만약 예외가 있을 경우 태그 그대로 반환
+    }
+  };
+
+  const tagInKorean = getTagInKorean(tag);
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
+
+  // function: 작성 시간 변환 함수 //
+  const getElapsedTime = (dateTime: string): string => {
+    const now = new Date();
+    const createdAt = new Date(dateTime);
+
+    // 오늘 자정 시간 계산
+    const todayMidnight = new Date();
+    todayMidnight.setHours(0, 0, 0, 0);
+
+    const diffMs = now.getTime() - createdAt.getTime();
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHour = Math.floor(diffMin / 60);
+    const diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (createdAt >= todayMidnight) {
+      if (diffMin < 1) return '방금 전';
+      if (diffHour < 1) return `${diffMin}분 전`;
+      return `${diffHour}시간 전`;
+    }
+
+    if (diffDay === 1) return '어제';
+    if (diffDay >= 2 && diffDay <= 6) return `${diffDay}일 전`;
+
+    const week = Math.floor(diffDay / 7);
+    if (week >= 1 && week <= 4) return `${week}주 전`;
+
+    return `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(2, '0')}-${String(createdAt.getDate()).padStart(2, '0')}`;
+  };
 
   // event handler: 레코드 클릭 이벤트 처리 //
   const onClick = () => {
     navigator(BOARD_VIEW_ABSOLUTE_PATH(boardSequence));
   };
 
-  // render: 게시판 테이블 레코드 컴포넌트 렌더링 //
+  // render 게시판 테이블 레코드 컴포넌트 렌더링 //
   return (
     <div className="board-item" onClick={onClick}>
       <div className="board-header">
         <div className="board-title">{title}</div>
         <div className="board-stats">
-          <span className="view-count">👁‍🗨 {views}</span>
+          <span className="view-count"><img src={viewsIcon} alt="Views" className="icon" /> {views}</span>
         </div>
       </div>
       <div className="board-content">
-        {content.length > 100 ? content.slice(0, 100) + '...' : content}
+        {content.length > 100 ? content.slice(0, 100) + "..." : content}
       </div>
       <div className="board-footer">
         <div className="footer-left">
-          <span className="category">{tag}</span>
-          <span className="creation-date">{creationDate}</span>
-          <span className="check-image">{images && images.length > 0 ? '🎞' : ''}</span>
+          <span className="category">{tagInKorean}</span>
+          <span className="creation-date">{getElapsedTime(creationDate)}</span>
+          <span className="check-image">{images && images.length > 0 ?  <img src={imageIcon} alt="Image" className="image-icon" /> : ''}</span>
         </div>
         <div className="footer-right">
-          <span className="like-count">🧡 {likeCount}</span>
-          <span className="comment-count">💬 {commentCount}</span>
+          <span className="like-count"><img src={likeIcon} alt="Like" className="icon" /> {likeCount}</span>
+          <span className="comment-count"><img src={commentIcon} alt="Comment" className="icon" /> {commentCount}</span>
         </div>
       </div>
     </div>
@@ -72,105 +122,156 @@ export default function BoardMain() {
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
 
-  // state: 현재 위치(주소) 정보 //
+  // state: URL 쿼리 파라미터 //
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // variable: 페이지 번호 //
+  const page = parseInt(searchParams.get('page') || '1', 10);
+
+  // state: 현재 위치 객체 //
   const location = useLocation();
 
   // function: 네비게이션 함수 //
   const navigate = useNavigate();
 
-  // state: 쿼리 파라미터에서 값을 가져오기 //
+  // variable: 쿼리 파라미터 //
   const queryParams = new URLSearchParams(location.search);
-  // state: 쿼리 파라미터에서 정렬 기준을 가져오기, 없으면 'LATEST'로 기본값 설정 //
+
+  // variable: 정렬 기준 //
   const sort = queryParams.get('sort') || 'LATEST';
-  // state: 쿼리 파라미터에서 카테고리 태그를 가져오기, 없으면 'ALL'로 기본값 설정 //
+
+  // variable: 태그 기준 //
   const tag = queryParams.get('tag') || 'ALL';
-  // state: 쿼리 파라미터에서 페이지 번호를 가져오기, 없으면 1로 기본값 설정 //
-  const page = parseInt(queryParams.get('page') || '1', 10);
 
+  // state: 페이지네이션 상태 //
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentSection, setCurrentSection] = useState(1);
+  const [totalSection, setTotalSection] = useState(0);
+  const [pageList, setPageList] = useState<number[]>([]);
 
-  // 페이지네이션 상태
+  // hook: 페이지네이션 커스텀 훅 //
   const {
-    currentPage, setCurrentPage, currentSection, setCurrentSection,
-    totalSection, setTotalList, viewList, pageList
+    setTotalList,
+    viewList, 
+    pageList: paginationPageList,
   } = usePagination<Board>();
 
-  // variable: access token //
+  // variable: 액세스 토큰 //
   const accessToken = cookies[ACCESS_TOKEN];
 
-  // function: get board response 처리 함수 //
+  // function: 게시글 목록 요청 응답 처리 //
   const getBoardListResponse = (responseBody: GetBoardListResponseDto | ResponseDto | null) => {
     const message = 
       !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
       responseBody.code === 'AF' ? '인증에 실패했습니다.' : '';
 
-    const isSuccess = responseBody !== null && responseBody.code === 'SU';
+    const isSuccess = responseBody !== null && responseBody.code === "SU";
     if (!isSuccess) {
       alert(message);
       return;
     }
 
-    const { boardList } = responseBody as GetBoardListResponseDto;
+    const { boardList, totalElements, totalPages, currentPage, currentSection, totalSection, pageList } = responseBody as GetBoardListResponseDto;
+
     setTotalList(boardList);
+    setTotalElements(totalElements);
+    setTotalPages(totalPages);
+    setCurrentPage(currentPage);
+    setCurrentSection(currentSection);
+    setTotalSection(totalSection);
+    setPageList(pageList);
   };
 
-  // event handler: 작성하기 클릭 이벤트 처리 //
+  // event handler: 작성하기 버튼 클릭 //
   const onWriteButtonClick = () => {
     if (!accessToken) {
       navigate('/auth');
-    } 
-
+      return;
+    }
     navigate(BOARD_WRITE_ABSOLUTE_PATH);
   };
 
-  // event handler: 카테고리 탭 클릭 이벤트 처리 //
+  // event handler: 카테고리 탭 클릭 //
   const onCategoryClick = (category: string) => {
-    navigate(GET_BOARD_LIST_ABSOLUTE_PATH(category));
-    getBoardListRequest(category, 1, sort, accessToken).then(getBoardListResponse);
+    setSearchParams({ tag: category, page: '1', sort });
+    window.location.reload();
   };
 
-  // effect: 컴포넌트 로드시 실행할 함수 //
+  // event handler: 정렬 기준 클릭 //
+  const onSortClick = (newSort: string) => {
+    setSearchParams({ tag, page: '1', sort: newSort });
+    window.location.reload();
+  };
+
+  // effect: 컴포넌트 렌더링 시 게시글 목록 요청 //
   useEffect(() => {
-    console.log(GET_BOARD_LIST_ABSOLUTE_PATH('ALL'));
-    getBoardListRequest(tag, page, sort, accessToken)
-      .then(getBoardListResponse);
+    getBoardListRequest(tag, page, sort, accessToken).then(getBoardListResponse);
   }, [tag, page, sort, accessToken]);
 
-  // render: 게시판 컴포넌트 렌더링 //
+  // render //
   return (
     <div id="board-main-wrapper">
-      <div board-main>
+      <div className="board-main">
         {/* 카테고리 탭 */}
         <div className="board-category">
-          <div className="all" onClick={() => onCategoryClick('ALL')}>전체</div>
-          <div className="free" onClick={() => onCategoryClick('FREE')}>자유</div>
-          <div className="game" onClick={() => onCategoryClick('GAME')}>게임</div>
-          <div className="travel" onClick={() => onCategoryClick('TRAVEL')}>여행</div>
-          <div className="work-out" onClick={() => onCategoryClick('WORKOUT')}>운동</div>
-          <div className="music" onClick={() => onCategoryClick('MUSIC')}>음악</div>
-          <div className="economy" onClick={() => onCategoryClick('ECONOMY')}>경제</div>
-          <div className="fashion" onClick={() => onCategoryClick('FASHION')}>패션</div>
-          <div className="food" onClick={() => onCategoryClick('FOOD')}>음식</div>
+          <div className="all" onClick={() => onCategoryClick("ALL")}>
+            전체
+          </div>
+          <div className="free" onClick={() => onCategoryClick("FREE")}>
+            자유
+          </div>
+          <div className="game" onClick={() => onCategoryClick("GAME")}>
+            게임
+          </div>
+          <div className="travel" onClick={() => onCategoryClick("TRAVEL")}>
+            여행
+          </div>
+          <div className="work-out" onClick={() => onCategoryClick("WORKOUT")}>
+            운동
+          </div>
+          <div className="music" onClick={() => onCategoryClick("MUSIC")}>
+            음악
+          </div>
+          <div className="economy" onClick={() => onCategoryClick("ECONOMY")}>
+            경제
+          </div>
+          <div className="fashion" onClick={() => onCategoryClick("FASHION")}>
+            패션
+          </div>
+          <div className="food" onClick={() => onCategoryClick("FOOD")}>
+            음식
+          </div>
         </div>
 
-        {/* 검색 */}
+        {/* 검색 바 */}
         <div className="board-search-bar">
           <select className="board-search-select">
             <option>제목</option>
           </select>
-          <input type="text" placeholder="검색어를 입력해주세요." className="board-search-input" />
+          <input
+            type="text"
+            placeholder="검색어를 입력해주세요."
+            className="board-search-input"
+          />
           <button className="board-search-button">검색</button>
         </div>
 
+        {/* 게시글 작성 및 정렬 */}
         <div className="board-item-container">
-          <div className="board-write-button" onClick={onWriteButtonClick}>작성하기</div>
+          <div className="board-write-button" onClick={onWriteButtonClick}>
+            작성하기
+          </div>
           <div className="board-order-list">
-            <div className="up-to-date-order">최신순</div>
-            <div className="popularity-order">인기순</div>
+            <div className="up-to-date-order" onClick={() => onSortClick('LATEST')}>최신순</div>
+            <div className="views-order" onClick={() => onSortClick('VIEWS')}>조회순</div>
+            <div className="likes-order" onClick={() => onSortClick('LIKES')}>인기순</div>
           </div>
         </div>
 
-        {/* 게시글 목록 */}
+        {/* 게시글 리스트 */}
         <div className="board-list">
           {viewList.length === 0 ? (
             <div className="board-empty">게시글이 없습니다.</div>
@@ -183,20 +284,23 @@ export default function BoardMain() {
 
         {/* 페이지네이션 */}
         <div className="board-pagination">
-          {totalSection !== 0 &&
-            <Pagination 
+          {totalSection !== 0 && (
+            <Pagination
               currentPage={currentPage}
               currentSection={currentSection}
               totalSection={totalSection}
+              totalPages={totalPages}
               pageList={pageList}
               setCurrentPage={setCurrentPage}
               setCurrentSection={setCurrentSection}
+              basePath="/board"
+              queryParams={{ tag, sort }}
             />
-            }
+          )}
         </div>
       </div>
 
-      {/* 인기글 사이드바 */}
+      {/* 사이드바: 인기 게시글 */}
       <aside className="board-sidebar">
         <div className="board-sidebar-title">💙 오늘의 인기 글</div>
         <ul className="board-sidebar-list">
@@ -204,7 +308,7 @@ export default function BoardMain() {
             "친구없는 외딴의 모음",
             "서울에서 공방 관광했을때",
             "귀염보스간만!",
-            "충청도 같이 학식분 모십니다",
+            "충청도 같이 학식분 모십니다"
           ].map((title, i) => (
             <li key={i} className="board-sidebar-item">
               <span>{title}</span>

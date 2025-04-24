@@ -19,18 +19,20 @@ export default function UserBoard() {
   const [trades, setTrades] = useState<Trade[]>([]);
 
   const [activeTab, setActiveTab] = useState<"board" | "daily" | "used">(
-    typeParam === "board" ? "board" : typeParam === "daily" ? "daily" : "used"
+    typeParam === "board" ? "board" : typeParam === "daily" ? "daily" : "used",
   );
 
   // function: get user page response 처리 함수 //
-  const getUserBoardResponse = (responseBody: GetUserPageResponseDto | ResponseDto | null) => {
+  const getUserBoardResponse = (
+    responseBody: GetUserPageResponseDto | ResponseDto | null,
+  ) => {
     const message = !responseBody
       ? "서버에 문제가 있습니다."
       : responseBody.code === "DBE"
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "AF"
-      ? "인증에 실패했습니다."
-      : "";
+        ? "서버에 문제가 있습니다."
+        : responseBody.code === "AF"
+          ? "인증에 실패했습니다."
+          : "";
 
     const isSuccess = responseBody !== null && responseBody.code === "SU";
     if (!isSuccess) {
@@ -38,7 +40,8 @@ export default function UserBoard() {
       return;
     }
 
-    const { boards, dailyBoards, tradeBoards } = responseBody as GetUserPageResponseDto;
+    const { boards, dailyBoards, tradeBoards } =
+      responseBody as GetUserPageResponseDto;
     setBoards(boards);
     setDailys(dailyBoards);
     setTrades(tradeBoards);
@@ -58,7 +61,11 @@ export default function UserBoard() {
 
   // effect: 컴포넌트 로드시 실행할 함수 //
   useEffect(() => {
-    if (typeParam === "board" || typeParam === "daily" || typeParam === "used") {
+    if (
+      typeParam === "board" ||
+      typeParam === "daily" ||
+      typeParam === "used"
+    ) {
       setActiveTab(typeParam);
     }
   }, [typeParam]);
@@ -93,44 +100,50 @@ export default function UserBoard() {
           (boards.length === 0 ? (
             <div className="no-content">아직 작성한 글이 없습니다.</div>
           ) : (
-            [...boards].map(({ boardSequence, title, views, likeCount, creationDate }) => (
-              <div className="board-content" key={boardSequence}>
-                <div className="board-numbers content">{boardSequence}</div>
-                <div className="board-titles content">{title}</div>
-                <div className="board-views content">{views}</div>
-                <div className="board-likes content">{likeCount}</div>
-                <div className="board-date-time content">{creationDate}</div>
-              </div>
-            ))
+            [...boards].map(
+              ({ boardSequence, title, views, likeCount, creationDate }) => (
+                <div className="board-content" key={boardSequence}>
+                  <div className="board-numbers content">{boardSequence}</div>
+                  <div className="board-titles content">{title}</div>
+                  <div className="board-views content">{views}</div>
+                  <div className="board-likes content">{likeCount}</div>
+                  <div className="board-date-time content">{creationDate}</div>
+                </div>
+              ),
+            )
           ))}
         {activeTab === "daily" &&
           (dailys.length === 0 ? (
             <div className="no-content">아직 작성한 글이 없습니다.</div>
           ) : (
-            [...dailys].map(({ dailySequence, title, views, likeCount, creationDate }) => (
-              <div className="board-content" key={dailySequence}>
-                <div className="board-numbers content">{dailySequence}</div>
-                <div className="board-titles content">{title}</div>
-                <div className="board-views content">{views}</div>
-                <div className="board-likes content">{likeCount}</div>
-                <div className="board-date-time content">{creationDate}</div>
-              </div>
-            ))
+            [...dailys].map(
+              ({ dailySequence, title, views, likeCount, creationDate }) => (
+                <div className="board-content" key={dailySequence}>
+                  <div className="board-numbers content">{dailySequence}</div>
+                  <div className="board-titles content">{title}</div>
+                  <div className="board-views content">{views}</div>
+                  <div className="board-likes content">{likeCount}</div>
+                  <div className="board-date-time content">{creationDate}</div>
+                </div>
+              ),
+            )
           ))}
 
         {activeTab === "used" &&
           (trades.length === 0 ? (
             <div className="no-content">아직 작성한 글이 없습니다.</div>
           ) : (
-            [...trades].map(({ tradeSequence, title, views, likeCount, creationDate }) => (
-              <div className="board-content" key={tradeSequence}>
-                <div className="board-numbers content">{tradeSequence}</div>
-                <div className="board-titles content">{title}</div>
-                <div className="board-views content">{views}</div>
-                <div className="board-likes content">{likeCount}</div>
-                <div className="board-date-time content">{creationDate}</div>
-              </div>
-            ))
+            [...trades].map(
+              ({ tradeSequence, title, views, likeCount, creationDate }) => (
+                <div className="board-content" key={tradeSequence}>
+                  <div className="board-numbers content">{tradeSequence}</div>
+                  <div className="board-titles content">{title}</div>
+                  <div className="board-views content">{views}</div>
+                  <div className="board-likes content">{likeCount}</div>
+                  <div className="board-date-time content">{creationDate}</div>
+                </div>
+              ),
+            )
           ))}
       </div>
     </div>

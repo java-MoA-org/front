@@ -7,7 +7,7 @@ export default interface GetDailyResponseDto extends ResponseDto {
   title: string;
   content: string;
   creationDate: string;
-  writerNickname: string
+  writerNickname: string;
   views: number;
   likeCount: number;
   comments: Comment[];

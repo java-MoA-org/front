@@ -16,4 +16,3 @@ export interface UsedTradeSummaryResponseDto {
   userNickname: string;
   thumbnailImage: string;
 }
-

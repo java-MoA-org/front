@@ -8,45 +8,45 @@ import FindId from './FindId/FindId';
 import FindPassword from './FindPassword/FindPassword';
 
 export default function AuthPage() {
-    const [searchParams] = useSearchParams();
-    const [activeTab, setActiveTab] = useState<'signin' | 'signup' | 'findid' | 'findpassword'>('signin');
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState<'signin' | 'signup' | 'findid' | 'findpassword'>('signin');
 
-    useEffect(() => {
-        const tab = searchParams.get('tab');
+  useEffect(() => {
+    const tab = searchParams.get('tab');
 
-        // SNS 로그인 성공 후 백에서 userId 쿠키 등을 심었을 때,
-        // 그 쿠키가 존재하면 자동으로 회원가입 탭 활성화
-        const userId = document.cookie.includes('userId'); // 또는 useCookies 사용 가능
+    // SNS 로그인 성공 후 백에서 userId 쿠키 등을 심었을 때,
+    // 그 쿠키가 존재하면 자동으로 회원가입 탭 활성화
+    const userId = document.cookie.includes('userId'); // 또는 useCookies 사용 가능
 
-        if (tab === 'signup' || userId) {
-            setActiveTab('signup');
-        } else {
-            setActiveTab('signin');
-        }
-    }, [searchParams]);
+    if (tab === 'signup' || userId) {
+      setActiveTab('signup');
+    } else {
+      setActiveTab('signin');
+    }
+  }, [searchParams]);
 
-    const navigator = useNavigate();
+  const navigator = useNavigate();
 
-    const [page, setPage] = useState<AuthPages>('sign-in');
+  const [page, setPage] = useState<AuthPages>('sign-in');
 
-    const onPageChangeHandler = (page: AuthPages) => {
-        setPage(page);
-    };
+  const onPageChangeHandler = (page: AuthPages) => {
+    setPage(page);
+  };
 
-    useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken');
-        const joinType = localStorage.getItem('joinType');
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    const joinType = localStorage.getItem('joinType');
 
-        if (accessToken) navigator(ROOT_PATH);
-        if (joinType) setPage('sign-up');
-    }, []);
+    if (accessToken) navigator(ROOT_PATH);
+    if (joinType) setPage('sign-up');
+  }, []);
 
-    return (
-        <div>
-            {activeTab === 'signin' && <SignIn setActiveTab={setActiveTab} />}
-            {activeTab === 'signup' && <SignUp setActiveTab={setActiveTab} />}
-            {activeTab === 'findid' && <FindId setActiveTab={setActiveTab} />}
-            {activeTab === 'findpassword' && <FindPassword setActiveTab={setActiveTab} />}
-        </div>
-    );
+  return (
+    <div>
+      {activeTab === 'signin' && <SignIn setActiveTab={setActiveTab} />}
+      {activeTab === 'signup' && <SignUp setActiveTab={setActiveTab} />}
+      {activeTab === 'findid' && <FindId setActiveTab={setActiveTab} />}
+      {activeTab === 'findpassword' && <FindPassword setActiveTab={setActiveTab} />}
+    </div>
+  );
 }

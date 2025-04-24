@@ -224,10 +224,14 @@
   z-index: 0;
 }
 
-.nav-container .nav-right .session-time {
+.nav-container .nav-right .session-container .session-time {
   font-size: 0.9rem;
   font-weight: 500;
   color: #555;
+}
+
+.nav-container .nav-right .session-container .session-button {
+  cursor: pointer;
 }
 
 .nav-container .nav-right .friend-search {
