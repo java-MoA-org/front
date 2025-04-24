@@ -1,47 +1,41 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import "./BoardView.css";
-import Comment from "../../../../types/interfaces/comment.interface";
-import { useNavigate, useParams } from "react-router-dom";
-import { useCookies } from "react-cookie";
-import useSignInUserStore from "../../../../stores/sign-in-user.store";
-import {
-  ACCESS_TOKEN,
-  BOARD_ABSOLUTE_PATH,
-  BOARD_UPDATE_ABSOLUTE_PATH,
-} from "../../../../constants";
-import {
-  GetBoardCommentResponseDto,
-  GetBoardResponseDto,
-} from "../../../../apis/dto/response/board";
-import ResponseDto from "../../../../apis/dto/response/response.dto";
-import {
-  deleteBoardRequest,
-  getBoardCommentRequest,
-  getBoardRequest,
-  postBoardCommentRequest,
-} from "../../../../apis";
-import { PostBoardCommentRequestDto } from "../../../../apis/dto/request/board";
+import Comment from '../../../../types/interfaces/comment.interface';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import useSignInUserStore from '../../../../stores/sign-in-user.store';
+import { ACCESS_TOKEN, BOARD_ABSOLUTE_PATH, BOARD_UPDATE_ABSOLUTE_PATH } from '../../../../constants';
+import { GetBoardCommentResponseDto, GetBoardResponseDto } from '../../../../apis/dto/response/board';
+import ResponseDto from '../../../../apis/dto/response/response.dto';
+import { deleteBoardRequest, getBoardCommentRequest, getBoardRequest, postBoardCommentRequest, putBoardLikeRequest } from '../../../../apis';
+import { PostBoardCommentRequestDto } from '../../../../apis/dto/request/board';
+import likeClickIcon from '../../../../assets/images/likeClick.png';
+import likeIcon from '../../../../assets/images/like.png';
+import commentIcon from '../../../../assets/images/comment.png'
+import viewsIcon from '../../../../assets/images/views.png';
 
 // interface: 댓글 컴포넌트 속성 //
 interface CommentItemProps {
   commentItem: Comment;
 }
+
 // component: 댓글 컴포넌트 //
 function CommentItem({ commentItem }: CommentItemProps) {
   const { commentWriterId, commentWriteDate, comment } = commentItem;
 
   // render: 댓글 컴포넌트 렌더링 //
   return (
-    <div className="comment-box">
-      <div className="title-box">
-        <div className="title">{commentWriterId}</div>
-        <div className="divider"></div>
-        <div className="write-date">{commentWriteDate} 전</div>
+    <div className='comment-box'>
+      <div className='title-box'>
+        <div className='title'>{commentWriterId}</div>
+        <div className='divider'></div>
+        <div className='write-date'>{commentWriteDate}</div>
       </div>
       <div className="comment">{comment}</div>
     </div>
   );
 }
+
 
 // component: 게시판 게시글 상세보기 컴포넌트 //
 export default function BoardView() {
@@ -55,36 +49,45 @@ export default function BoardView() {
   const { userId } = useSignInUserStore();
 
   // state: 게시글 내용 상태 //
-  const [writerId, setWriterId] = useState<string>("");
-  const [writeDate, setWriteDate] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const [writerId, setWriterId] = useState<string>('익명');
+  const [writeDate, setWriteDate] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+  const [boardTag, setBoardTag] = useState<string>('');
+  const [views, setViews] = useState<number>(0);
+  const [likeCount, setLikeCount] = useState<number>(0);
 
   // state: 댓글 상태 //
   const [comment, setComment] = useState<string>("");
 
+  // state: 좋아요 여부 //
+  const [liked, setLiked] = useState<boolean>(false);
+
   // state: 댓글 리스트 상태 //
   const [comments, setComments] = useState<Comment[]>([]);
 
+  // state: 댓글창 보이기 상태 //
+  const [showCommentInput, setShowCommentInput] = useState<boolean>(false);
+
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
+
+  // variable: 좋아요 여부 //
+  const isLiked = liked; // liked가 true이면 좋아요 상태
+  // variable: 좋아요 클래스 //
+  const likedClass = isLiked ? 'icon likes-click' : 'icon likes';
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
   // function: get board response 처리 함수 //
-  const getBoardResponse = (
-    responseBody: GetBoardResponseDto | ResponseDto | null,
-  ) => {
-    const message = !responseBody
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "DBE"
-        ? "서버에 문제가 있습니다."
-        : responseBody.code === "AF"
-          ? "인증에 실패했습니다."
-          : responseBody.code === "ND"
-            ? "존재하지 않는 일기입니다."
-            : "";
+  const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null,) => {
+
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'AF' ? '인증에 실패했습니다.' :
+      responseBody.code === 'NB' ? '존재하지 않는 게시글입니다.' : '';
 
     const isSuccess = responseBody !== null && responseBody.code === "SU";
 
@@ -93,45 +96,51 @@ export default function BoardView() {
       navigator(BOARD_ABSOLUTE_PATH);
       return;
     }
+
+    const { title, content, creationDate, views, tag, likeCount } = responseBody as GetBoardResponseDto;
+    setTitle(title);
+    setContent(content);
+    setWriterId('익명');
+    setWriteDate(creationDate);
+    setViews(views);
+    setBoardTag(tag);
+    setLikeCount(likeCount);
   };
 
   // function: get comment response 처리 함수 //
-  const getBoardCommentResponse = (
-    responseBody: GetBoardCommentResponseDto | ResponseDto | null,
-  ) => {
-    const message = !responseBody
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "DBE"
-        ? "서버에 문제가 있습니다."
-        : responseBody.code === "AF"
-          ? "인증에 실패했습니다."
-          : "";
+  const getBoardCommentResponse = (responseBody: GetBoardCommentResponseDto | ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'AF' ? '인증에 실패했습니다.' : '';
 
-    const isSuccess = responseBody !== null && responseBody.code === "SU";
+    const isSuccess = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccess) {
       alert(message);
       return;
     }
 
     const { comments } = responseBody as GetBoardCommentResponseDto;
-    setComments(comments);
+
+    // 댓글 작성자 익명 처리 //
+    const anonymizedComments = comments.map(comment => ({
+      ...comment,
+      commentWriterId: '익명'
+    }));
+
+    setComments(anonymizedComments);
   };
 
   // function: delete board response 처리 함수 //
   const deleteBoardResponse = (responseBody: ResponseDto | null) => {
-    const message = !responseBody
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "DBE"
-        ? "서버에 문제가 있습니다."
-        : responseBody.code === "AF"
-          ? "인증에 실패했습니다."
-          : responseBody.code === "ND"
-            ? "존재하지 않는 일기입니다."
-            : responseBody.code === "NP"
-              ? "권한이 없습니다."
-              : "";
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'AF' ? '인증에 실패했습니다.' :
+      responseBody.code === 'NB' ? '존재하지 않는 게시글입니다.' :
+      responseBody.code === 'NP' ? '권한이 없습니다.' : '';
 
-    const isSuccess = responseBody !== null && responseBody.code === "SU";
+    const isSuccess = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccess) {
       alert(message);
       return;
@@ -141,17 +150,35 @@ export default function BoardView() {
     navigator(BOARD_ABSOLUTE_PATH);
   };
 
+  // function: put likes response 처리 함수 //
+  const putLikeResponse = (responseBody: ResponseDto | null) => {
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'AF' ? '인증에 실패했습니다.' : '';
+    
+    const isSuccess = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccess) {
+      alert(message);
+      return;
+    }
+
+    if (responseBody && responseBody.data) {
+      setLikeCount(responseBody.data.likeCount);
+      setLiked(responseBody.data.liked);
+
+      if (!boardSequence || !accessToken) return;
+    };
+  }
+
   // function: post comment response 처리 함수 //
   const postCommentResponse = (responseBody: ResponseDto | null) => {
-    const message = !responseBody
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "DBE"
-        ? "서버에 문제가 있습니다."
-        : responseBody.code === "AF"
-          ? "인증에 실패했습니다."
-          : "";
+    const message =
+      !responseBody ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
+      responseBody.code === 'AF' ? '인증에 실패했습니다.' : '';
 
-    const isSuccess = responseBody !== null && responseBody.code === "SU";
+    const isSuccess = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccess) {
       alert(message);
       return;
@@ -185,6 +212,21 @@ export default function BoardView() {
     navigator(BOARD_UPDATE_ABSOLUTE_PATH(boardSequence));
   };
 
+  // event handler: 댓글 아이콘 클릭 이벤트 처리 //
+  const onCommentIconClickHandler = () => {
+    if (accessToken) {
+      setShowCommentInput(prev => !prev); // 댓글 입력칸 토글
+    } else {
+      alert('댓글을 작성하려면 로그인해야 합니다.');
+    }
+  };
+
+  // event handler: 좋아요 버튼 클릭 이벤트 처리 //
+  const onLikeClickHandler = () => {
+    if (!boardSequence || !accessToken) return;
+    putBoardLikeRequest(boardSequence, accessToken).then(putLikeResponse);
+  };
+
   // event handler: 댓글 작성 클릭 이벤트 처리 //
   const onPostCommentClickHandler = () => {
     if (!accessToken || !boardSequence || !comment.trim()) return;
@@ -199,33 +241,23 @@ export default function BoardView() {
 
   // effect: 컴포넌트 로드시 실행할 함수 //
   useEffect(() => {
-    if (!accessToken) return;
     if (!boardSequence) {
       navigator(BOARD_ABSOLUTE_PATH);
       return;
     }
     getBoardRequest(boardSequence, accessToken).then(getBoardResponse);
-    // getEmpathyRequest(boardSequence, accessToken).then(getEmpathyResponse);
-    getBoardCommentRequest(boardSequence, accessToken).then(
-      getBoardCommentResponse,
-    );
+    getBoardCommentRequest(boardSequence, accessToken).then(getBoardCommentResponse);
   }, []);
 
   // component: 게시판 게시글 상세보기 컴포넌트 렌더링 //
   return (
-    <div id="board-view-wrapper">
-      <div
-        className="back-button"
-        onClick={() => navigator(BOARD_ABSOLUTE_PATH)}
-      >
-        글 목록
-      </div>
-
-      <div className="bulletin-info-container">
-        <div className="top-bar">
-          <div className="title">{title}</div>
-          <div className="category">게시판</div>{" "}
-          {/* 필요시 category도 상태로 관리 가능 */}
+    <div id='board-view-wrapper'>
+      <div className='back-button' onClick={() => navigator(BOARD_ABSOLUTE_PATH)}>글 목록</div>
+  
+      <div className='bulletin-info-container'>
+        <div className='top-bar'>
+          <div className='title'>{title}</div>
+          <div className='category'>{boardTag}</div>
         </div>
         <div className="bottom-bar">
           <div className="default-user-image"></div>
@@ -233,11 +265,13 @@ export default function BoardView() {
             <div className="userName">{writerId}</div>
             <div className="date">{writeDate}</div>
           </div>
-          <div className="stats">
-            <div className="like-count">🧡 좋아요</div>{" "}
-            {/* 추후 좋아요 수 상태 연결 */}
-            <div className="view-count">👁‍🗨 조회수</div>{" "}
-            {/* 추후 조회수 상태 연결 */}
+          <div className='stats'>
+            <div className='like-count'>
+              <img src={likeClickIcon} alt="Like" className="icon" /> {likeCount}
+            </div>
+            <div className='view-count'>
+              <img src={viewsIcon} alt="Views" className="icon" /> {views}
+            </div>
           </div>
         </div>
       </div>
@@ -249,9 +283,13 @@ export default function BoardView() {
             dangerouslySetInnerHTML={{ __html: content }}
           />
         </div>
-        <div className="content-bottom-bar">
-          <div className="like-button">🧡</div>
-          <div className="comment-button">📄</div>
+        <div className='content-bottom-bar'>
+          <div className='like-button'>
+            <img src={likeIcon} alt="Like" className={likedClass} onClick={onLikeClickHandler}/> {likeCount}
+          </div>
+          <div className='comment-button' onClick={onCommentIconClickHandler}>
+            <img src={commentIcon} alt="Comment" className="icon" />
+          </div>
           {userId === writerId && (
             <div className="button-group">
               <button onClick={onUpdateClickHandler}>수정</button>
@@ -260,27 +298,33 @@ export default function BoardView() {
           )}
         </div>
       </div>
-
-      <div className="bulletin-comment-container">
-        <div className="comment-write">
-          <textarea
-            className="comment-write-content"
-            placeholder="댓글을 입력하세요."
-            value={comment}
-            onChange={onCommentChangeHandler}
-          />
-          <button
-            className="comment-write-button"
-            onClick={onPostCommentClickHandler}
-          >
-            댓글 작성
-          </button>
+  
+      <div className='bulletin-comment-container'>
+        <div className='comments-list'>
+          {comments.map((commentItem, index) => (
+            <CommentItem key={index} commentItem={commentItem} />
+          ))}
         </div>
-
-        {comments.map((commentItem, index) => (
-          <CommentItem key={index} commentItem={commentItem} />
-        ))}
+  
+        {/* 댓글 입력 칸은 인증된 사용자만 보임 */}
+        {showCommentInput && accessToken && (
+          <div className='comment-write'>
+            <textarea
+              className='comment-write-content'
+              placeholder='댓글을 입력하세요.'
+              value={comment}
+              onChange={onCommentChangeHandler}
+            />
+            <button
+              className='comment-write-button'
+              onClick={onPostCommentClickHandler}
+            >
+              댓글 작성
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+

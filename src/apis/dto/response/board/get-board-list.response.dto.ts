@@ -5,6 +5,11 @@ import ResponseDto from "../response.dto";
 export default interface GetBoardListResponseDto extends ResponseDto {
   boardList: BoardSummaryResponseDto[];
   totalPages: number;
+  totalElements: number;
+  currentPage: number;
+  currentSection: number;
+  totalSection: number;
+  pageList: number[];
 }
 
 // interface: board summary response body DTO //
