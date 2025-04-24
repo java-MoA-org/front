@@ -98,9 +98,7 @@ const Notice = () => {
         {/* render: 검색바 (추후 구현) */}
         {activeTab === "공지사항" && (
           <div className="notice-search-bar">
-            <select className="notice-search-select">
-              <option>제목</option>
-            </select>
+            
             <input
               type="text"
               placeholder="검색어를 입력해주세요."
