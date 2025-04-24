@@ -101,7 +101,7 @@ export default function UserPageUpdate() {
 
   // function: 닉네임 중복 클릭 이벤트 처리 //
   const onCheckUserNicknameClickHandler = () => {
-    const requestBody: UserNicknameCheckRequestDto = { userNickname };
+    const requestBody: UserNicknameCheckRequestDto = { userNickname: updateNickName };
     userNicknameCheckRequest(requestBody).then(userNicknameCheckResponse);
   };
 
