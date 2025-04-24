@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import moaHeaderLogo from '../../assets/images/moa_main_logo.png';
 import userImg from '../../assets/images/ex-user1.png';
 import cameraIcon from '../../assets/images/camera.png';
+
 import {
   ACCESS_TOKEN,
   BOARD_ABSOLUTE_PATH,
