@@ -648,6 +648,7 @@ export default function SignUp({ setActiveTab }: Props) {
               {label}
             </button>
           ))}
+          <div className="interest-hint">관심사를 선택하지 않을 시 자동으로 일상을 선택합니다.</div>
         </div>
       </div>
       <button
