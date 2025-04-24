@@ -2,27 +2,23 @@ import './style.css';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import moaHeaderLogo from '../../assets/images/moa_main_logo.png';
-import userImg from '../../assets/images/ex-user1.png';
+import defaultUserImg from '../../assets/images/ex-user1.png';
 import cameraIcon from '../../assets/images/camera.png';
 
 import {
   ACCESS_TOKEN,
   BOARD_ABSOLUTE_PATH,
-  BOARD_PATH,
   BOARD_WRITE_ABSOLUTE_PATH,
   DAILY_ABSOLUTE_PATH,
-  DAILY_PATH,
   DAILY_WRITE_ABSOLUTE_PATH,
   REFRESH_TOKEN,
   ROOT_PATH,
   USED_TRADE_ABSOLUTE_PATH,
-  USED_TRADE_PATH,
   USED_TRADE_WRITE_ABSOLUTE_PATH,
 } from '../../constants';
-import { Cookies, useCookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import useSignInUserStore from '../../stores/sign-in-user.store';
 import { refreshAccessTokenRequest, userSignOutRequest } from '../../apis';
-import { access } from 'fs';
 import useSessionTimerStore from '../../stores/session-timer.store';
 
 const Header = () => {
@@ -34,7 +30,12 @@ const Header = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [cookies, _, removeCookie] = useCookies();
 
-  const { resetUser } = useSignInUserStore();
+  const {
+    userNickname,
+    userEmail,
+    userProfileImage,
+    resetUser
+  } = useSignInUserStore();
 
   const accessToken = cookies[ACCESS_TOKEN];
   const refreshToken = cookies[REFRESH_TOKEN];
@@ -61,7 +62,6 @@ const Header = () => {
     setTimeLeft(parseInt(expirationTime, 10));
   };
 
-  // session timer
   useEffect(() => {
     const timer = setInterval(() => {
       decreaseTimeLeft();
@@ -70,17 +70,12 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    if (!accessToken) {
-      if (timeLeft === 0) {
-        // 자동 로그아웃 처리 등
-        resetTime();
-        alert('세션이 만료되었습니다.');
-        // navigate('/auth');
-      }
+    if (!accessToken && timeLeft === 0) {
+      resetTime();
+      alert('세션이 만료되었습니다.');
     }
   }, [timeLeft]);
 
-  // click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -106,24 +101,27 @@ const Header = () => {
   return (
     <div className="header-wrapper">
       <div className="header-top">
-        <div className="logo" onClick={() => navigate('/')}>
-          <img src={moaHeaderLogo} className="logo-img" alt="로고" />
-        </div>
+        <div className="logo" onClick={() => navigate('/')}> <img src={moaHeaderLogo} className="logo-img" alt="로고" /> </div>
 
         <div className="user-info">
           <span onClick={() => navigate('/message')}>💬</span>
           <span>⭐</span>
           <div className="profile-wrapper" ref={dropdownRef}>
-            <img src={userImg} className="profile-img" onClick={() => setDropdownOpen((prev) => !prev)} alt="프로필" />
+            <img
+              src={userProfileImage || defaultUserImg}
+              className="profile-img"
+              onClick={() => setDropdownOpen((prev) => !prev)}
+              alt="프로필"
+            />
             {dropdownOpen && (
               <div className="user-dropdown">
                 <div className="profile-img-container">
                   <img
-                    src={userImg}
+                    src={userProfileImage || defaultUserImg}
                     className="dropdown-profile-img"
                     onClick={() => {
                       setDropdownOpen(false);
-                      navigate('/mypage');
+                      navigate(`/userpage/${userNickname}`);
                     }}
                     alt="드롭다운 프로필"
                   />
@@ -132,17 +130,17 @@ const Header = () => {
                     className="camera-icon"
                     onClick={() => {
                       setDropdownOpen(false);
-                      navigate('/mypage');
+                      navigate(`/userpage/${userNickname}`);
                     }}
                     alt="카메라 변경 아이콘"
                   />
                 </div>
                 <div className="dropdown-info">
-                  <strong>LYS</strong>님<p className="dropdown-email">sella45@naver.com</p>
+                  <strong>{userNickname}</strong>님<p className="dropdown-email">{userEmail}</p>
                   <button
                     onClick={() => {
                       setDropdownOpen(false);
-                      navigate('/mypage');
+                      navigate(`/userpage/${userNickname}`);
                     }}
                   >
                     마이페이지
@@ -154,7 +152,6 @@ const Header = () => {
           </div>
         </div>
       </div>
-
       <div className="nav-container">
         <nav className="nav">
           {['게시판', '일상', '중고거래', '공지사항'].map((menu) => (
@@ -206,13 +203,11 @@ const Header = () => {
             </div>
           ))}
         </nav>
-
         <div className="nav-right">
           {refreshToken && accessToken && (
             <div className="session-container">
               <span className="session-time">세션 남은시간 : {formatTime(timeLeft)}</span>
               <div className="session-button" onClick={onExtendSessionClickHandler}>
-                {' '}
                 세션 연장하기
               </div>
             </div>
@@ -220,7 +215,6 @@ const Header = () => {
           <input className="friend-search" placeholder="친구 검색" />
         </div>
       </div>
-
       <div id="main">
         <Outlet />
       </div>

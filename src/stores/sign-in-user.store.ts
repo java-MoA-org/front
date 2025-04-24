@@ -7,6 +7,8 @@ interface SignInUserState {
   userProfileImage: string | null;
   userIntroduce: string | "";
   userPhoneNumber: string;
+  userEmail: string;
+  userRole: string;
   userInterests: UserInterest;
 
   setUserId: (userId: string) => void;
@@ -14,6 +16,8 @@ interface SignInUserState {
   setUserProfileImage: (userProfileImage: string | null) => void;
   setUserPhoneNumber: (userPhoneNumber: string) => void;
   setUserIntroduce: (userIntroduce: string) => void;
+  setUserEmail: (userEmail: string) => void;
+  setUserRole: (userRole: string) => void;
   setUserInterests: (userInterests: UserInterest) => void;
 
   resetUser: () => void;
@@ -36,6 +40,8 @@ const useSignInUserStore = create<SignInUserState>((set) => ({
   userProfileImage: null,
   userIntroduce: "",
   userPhoneNumber: "",
+  userEmail: "",
+  userRole: "",
   userInterests: defaultInterests,
 
   setUserId: (userId) => set({ userId }),
@@ -43,6 +49,8 @@ const useSignInUserStore = create<SignInUserState>((set) => ({
   setUserProfileImage: (userProfileImage) => set({ userProfileImage }),
   setUserIntroduce: (userIntroduce) => set({ userIntroduce }),
   setUserPhoneNumber: (userPhoneNumber) => set({ userPhoneNumber }),
+  setUserEmail: (userEmail) => set({ userEmail }),
+  setUserRole: (userRole) => set({ userRole }),
   setUserInterests: (userInterests) => set({ userInterests }),
 
   resetUser: () =>
@@ -52,6 +60,8 @@ const useSignInUserStore = create<SignInUserState>((set) => ({
       userProfileImage: null,
       userIntroduce: "",
       userPhoneNumber: "",
+      userEmail: "",
+      userRole: "",
       userInterests: defaultInterests,
     }),
 }));
