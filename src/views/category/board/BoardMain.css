@@ -118,9 +118,11 @@
   align-items: center;
 }
 
-#board-main-wrapper .popularity-order:hover,
-#board-main-wrapper .up-to-date-order:hover {
+#board-main-wrapper .likes-order:hover,
+#board-main-wrapper .up-to-date-order:hover,
+#board-main-wrapper .views-order:hover {
   font-weight: bold;
+  cursor: pointer;
 }
 
 /* 글 목록 리스트 */
@@ -146,6 +148,7 @@
   font-size: 18px;
   font-weight: bold;
   color: #333;
+  margin-bottom: 10px;
 }
 
 #board-main-wrapper .board-stats {
@@ -170,6 +173,12 @@
   color: #aaa;
   align-items: center;
   margin-top: 12px;
+}
+
+#board-main-wrapper .check-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #board-main-wrapper .footer-left {

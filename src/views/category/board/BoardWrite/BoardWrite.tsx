@@ -16,11 +16,11 @@ export default function BoardWrite() {
 
   // state: 게시판 글 작성 내용 상태 //
   const [tag, setTag] = useState<BoardTagType>(BoardTagType.FREE);
-  const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
-  const [imageList, setimageList] = useState<string[]>([]);
-  const [location, setLocation] = useState<string>("");
-  const [detailLocation, setDetailLocation] = useState<string>("");
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+  const [imageList, setImageList] = useState<string[]>([]);  // 이미지 목록 상태
+  const [location, setLocation] = useState<string>('');
+  const [detailLocation, setDetailLocation] = useState<string>('');
 
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
@@ -88,9 +88,9 @@ export default function BoardWrite() {
     setContent(content);
   };
 
-  // event handler: 이미지 변경 이벤트 처리 //
+  // event handler: 이미지 목록 변경 이벤트 처리 //
   const onImageListChangeHandler = (imageList: string[]) => {
-    setimageList(imageList);
+    setImageList(imageList);  // 이미지를 상태로 업데이트
   };
 
   // event handler: 게시판 글 작성 버튼 클릭 이벤트 처리 //
@@ -110,16 +110,13 @@ export default function BoardWrite() {
 
   // render: 게시판 게시글 작성 컴포넌트 렌더링 //
   return (
-    <div id="board-write-wrapper">
-      <div className="write-container">
-        <div className="write-title">게시판 글 작성</div>
-        <div className="contents-container">
-          <div className="board-category">카테고리</div>
-          <div className="input-row-box">
-            <div
-              className={freeContentClass}
-              onClick={() => onBoardTagTypeChangeHandler(BoardTagType.FREE)}
-            >
+    <div id='board-write-wrapper'>
+      <div className='write-container'>
+        <div className='write-title'>게시판 글 작성</div>
+        <div className='contents-container'>
+          <div className='board-category'>카테고리</div>
+          <div className='input-row-box'>
+            <div className={freeContentClass} onClick={() => onBoardTagTypeChangeHandler(BoardTagType.FREE)}>
               자유
             </div>
             <div
@@ -174,9 +171,13 @@ export default function BoardWrite() {
               onChange={onTitleChangeHandler}
             />
           </div>
-          <div className="input-column-box">
-            <div className="title">내용</div>
-            <TextEditor content={content} setContent={onContentChangeHandler} />
+          <div className='input-column-box'>
+            <div className='title'>내용</div>
+            <TextEditor
+            content={content}
+            setContent={setContent}
+            onImageListChange={onImageListChangeHandler}
+          />
           </div>
           <div className="button-box">
             <div

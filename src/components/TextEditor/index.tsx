@@ -1,30 +1,44 @@
-import React from "react";
+import React, { useState } from 'react';
 
-import { Color } from "@tiptap/extension-color";
-import ListItem from "@tiptap/extension-list-item";
-import TextStyle from "@tiptap/extension-text-style";
-import Placeholder from "@tiptap/extension-placeholder";
-import { Editor, EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import { Color } from '@tiptap/extension-color';
+import ListItem from '@tiptap/extension-list-item';
+import TextStyle from '@tiptap/extension-text-style';
+import { Image } from '@tiptap/extension-image';
+import { Editor, EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import axios from 'axios';
 
 import "./style.css";
 
 // interface: Text Editor Menu Bar 컴포넌트 속성 //
 interface MenuBarProp {
   editor: Editor | null;
+  isUploading: boolean;
+  handleImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 // component: Text Editor Menu Bar 컴포넌트 //
-function MenuBar({ editor }: MenuBarProp) {
+function MenuBar({ editor, isUploading, handleImageUpload }: MenuBarProp) {
   if (!editor) return null;
 
   return (
     <div id="text-editor-menu-bar">
       <div className="item-box">
+        {/* Bold 버튼 */}
         <div
-          className={`item ${editor.isActive("bold") ? "active" : ""} bold`}
+          className={`item bold ${editor.isActive('bold') ? 'active' : ''}`}
           onClick={() => editor.chain().focus().toggleBold().run()}
         ></div>
+
+        {/* 이미지 업로드 버튼 */}
+        <label htmlFor="image-upload-input" className={`item image-upload ${isUploading ? 'uploading' : ''}`}></label>
+        <input
+          id="image-upload-input"
+          type="file"
+          accept="image/png, image/jpeg"
+          onChange={handleImageUpload}
+          style={{ display: 'none' }}
+        />
       </div>
     </div>
   );
@@ -34,38 +48,86 @@ function MenuBar({ editor }: MenuBarProp) {
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
   StarterKit.configure({
-    bulletList: {
-      keepMarks: true,
-      keepAttributes: false,
-    },
-    orderedList: {
-      keepMarks: true,
-      keepAttributes: false,
-    },
+    bulletList: { keepMarks: true, keepAttributes: false },
+    orderedList: { keepMarks: true, keepAttributes: false },
   }),
+  Image,
 ];
 
 // interface: tiptap Text Editor 컴포넌트 속성 //
 interface Props {
   content: string;
   setContent: (content: string) => void;
+  onImageListChange: (imageList: string[]) => void;  // 이미지 목록을 string[]으로 받음
 }
 
 // component: tiptap Text Editor 컴포넌트 //
-export default function TextEditor({ content, setContent }: Props) {
+export default function TextEditor({ content, setContent, onImageListChange }: Props) {
+  const [isUploading, setIsUploading] = useState(false);
+  const [imageList, setImageList] = useState<string[]>([]);  // 이미지 목록의 타입을 string[]으로 설정
+
   // state: editor 상태 //
   const editor = useEditor({
     extensions,
     content,
     onUpdate: ({ editor }) => {
-      // getText() 사용하여 순수 텍스트만 얻기
-      setContent(editor.getText()); // editor.getHTML() -> editor.getText()
-    },
+      setContent(editor.getText());
+    }
   });
+
+  // 이미지 업로드 처리 함수 //
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // ✅ 이미지 타입 체크: PNG, JPG만 허용
+      if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        alert('PNG 또는 JPG 파일만 업로드할 수 있습니다.');
+        return;
+      }
+
+      // ✅ 파일 크기 체크: 5MB 이하만 허용
+      if (file.size > 5 * 1024 * 1024) {
+        alert('파일 크기는 5MB 이하로 업로드해주세요.');
+        return;
+      }
+
+      setIsUploading(true);
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      try {
+        // 이미지 업로드 API 요청
+        const response = await axios.post('http://localhost:4000/api/v1/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        // 업로드된 이미지 URL을 에디터에 삽입
+        if (editor) {
+          const imageUrl = response.data.url; // 서버에서 받은 이미지 URL
+          editor.chain().focus().setImage({ src: imageUrl }).run();
+          
+          // 이미지 목록 업데이트
+          setImageList((prevList) => {
+            const updatedList = [...prevList, imageUrl];
+            onImageListChange(updatedList);  // 이미지 목록을 부모 컴포넌트에 전달
+            return updatedList;
+          });
+        }
+      } catch (error) {
+        console.error('이미지 업로드 실패:', error);
+      } finally {
+        setIsUploading(false);
+      }
+    }
+  };
 
   return (
     <>
-      <MenuBar editor={editor} />
+      {/* 텍스트 에디터 메뉴 바 컴포넌트 */}
+      <MenuBar editor={editor} isUploading={isUploading} handleImageUpload={handleImageUpload} />
+
+      {/* tiptap 에디터 콘텐츠 영역 */}
       <EditorContent editor={editor} className="editor-content" />
     </>
   );
