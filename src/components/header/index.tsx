@@ -56,7 +56,9 @@ const Header = () => {
       resetUser();
       alert('인증 정보가 만료되어 연장할 수 없습니다.');
       window.location.reload();
+      return;
     }
+
     setTimeLeft(parseInt(expirationTime, 10));
   };
 
@@ -69,15 +71,19 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    if (!accessToken) {
-      if (timeLeft === 0) {
-        // 자동 로그아웃 처리 등
-        resetTime();
-        alert('세션이 만료되었습니다.');
-        // navigate('/auth');
-      }
+    if (accessToken) return;
+    if (accessToken && timeLeft === 0) {
+      resetTime();
+      alert('세션이 만료되었습니다.');
+      navigate('/');
     }
   }, [timeLeft]);
+
+  useEffect(() => {
+    if (accessToken) {
+      onExtendSessionClickHandler();
+    }
+  }, [location.pathname]);
 
   // click outside to close dropdown
   useEffect(() => {
