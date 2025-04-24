@@ -20,7 +20,7 @@
 }
 
 #text-editor-menu-bar .item-box .item.active {
-  background-color: #8EACCD;
+  background-color: #8eaccd;
 }
 
 #text-editor-menu-bar .item-box .divider {
@@ -51,4 +51,3 @@
 .editor-content p {
   margin: 4px 0;
 }
-

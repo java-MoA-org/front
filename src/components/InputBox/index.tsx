@@ -6,7 +6,7 @@ interface Props {
   label: string;
   value: string;
   placeholder: string;
-  type: "text" | "password";
+  type: "text" | "password" | "textarea";
   buttonName?: string;
   message: string;
   isErrorMessage?: boolean;
@@ -30,7 +30,7 @@ export default function InputBox(props: Props) {
     isErrorMessage,
     isButtonActive,
     readOnly,
-    disable
+    disable,
   } = props;
   const { onChange, onButtonClick } = props;
 
@@ -45,14 +45,25 @@ export default function InputBox(props: Props) {
       <div className="label">{label}</div>
       <div className="input-contents">
         <div className="input-area">
-          <input
-            type={type}
-            value={value}
-            placeholder={placeholder}
-            onChange={onChange}
-            readOnly={readOnly}
-            disabled={disable}
-          />
+          {type === "textarea" ? (
+            <textarea
+              value={value}
+              placeholder={placeholder}
+              onChange={onChange as any} // 타입 오류 피하기
+              readOnly={readOnly}
+              disabled={disable}
+              className="textarea" // height 적용 위해 클래스 부여
+            />
+          ) : (
+            <input
+              type={type}
+              value={value}
+              placeholder={placeholder}
+              onChange={onChange}
+              readOnly={readOnly}
+              disabled={disable}
+            />
+          )}
           {onButtonClick && buttonName && (
             <div className={buttonClass} onClick={onButtonClick}>
               {buttonName}

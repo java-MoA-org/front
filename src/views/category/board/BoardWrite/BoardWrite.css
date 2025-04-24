@@ -17,7 +17,7 @@
   font-weight: 600;
   margin-bottom: 24px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #BBBFCA;
+  border-bottom: 1px solid #bbbfca;
 }
 
 #board-write-wrapper .contents-container {
@@ -36,28 +36,28 @@
   flex-wrap: wrap;
   gap: 12px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #BBBFCA;
+  border-bottom: 1px solid #bbbfca;
 }
 
 #board-write-wrapper .content {
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
-  border: 1px solid #8EACCD;
+  border: 1px solid #8eaccd;
   color: white;
-  background-color: #8EACCD;
+  background-color: #8eaccd;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 #board-write-wrapper .content:hover {
-  background-color: #007BBD;
+  background-color: #007bbd;
 }
 
 #board-write-wrapper .content.active {
   color: #ffffff;
-  background-color: #007BBD;
-  border: 1px solid #007BBD;
+  background-color: #007bbd;
+  border: 1px solid #007bbd;
 }
 
 #board-write-wrapper .input-column-box {
@@ -71,9 +71,9 @@
   font-weight: 600;
 }
 
-#board-write-wrapper .input-column-box input[type='text'] {
+#board-write-wrapper .input-column-box input[type="text"] {
   padding: 10px 14px;
-  border: 1px solid #BBBFCA;
+  border: 1px solid #bbbfca;
   border-radius: 8px;
   font-size: 14px;
 }
@@ -93,17 +93,17 @@
 }
 
 #board-write-wrapper .button.middle.primary {
-  background-color: #8EACCD;
+  background-color: #8eaccd;
   color: white;
   cursor: pointer;
 }
 
 #board-write-wrapper .button.middle.primary:hover {
-  background-color: #007BBD;
+  background-color: #007bbd;
 }
 
 #board-write-wrapper .button.middle.disable {
-  background-color: #BBBFCA;
+  background-color: #bbbfca;
   color: white;
   cursor: not-allowed;
 }

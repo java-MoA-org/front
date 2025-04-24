@@ -5,7 +5,9 @@ interface FollowButtonProps {
   initialIsFollowing?: boolean; // ❗초기 상태 props로 받기 (선택적)
 }
 
-export default function FollowButton({ initialIsFollowing = false }: FollowButtonProps) {
+export default function FollowButton({
+  initialIsFollowing = false,
+}: FollowButtonProps) {
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
 
   const handleToggle = () => {
