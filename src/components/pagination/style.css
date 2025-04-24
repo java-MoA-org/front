@@ -1,16 +1,20 @@
 .pagination-box {
   display: flex;
   align-items: center;
-  gap: 24px;
+  justify-content: center;
+  gap: 20px;
 }
 
 .pagination-box .pagination-button {
   width: 40px;
   height: 40px;
-
-  background-size: 100% 100%;
-
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .pagination-box .pagination-button.left {
@@ -21,27 +25,39 @@
   background-image: url(/src/assets/images/page-right.png);
 }
 
+.pagination-box .pagination-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 .pagination-box .pagination {
   display: flex;
-  gap: 16px;
+  gap: 12px;
 }
 
 .pagination-box .pagination .page {
-  color: var(--Lightmode-Grey2);
-
+  color: #394867;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-
   cursor: pointer;
+  transition: color 0.3s ease, font-weight 0.3s ease;
 }
 
 .pagination-box .pagination .page:hover {
-  font-weight: 700;
+  font-weight: bold;
+  color: #394867;
 }
 
 .pagination-box .pagination .page.active {
-  color: var(--Lightmode-Grey);
+  color: #394867;
   font-weight: 700;
   cursor: default;
+}
+
+.pagination-box .pagination .page:focus {
+  outline: none;
+}
+
+.pagination-box .pagination .page:not(:last-child) {
+  margin-right: 12px;
 }

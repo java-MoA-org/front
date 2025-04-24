@@ -11,7 +11,6 @@ import TextEditor from '../../../../components/TextEditor';
 
 // component: 게시판 게시글 작성 컴포넌트 //
 export default function BoardWrite() {
-
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
 
@@ -19,7 +18,7 @@ export default function BoardWrite() {
   const [tag, setTag] = useState<BoardTagType>(BoardTagType.FREE);
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [imageList, setimageList] = useState<string[]>([]);
+  const [imageList, setImageList] = useState<string[]>([]);  // 이미지 목록 상태
   const [location, setLocation] = useState<string>('');
   const [detailLocation, setDetailLocation] = useState<string>('');
 
@@ -83,10 +82,10 @@ export default function BoardWrite() {
   const onContentChangeHandler = (content: string) => {
     setContent(content);
   };
-  
-  // event handler: 이미지 변경 이벤트 처리 //
+
+  // event handler: 이미지 목록 변경 이벤트 처리 //
   const onImageListChangeHandler = (imageList: string[]) => {
-    setimageList(imageList);
+    setImageList(imageList);  // 이미지를 상태로 업데이트
   };
 
   // event handler: 게시판 글 작성 버튼 클릭 이벤트 처리 //
@@ -97,11 +96,11 @@ export default function BoardWrite() {
       tag, title, content, imageList, location, detailLocation
     };
     postBoardRequest(requestBody, accessToken).then(postBoardResponse);
-  }
+  };
 
   // render: 게시판 게시글 작성 컴포넌트 렌더링 //
   return (
-<div id='board-write-wrapper'>
+    <div id='board-write-wrapper'>
       <div className='write-container'>
         <div className='write-title'>게시판 글 작성</div>
         <div className='contents-container'>
@@ -138,7 +137,11 @@ export default function BoardWrite() {
           </div>
           <div className='input-column-box'>
             <div className='title'>내용</div>
-            <TextEditor content={content} setContent={onContentChangeHandler} />
+            <TextEditor
+            content={content}
+            setContent={setContent}
+            onImageListChange={onImageListChangeHandler}
+          />
           </div>
           <div className='button-box'>
             <div className={writeButtonClass} onClick={onWriteButtonClickHandler}>작성 완료</div>
@@ -146,5 +149,5 @@ export default function BoardWrite() {
         </div>
       </div>
     </div>
-  )
+  );
 }

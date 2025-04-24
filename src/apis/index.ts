@@ -281,8 +281,8 @@ export const searchBoardRequest = async (tag: string, keyword: string, page: num
     return responseBody;
 };
 
-// function: toggle board like API 요청 함수 //
-export const toggleBoardLikeRequest = async (boardSequence: number | string, accessToken: string) => {
+// function: put board like API 요청 함수 //
+export const putBoardLikeRequest = async (boardSequence: number | string, accessToken: string) => {
     const responseBody = await axios
         .put(TOGGLE_BOARD_LIKE_URL(boardSequence), {}, bearerAuthorization(accessToken))
         .then(responseSuccessHandler)
@@ -370,8 +370,8 @@ export const deleteDailyRequest = async (dailySequence: number | string, accessT
     return responseBody;
 };
 
-// function: toggle daily like API 요청 함수 //
-export const toggleDailyLikeRequest = async (dailySequence: number | string, accessToken: string) => {
+// function: put daily like API 요청 함수 //
+export const putDailyLikeRequest = async (dailySequence: number | string, accessToken: string) => {
     const responseBody = await axios
         .put(PUT_DAILY_LIKES_URL(dailySequence), {}, bearerAuthorization(accessToken))
         .then(responseSuccessHandler)
@@ -482,8 +482,8 @@ export const searchUsedTradeRequest = async (tag: string, keyword: string, page:
     return responseBody;
 };
 
-// function: toggle used trade like API 요청 함수 //
-export const toggleUsedTradeLikeRequest = async (tradeSequence: number | string, accessToken: string) => {
+// function: put used trade like API 요청 함수 //
+export const putUsedTradeLikeRequest = async (tradeSequence: number | string, accessToken: string) => {
     const responseBody = await axios
         .put(TOGGLE_USED_TRADE_LIKE_URL(tradeSequence), {}, bearerAuthorization(accessToken))
         .then(responseSuccessHandler)

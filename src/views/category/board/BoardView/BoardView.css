@@ -1,13 +1,15 @@
 /* 전체 래퍼 */
 #board-view-wrapper {
-  width: 1200px;
+  max-width: 1200px;
+  width: 100%;
   margin: 30px auto;
-  padding: 32px 32px;
+  padding: 32px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   font-family: 'Noto Sans KR', sans-serif;
 }
+
 
 /* 돌아가기 버튼 */
 #board-view-wrapper .back-button {
@@ -65,7 +67,8 @@
 #board-view-wrapper .default-user-image {
   width: 36px;
   height: 36px;
-  background-color: #ccc;
+  background-image: url('/src/assets/images/default-profile-image.jpg');
+  background-size: 100%;
   border-radius: 50%;
 }
 
@@ -138,6 +141,13 @@
 #board-view-wrapper .comment-button {
   cursor: pointer;
   font-size: 20px;
+  font-weight: bold;
+}
+
+#board-view-wrapper .like-button img,
+#board-view-wrapper .comment-button img {
+  width: 30px;
+  height: 30px;
 }
 
 /* 댓글 영역 */
@@ -198,4 +208,51 @@
 #board-view-wrapper .comment-content {
   font-size: 14px;
   color: #444;
+}
+
+/* 댓글 프로필과 내용 한 줄로 정렬 */
+#board-view-wrapper .comment-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+#board-view-wrapper .comment-wrapper .user-info {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+#board-view-wrapper .comment-wrapper .user-info .default-user-image {
+  width: 28px;
+  height: 28px;
+  background-color: #dcdcdc;
+  border-radius: 50%;
+}
+
+#board-view-wrapper .comment-wrapper .user-info .userName {
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+#board-view-wrapper .comment-wrapper .user-info .date {
+  font-size: 12px;
+  color: #888;
+  margin-left: 8px;
+}
+
+#board-view-wrapper .comment-wrapper .comment-content {
+  font-size: 14px;
+  color: #444;
+  margin-left: 12px;
+}
+
+/* 아이콘과 글자 수평 정렬 */
+.icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  vertical-align: middle;
 }
