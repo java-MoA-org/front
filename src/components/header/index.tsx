@@ -44,7 +44,7 @@ const Header = () => {
     removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
     localStorage.clear();
     resetUser();
-    window.location.reload();
+    navigate('/');
   };
 
   const onExtendSessionClickHandler = async () => {
