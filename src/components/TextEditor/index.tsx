@@ -58,13 +58,13 @@ const extensions = [
 interface Props {
   content: string;
   setContent: (content: string) => void;
-  onImageListChange: (imageList: string[]) => void;  // 이미지 목록을 string[]으로 받음
+  onImageListChange?: (imageList: string[]) => void;
 }
 
 // component: tiptap Text Editor 컴포넌트 //
 export default function TextEditor({ content, setContent, onImageListChange }: Props) {
   const [isUploading, setIsUploading] = useState(false);
-  const [imageList, setImageList] = useState<string[]>([]);  // 이미지 목록의 타입을 string[]으로 설정
+  const [imageList, setImageList] = useState<string[]>([]);
 
   // state: editor 상태 //
   const editor = useEditor({
@@ -79,13 +79,10 @@ export default function TextEditor({ content, setContent, onImageListChange }: P
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // ✅ 이미지 타입 체크: PNG, JPG만 허용
       if (!['image/jpeg', 'image/png'].includes(file.type)) {
         alert('PNG 또는 JPG 파일만 업로드할 수 있습니다.');
         return;
       }
-
-      // ✅ 파일 크기 체크: 5MB 이하만 허용
       if (file.size > 5 * 1024 * 1024) {
         alert('파일 크기는 5MB 이하로 업로드해주세요.');
         return;
@@ -97,20 +94,17 @@ export default function TextEditor({ content, setContent, onImageListChange }: P
       formData.append('image', file);
 
       try {
-        // 이미지 업로드 API 요청
         const response = await axios.post('http://localhost:4000/api/v1/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
 
-        // 업로드된 이미지 URL을 에디터에 삽입
         if (editor) {
           const imageUrl = response.data.url; // 서버에서 받은 이미지 URL
           editor.chain().focus().setImage({ src: imageUrl }).run();
           
-          // 이미지 목록 업데이트
           setImageList((prevList) => {
             const updatedList = [...prevList, imageUrl];
-            onImageListChange(updatedList);  // 이미지 목록을 부모 컴포넌트에 전달
+            onImageListChange?.(updatedList);
             return updatedList;
           });
         }
@@ -124,10 +118,7 @@ export default function TextEditor({ content, setContent, onImageListChange }: P
 
   return (
     <>
-      {/* 텍스트 에디터 메뉴 바 컴포넌트 */}
       <MenuBar editor={editor} isUploading={isUploading} handleImageUpload={handleImageUpload} />
-
-      {/* tiptap 에디터 콘텐츠 영역 */}
       <EditorContent editor={editor} className="editor-content" />
     </>
   );

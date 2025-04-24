@@ -73,7 +73,7 @@ export default function BoardView() {
   const accessToken = cookies[ACCESS_TOKEN];
 
   // variable: 좋아요 여부 //
-  const isLiked = liked; // liked가 true이면 좋아요 상태
+  const isLiked = liked;
   // variable: 좋아요 클래스 //
   const likedClass = isLiked ? 'icon likes-click' : 'icon likes';
 
@@ -224,7 +224,9 @@ export default function BoardView() {
   // event handler: 좋아요 버튼 클릭 이벤트 처리 //
   const onLikeClickHandler = () => {
     if (!boardSequence || !accessToken) return;
+    window.location.reload();
     putBoardLikeRequest(boardSequence, accessToken).then(putLikeResponse);
+    
   };
 
   // event handler: 댓글 작성 클릭 이벤트 처리 //
@@ -252,7 +254,15 @@ export default function BoardView() {
   // component: 게시판 게시글 상세보기 컴포넌트 렌더링 //
   return (
     <div id='board-view-wrapper'>
-      <div className='back-button' onClick={() => navigator(BOARD_ABSOLUTE_PATH)}>글 목록</div>
+      <div className="button-container">
+        <div className='back-button' onClick={() => navigator(BOARD_ABSOLUTE_PATH)}>글 목록</div>
+        {/* {userId === writerId && ( */}
+        <div className="button-group">
+          <div className="patch-button" onClick={onUpdateClickHandler}>수정하기</div>
+          <div className="delete-button" onClick={onDeleteClickHandler}>삭제하기</div>
+        </div>
+      {/* )} */}
+      </div>
   
       <div className='bulletin-info-container'>
         <div className='top-bar'>
@@ -284,18 +294,18 @@ export default function BoardView() {
           />
         </div>
         <div className='content-bottom-bar'>
-          <div className='like-button'>
-            <img src={likeIcon} alt="Like" className={likedClass} onClick={onLikeClickHandler}/> {likeCount}
+          <div className="like-button">
+            <img 
+              src={isLiked ? likeClickIcon : likeIcon} 
+              alt="Like" 
+              className={likedClass} 
+              onClick={onLikeClickHandler} 
+            />
+            {likeCount}
           </div>
           <div className='comment-button' onClick={onCommentIconClickHandler}>
             <img src={commentIcon} alt="Comment" className="icon" />
           </div>
-          {userId === writerId && (
-            <div className="button-group">
-              <button onClick={onUpdateClickHandler}>수정</button>
-              <button onClick={onDeleteClickHandler}>삭제</button>
-            </div>
-          )}
         </div>
       </div>
   
@@ -327,4 +337,3 @@ export default function BoardView() {
     </div>
   );
 }
-

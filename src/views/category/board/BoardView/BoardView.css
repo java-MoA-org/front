@@ -10,9 +10,48 @@
   font-family: "Noto Sans KR", sans-serif;
 }
 
+#board-view-wrapper .button-container {
+  display: flex;
+  justify-content: space-between; /* 양쪽 끝에 버튼을 배치 */
+  align-items: center; /* 수직 가운데 정렬 */
+  padding: 10px;
+}
 
 /* 돌아가기 버튼 */
 #board-view-wrapper .back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  background-color: #8eaccd;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+#board-view-wrapper .button-group {
+  display: flex;
+  gap: 10px;
+}
+
+#board-view-wrapper .patch-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  background-color: #8eaccd;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+#board-view-wrapper .delete-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
