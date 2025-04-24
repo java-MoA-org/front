@@ -15,15 +15,7 @@
   padding-bottom: 20px;
 }
 
-#board-main-wrapper .all,
-#board-main-wrapper .free,
-#board-main-wrapper .game,
-#board-main-wrapper .travel,
-#board-main-wrapper .work-out,
-#board-main-wrapper .music,
-#board-main-wrapper .economy,
-#board-main-wrapper .fashion,
-#board-main-wrapper .food {
+#board-main-wrapper .category-tab {
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
@@ -34,15 +26,11 @@
   transition: all 0.2s ease;
 }
 
-#board-main-wrapper .all:hover,
-#board-main-wrapper .free:hover,
-#board-main-wrapper .game:hover,
-#board-main-wrapper .travel:hover,
-#board-main-wrapper .work-out:hover,
-#board-main-wrapper .music:hover,
-#board-main-wrapper .economy:hover,
-#board-main-wrapper .fashion:hover,
-#board-main-wrapper .food:hover {
+#board-main-wrapper .category-tab:hover {
+  background-color: #007bbd;
+}
+
+#board-main-wrapper .category-tab.active {
   background-color: #007bbd;
 }
 
