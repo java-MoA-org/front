@@ -542,19 +542,6 @@ export const postNoticeRequest = async (requestBody: PostNoticeRequestDto, acces
   return responseBody;
 };
 
-// function: patch notice API 요청 함수
-export const patchNoticeRequest = async (
-  noticeId: number | string,
-  requestBody: PatchNoticeRequestDto,
-  accessToken: string,
-) => {
-  const responseBody = await axios
-    .patch(PATCH_NOTICE_URL(noticeId),requestBody, bearerAuthorization(accessToken))
-    .then(responseSuccessHandler)
-    .catch(responseErrorHandler);
-  return responseBody;
-};
-
 // function: get notice list API 요청 함수
 export const getNoticeListRequest = async () => {
   const responseBody = await axios
@@ -569,6 +556,19 @@ export const getNoticeRequest = async (noticeId: number | string, accessToken: s
   const responseBody = await axios
     .get(GET_NOTICE_URL(noticeId), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetNoticeResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: patch notice API 요청 함수
+export const patchNoticeRequest = async (
+  noticeId: number | string,
+  requestBody: PatchNoticeRequestDto,
+  accessToken: string
+) => {
+  const responseBody = await axios
+    .patch(PATCH_NOTICE_URL(noticeId), requestBody, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
     .catch(responseErrorHandler);
   return responseBody;
 };
