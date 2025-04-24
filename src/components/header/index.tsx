@@ -1,5 +1,5 @@
 import './style.css';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import moaHeaderLogo from '../../assets/images/moa_main_logo.png';
 import userImg from '../../assets/images/ex-user1.png';
@@ -26,6 +26,7 @@ import useSessionTimerStore from '../../stores/session-timer.store';
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { timeLeft, setTimeLeft, decreaseTimeLeft, resetTime } = useSessionTimerStore();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -94,6 +95,12 @@ const Header = () => {
     const s = String(seconds % 60).padStart(2, '0');
     return `${m}:${s}`;
   };
+
+  useEffect(() => {
+    if (accessToken) {
+      onExtendSessionClickHandler();
+    }
+  }, [location.pathname]);
 
   return (
     <div className="header-wrapper">
