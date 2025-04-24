@@ -71,10 +71,12 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    if (accessToken) return;
     if (accessToken && timeLeft === 0) {
       resetTime();
       alert('세션이 만료되었습니다.');
+      removeCookie(ACCESS_TOKEN);
+      removeCookie(REFRESH_TOKEN);
+      localStorage.clear();
       navigate('/');
     }
   }, [timeLeft]);
