@@ -78,17 +78,9 @@ const NoticeView = () => {
           <span>{notice.creationDate.replace("T", " ").slice(0, 16)}</span>
           <span>조회수: {notice.views}</span>
         </div>
-        <div
-          className="notice-view-content"
-          dangerouslySetInnerHTML={{ __html: notice.content }}
-        />
+        <div className="notice-view-content" dangerouslySetInnerHTML={{ __html: notice.content }}/>
         <div className="notice-view-button-wrapper">
-          <button
-            className="notice-view-back-button"
-            onClick={() => navigate(NOTICE_ABSOLUTE_PATH)}
-          >
-            목록으로
-          </button>
+          <button className="notice-view-back-button" onClick={() => navigate(NOTICE_ABSOLUTE_PATH)}>목록으로</button>
           {isAdmin && (
             <>
               <button
@@ -99,12 +91,7 @@ const NoticeView = () => {
               >
                 수정
               </button>
-              <button
-                className="notice-view-delete-button"
-                onClick={handleDelete}
-              >
-                삭제
-              </button>
+              <button className="notice-view-delete-button" onClick={handleDelete}>삭제</button>
             </>
           )}
         </div>
