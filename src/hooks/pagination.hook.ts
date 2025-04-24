@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 const ITEMS_PER_PAGE = 10;
 const PAGES_PER_SECTION = 10;
 
 const usePagination = <T>() => {
-
   // state: 페이지네이션 관련 상태 //
   const [totalList, setTotalList] = useState<T[]>([]);
   const [totalPage, setTotalPage] = useState<number>(0);
@@ -13,7 +12,7 @@ const usePagination = <T>() => {
   const [currentSection, setCurrentSection] = useState<number>(0);
   const [viewList, setViewList] = useState<T[]>([]);
   const [pageList, setPageList] = useState<number[]>([]);
-  
+
   // function: 전체 리스트 변경 함수 //
   const init = (totalList: T[]) => {
     const totalCount = totalList.length;
@@ -30,15 +29,22 @@ const usePagination = <T>() => {
   const initViewList = (totalList: T[]) => {
     const totalCount = totalList.length;
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = currentPage * ITEMS_PER_PAGE > totalCount ? totalCount : currentPage * ITEMS_PER_PAGE;
+    const endIndex =
+      currentPage * ITEMS_PER_PAGE > totalCount
+        ? totalCount
+        : currentPage * ITEMS_PER_PAGE;
     const viewList: T[] = totalList.slice(startIndex, endIndex);
     setViewList(viewList);
   };
 
   // function: 페이지 리스트 변경 함수 //
   const initPageList = (totalPage: number) => {
-    const startPage = PAGES_PER_SECTION * currentSection - (PAGES_PER_SECTION - 1);
-    const endPage = PAGES_PER_SECTION * currentSection > totalPage ? totalPage : PAGES_PER_SECTION * currentSection;
+    const startPage =
+      PAGES_PER_SECTION * currentSection - (PAGES_PER_SECTION - 1);
+    const endPage =
+      PAGES_PER_SECTION * currentSection > totalPage
+        ? totalPage
+        : PAGES_PER_SECTION * currentSection;
     const pageList = [];
     for (let page = startPage; page <= endPage; page++) {
       pageList.push(page);
@@ -62,12 +68,15 @@ const usePagination = <T>() => {
   }, [totalPage, currentSection]);
 
   return {
-    currentPage, setCurrentPage,
-    currentSection, setCurrentSection,
+    currentPage,
+    setCurrentPage,
+    currentSection,
+    setCurrentSection,
     totalSection,
     setTotalList,
-    viewList, pageList
-  }
+    viewList,
+    pageList,
+  };
 };
 
 export default usePagination;

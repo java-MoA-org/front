@@ -8,7 +8,7 @@ import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import axios from 'axios';
 
-import './style.css';
+import "./style.css";
 
 // interface: Text Editor Menu Bar 컴포넌트 속성 //
 interface MenuBarProp {

@@ -54,7 +54,9 @@
 
 .header-wrapper .user-info span {
   cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
 }
 
 .header-wrapper .user-info span:hover {

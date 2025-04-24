@@ -1,23 +1,23 @@
-import './NoticeWrite.css';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import "./NoticeWrite.css";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
-import { NOTICE_ABSOLUTE_PATH } from '../../../../constants';
-import { postNoticeRequest } from '../../../../apis';
-import { PostNoticeRequestDto } from '../../../../apis/dto/request/notice';
+import { NOTICE_ABSOLUTE_PATH } from "../../../../constants";
+import { postNoticeRequest } from "../../../../apis";
+import { PostNoticeRequestDto } from "../../../../apis/dto/request/notice";
 
 const NoticeWrite = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const navigate = useNavigate();
 
   // 관리자 권한 확인
   useEffect(() => {
-    const role = localStorage.getItem('userRole');
-    if (role !== 'ADMIN') {
-      alert('관리자만 접근 가능합니다.');
+    const role = localStorage.getItem("userRole");
+    if (role !== "ADMIN") {
+      alert("관리자만 접근 가능합니다.");
       navigate(NOTICE_ABSOLUTE_PATH);
     }
   }, []);
@@ -25,13 +25,13 @@ const NoticeWrite = () => {
   // 공지 등록 처리
   const handleSubmit = async () => {
     if (!title || !content) {
-      alert('제목과 내용을 모두 입력해주세요.');
+      alert("제목과 내용을 모두 입력해주세요.");
       return;
     }
 
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
-      alert('로그인이 필요합니다.');
+      alert("로그인이 필요합니다.");
       return;
     }
 
@@ -39,11 +39,11 @@ const NoticeWrite = () => {
 
     try {
       await postNoticeRequest(requestBody, accessToken);
-      alert('공지 등록 완료');
+      alert("공지 등록 완료");
       navigate(NOTICE_ABSOLUTE_PATH);
     } catch (e) {
-      console.error('공지 등록 실패:', e);
-      alert('등록 실패');
+      console.error("공지 등록 실패:", e);
+      alert("등록 실패");
     }
   };
 

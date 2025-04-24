@@ -100,7 +100,7 @@ function TableItem({ board }: TableItemProps) {
         </div>
       </div>
       <div className="board-content">
-        {content.length > 100 ? content.slice(0, 100) + '...' : content}
+        {content.length > 100 ? content.slice(0, 100) + "..." : content}
       </div>
       <div className="board-footer">
         <div className="footer-left">
@@ -168,7 +168,7 @@ export default function BoardMain() {
       responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
       responseBody.code === 'AF' ? '인증에 실패했습니다.' : '';
 
-    const isSuccess = responseBody !== null && responseBody.code === 'SU';
+    const isSuccess = responseBody !== null && responseBody.code === "SU";
     if (!isSuccess) {
       alert(message);
       return;
@@ -217,15 +217,33 @@ export default function BoardMain() {
       <div className="board-main">
         {/* 카테고리 탭 */}
         <div className="board-category">
-          <div className="all" onClick={() => onCategoryClick('ALL')}>전체</div>
-          <div className="free" onClick={() => onCategoryClick('FREE')}>자유</div>
-          <div className="game" onClick={() => onCategoryClick('GAME')}>게임</div>
-          <div className="travel" onClick={() => onCategoryClick('TRAVEL')}>여행</div>
-          <div className="work-out" onClick={() => onCategoryClick('WORKOUT')}>운동</div>
-          <div className="music" onClick={() => onCategoryClick('MUSIC')}>음악</div>
-          <div className="economy" onClick={() => onCategoryClick('ECONOMY')}>경제</div>
-          <div className="fashion" onClick={() => onCategoryClick('FASHION')}>패션</div>
-          <div className="food" onClick={() => onCategoryClick('FOOD')}>음식</div>
+          <div className="all" onClick={() => onCategoryClick("ALL")}>
+            전체
+          </div>
+          <div className="free" onClick={() => onCategoryClick("FREE")}>
+            자유
+          </div>
+          <div className="game" onClick={() => onCategoryClick("GAME")}>
+            게임
+          </div>
+          <div className="travel" onClick={() => onCategoryClick("TRAVEL")}>
+            여행
+          </div>
+          <div className="work-out" onClick={() => onCategoryClick("WORKOUT")}>
+            운동
+          </div>
+          <div className="music" onClick={() => onCategoryClick("MUSIC")}>
+            음악
+          </div>
+          <div className="economy" onClick={() => onCategoryClick("ECONOMY")}>
+            경제
+          </div>
+          <div className="fashion" onClick={() => onCategoryClick("FASHION")}>
+            패션
+          </div>
+          <div className="food" onClick={() => onCategoryClick("FOOD")}>
+            음식
+          </div>
         </div>
 
         {/* 검색 바 */}
@@ -233,13 +251,19 @@ export default function BoardMain() {
           <select className="board-search-select">
             <option>제목</option>
           </select>
-          <input type="text" placeholder="검색어를 입력해주세요." className="board-search-input" />
+          <input
+            type="text"
+            placeholder="검색어를 입력해주세요."
+            className="board-search-input"
+          />
           <button className="board-search-button">검색</button>
         </div>
 
         {/* 게시글 작성 및 정렬 */}
         <div className="board-item-container">
-          <div className="board-write-button" onClick={onWriteButtonClick}>작성하기</div>
+          <div className="board-write-button" onClick={onWriteButtonClick}>
+            작성하기
+          </div>
           <div className="board-order-list">
             <div className="up-to-date-order" onClick={() => onSortClick('LATEST')}>최신순</div>
             <div className="views-order" onClick={() => onSortClick('VIEWS')}>조회순</div>
@@ -260,8 +284,8 @@ export default function BoardMain() {
 
         {/* 페이지네이션 */}
         <div className="board-pagination">
-          {totalSection !== 0 &&
-            <Pagination 
+          {totalSection !== 0 && (
+            <Pagination
               currentPage={currentPage}
               currentSection={currentSection}
               totalSection={totalSection}
@@ -272,7 +296,7 @@ export default function BoardMain() {
               basePath="/board"
               queryParams={{ tag, sort }}
             />
-          }
+          )}
         </div>
       </div>
 

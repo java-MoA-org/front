@@ -1,4 +1,4 @@
-import { NoticeDetail } from '../../../../types/interfaces/notice.interface';
+import { NoticeDetail } from "../../../../types/interfaces/notice.interface";
 
 type GetNoticeResponseDto = NoticeDetail;
 

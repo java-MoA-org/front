@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from "react";
 import "./BoardView.css";
 import Comment from '../../../../types/interfaces/comment.interface';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -21,7 +21,6 @@ interface CommentItemProps {
 
 // component: 댓글 컴포넌트 //
 function CommentItem({ commentItem }: CommentItemProps) {
-
   const { commentWriterId, commentWriteDate, comment } = commentItem;
 
   // render: 댓글 컴포넌트 렌더링 //
@@ -32,14 +31,14 @@ function CommentItem({ commentItem }: CommentItemProps) {
         <div className='divider'></div>
         <div className='write-date'>{commentWriteDate}</div>
       </div>
-      <div className='comment'>{comment}</div>
+      <div className="comment">{comment}</div>
     </div>
   );
 }
 
+
 // component: 게시판 게시글 상세보기 컴포넌트 //
 export default function BoardView() {
-
   // state: 경로 변수 상태 //
   const { boardSequence } = useParams();
 
@@ -59,7 +58,7 @@ export default function BoardView() {
   const [likeCount, setLikeCount] = useState<number>(0);
 
   // state: 댓글 상태 //
-  const [comment, setComment] = useState<string>('');
+  const [comment, setComment] = useState<string>("");
 
   // state: 좋아요 여부 //
   const [liked, setLiked] = useState<boolean>(false);
@@ -82,14 +81,15 @@ export default function BoardView() {
   const navigator = useNavigate();
 
   // function: get board response 처리 함수 //
-  const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null) => {
+  const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null,) => {
+
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
       responseBody.code === 'AF' ? '인증에 실패했습니다.' :
       responseBody.code === 'NB' ? '존재하지 않는 게시글입니다.' : '';
 
-    const isSuccess = responseBody !== null && responseBody.code === 'SU';
+    const isSuccess = responseBody !== null && responseBody.code === "SU";
 
     if (!isSuccess) {
       alert(message);
@@ -100,14 +100,12 @@ export default function BoardView() {
     const { title, content, creationDate, views, tag, likeCount } = responseBody as GetBoardResponseDto;
     setTitle(title);
     setContent(content);
-    setWriterId('익명'); // 게시글 작성자 정보도 익명 처리
+    setWriterId('익명');
     setWriteDate(creationDate);
     setViews(views);
     setBoardTag(tag);
-    setLikeCount(likeCount)
+    setLikeCount(likeCount);
   };
-
-
 
   // function: get comment response 처리 함수 //
   const getBoardCommentResponse = (responseBody: GetBoardCommentResponseDto | ResponseDto | null) => {
@@ -148,7 +146,7 @@ export default function BoardView() {
       return;
     }
 
-    alert('삭제에 성공했습니다.');
+    alert("삭제에 성공했습니다.");
     navigator(BOARD_ABSOLUTE_PATH);
   };
 
@@ -186,9 +184,11 @@ export default function BoardView() {
       return;
     }
 
-    setComment('');
+    setComment("");
     if (!boardSequence || !accessToken) return;
-    getBoardCommentRequest(boardSequence, accessToken).then(getBoardCommentResponse);
+    getBoardCommentRequest(boardSequence, accessToken).then(
+      getBoardCommentResponse,
+    );
   };
 
   // event handler: 댓글 변경 이벤트 처리 //
@@ -200,7 +200,7 @@ export default function BoardView() {
   // event handler: 삭제 버튼 클릭 이벤트 처리 //
   const onDeleteClickHandler = () => {
     if (!boardSequence || !accessToken) return;
-    const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
+    const isConfirm = window.confirm("정말로 삭제하시겠습니까?");
     if (!isConfirm) return;
 
     deleteBoardRequest(boardSequence, accessToken).then(deleteBoardResponse);
@@ -232,9 +232,11 @@ export default function BoardView() {
     if (!accessToken || !boardSequence || !comment.trim()) return;
 
     const requestBody: PostBoardCommentRequestDto = {
-      comment
+      comment,
     };
-    postBoardCommentRequest(requestBody, boardSequence, accessToken).then(postCommentResponse);
+    postBoardCommentRequest(requestBody, boardSequence, accessToken).then(
+      postCommentResponse,
+    );
   };
 
   // effect: 컴포넌트 로드시 실행할 함수 //
@@ -257,11 +259,11 @@ export default function BoardView() {
           <div className='title'>{title}</div>
           <div className='category'>{boardTag}</div>
         </div>
-        <div className='bottom-bar'>
-          <div className='default-user-image'></div>
-          <div className='user-info-wrapper'>
-            <div className='userName'>{writerId}</div>
-            <div className='date'>{writeDate}</div>
+        <div className="bottom-bar">
+          <div className="default-user-image"></div>
+          <div className="user-info-wrapper">
+            <div className="userName">{writerId}</div>
+            <div className="date">{writeDate}</div>
           </div>
           <div className='stats'>
             <div className='like-count'>
@@ -273,11 +275,11 @@ export default function BoardView() {
           </div>
         </div>
       </div>
-  
-      <div className='bulletin-content-container'>
-        <div className='content-top-bar'>
+
+      <div className="bulletin-content-container">
+        <div className="content-top-bar">
           <div
-            className='bulletin-content'
+            className="bulletin-content"
             dangerouslySetInnerHTML={{ __html: content }}
           />
         </div>
@@ -289,7 +291,7 @@ export default function BoardView() {
             <img src={commentIcon} alt="Comment" className="icon" />
           </div>
           {userId === writerId && (
-            <div className='button-group'>
+            <div className="button-group">
               <button onClick={onUpdateClickHandler}>수정</button>
               <button onClick={onDeleteClickHandler}>삭제</button>
             </div>
@@ -325,3 +327,4 @@ export default function BoardView() {
     </div>
   );
 }
+

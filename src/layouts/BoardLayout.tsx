@@ -1,6 +1,6 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import '../views/category/board/BoardMain.css';
+import React from "react";
+import { Outlet } from "react-router-dom";
+import "../views/category/board/BoardMain.css";
 
 const BoardLayout = () => {
   return (

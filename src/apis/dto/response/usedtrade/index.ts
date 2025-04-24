@@ -1,7 +1,4 @@
-import GetUsedTradeResponseDto from "./get-used-treade.response.dto"
-import GetUsedTradeListResponseDto from "./get-used-trade-list.response.dto"
+import GetUsedTradeResponseDto from "./get-used-treade.response.dto";
+import GetUsedTradeListResponseDto from "./get-used-trade-list.response.dto";
 
-export type {
-  GetUsedTradeResponseDto,
-  GetUsedTradeListResponseDto
-}
+export type { GetUsedTradeResponseDto, GetUsedTradeListResponseDto };

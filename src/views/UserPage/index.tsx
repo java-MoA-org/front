@@ -1,7 +1,10 @@
 import "./style.css";
 import userImage from "../../assets/images/ex-user1.png";
 import { useNavigate, useParams } from "react-router-dom";
-import { MY_USER_BOARD_ABSOLUTE_PATH, MY_USER_FOLLOW_ABSOLUTE_PATH } from "../../constants";
+import {
+  MY_USER_BOARD_ABSOLUTE_PATH,
+  MY_USER_FOLLOW_ABSOLUTE_PATH,
+} from "../../constants";
 import FollowButton from "../../components/FollowButton";
 import { Board, Daily, Trade } from "../../types/interfaces";
 import UserInterest from "../../types/interfaces/user-interest.interface";
@@ -21,7 +24,7 @@ export default function MyUserPage({
   dailys,
   trades,
   interests,
-  userIntroduce
+  userIntroduce,
 }: MyUserPageProps) {
   const { nickname } = useParams(); // ✅ URL에서 :nickname 추출
 
@@ -106,7 +109,9 @@ export default function MyUserPage({
             <div className="board-type">
               <div
                 className="board-type-daily"
-                onClick={dailys.length === 0 ? undefined : onUserDailyClickHandler}
+                onClick={
+                  dailys.length === 0 ? undefined : onUserDailyClickHandler
+                }
               >
                 <div className="board-type-text">일상</div>
                 {dailys.length === 0 ? (
@@ -115,21 +120,33 @@ export default function MyUserPage({
                   [...dailys]
                     .reverse()
                     .slice(0, 3)
-                    .map(({ dailySequence, title, views, likeCount, creationDate }) => (
-                      <div className="board-content" key={dailySequence}>
-                        <div className="board-number">{dailySequence}</div>
-                        <div className="board-title">{title}</div>
-                        <div className="board-view">{views}</div>
-                        <div className="board-like">{likeCount}</div>
-                        <div className="board-date">{creationDate.split("T")[0]}</div>
-                      </div>
-                    ))
+                    .map(
+                      ({
+                        dailySequence,
+                        title,
+                        views,
+                        likeCount,
+                        creationDate,
+                      }) => (
+                        <div className="board-content" key={dailySequence}>
+                          <div className="board-number">{dailySequence}</div>
+                          <div className="board-title">{title}</div>
+                          <div className="board-view">{views}</div>
+                          <div className="board-like">{likeCount}</div>
+                          <div className="board-date">
+                            {creationDate.split("T")[0]}
+                          </div>
+                        </div>
+                      ),
+                    )
                 )}
               </div>
 
               <div
                 className="board-type-used"
-                onClick={trades.length === 0 ? undefined : onUserTradeClickHandler}
+                onClick={
+                  trades.length === 0 ? undefined : onUserTradeClickHandler
+                }
               >
                 <div className="board-type-text">중고 거래</div>
 
@@ -139,21 +156,33 @@ export default function MyUserPage({
                   [...trades]
                     .reverse()
                     .slice(0, 3)
-                    .map(({ tradeSequence, title, views, likeCount, creationDate }) => (
-                      <div className="board-content" key={tradeSequence}>
-                        <div className="board-number">{tradeSequence}</div>
-                        <div className="board-title">{title}</div>
-                        <div className="board-view">{views}</div>
-                        <div className="board-like">{likeCount}</div>
-                        <div className="board-date">{creationDate.split("T")[0]}</div>
-                      </div>
-                    ))
+                    .map(
+                      ({
+                        tradeSequence,
+                        title,
+                        views,
+                        likeCount,
+                        creationDate,
+                      }) => (
+                        <div className="board-content" key={tradeSequence}>
+                          <div className="board-number">{tradeSequence}</div>
+                          <div className="board-title">{title}</div>
+                          <div className="board-view">{views}</div>
+                          <div className="board-like">{likeCount}</div>
+                          <div className="board-date">
+                            {creationDate.split("T")[0]}
+                          </div>
+                        </div>
+                      ),
+                    )
                 )}
               </div>
 
               <div
                 className="board-type-just"
-                onClick={boards.length === 0 ? undefined : onUserBoardClickHandler}
+                onClick={
+                  boards.length === 0 ? undefined : onUserBoardClickHandler
+                }
               >
                 <div className="board-type-text">게시글</div>
 
@@ -163,15 +192,25 @@ export default function MyUserPage({
                   [...boards]
                     .reverse()
                     .slice(0, 3)
-                    .map(({ boardSequence, title, views, likeCount, creationDate }) => (
-                      <div className="board-content" key={boardSequence}>
-                        <div className="board-number">{boardSequence}</div>
-                        <div className="board-title">{title}</div>
-                        <div className="board-view">{views}</div>
-                        <div className="board-like">{likeCount}</div>
-                        <div className="board-date">{creationDate.split("T")[0]}</div>
-                      </div>
-                    ))
+                    .map(
+                      ({
+                        boardSequence,
+                        title,
+                        views,
+                        likeCount,
+                        creationDate,
+                      }) => (
+                        <div className="board-content" key={boardSequence}>
+                          <div className="board-number">{boardSequence}</div>
+                          <div className="board-title">{title}</div>
+                          <div className="board-view">{views}</div>
+                          <div className="board-like">{likeCount}</div>
+                          <div className="board-date">
+                            {creationDate.split("T")[0]}
+                          </div>
+                        </div>
+                      ),
+                    )
                 )}
               </div>
             </div>
