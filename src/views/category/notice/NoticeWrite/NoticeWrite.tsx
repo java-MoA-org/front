@@ -8,12 +8,15 @@ import { NOTICE_ABSOLUTE_PATH } from "../../../../constants";
 import { postNoticeRequest } from "../../../../apis";
 import { PostNoticeRequestDto } from "../../../../apis/dto/request/notice";
 
+// component: 공지사항 작성 컴포넌트
 const NoticeWrite = () => {
+  // state: 입력값 상태
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
   const navigate = useNavigate();
 
-  // 관리자 권한 확인
+  // effect: 관리자 권한 확인 //
   useEffect(() => {
     const role = localStorage.getItem("userRole");
     if (role !== "ADMIN") {
@@ -22,7 +25,7 @@ const NoticeWrite = () => {
     }
   }, []);
 
-  // 공지 등록 처리
+  // event handler: 공지 등록 요청 처리 //
   const handleSubmit = async () => {
     if (!title || !content) {
       alert("제목과 내용을 모두 입력해주세요.");
@@ -47,6 +50,7 @@ const NoticeWrite = () => {
     }
   };
 
+  // render: 컴포넌트 출력 //
   return (
     <div className="notice-write-wrapper">
       <div className="notice-write-container">

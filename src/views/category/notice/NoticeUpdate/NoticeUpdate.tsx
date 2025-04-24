@@ -1,6 +1,5 @@
 import "./NoticeUpdate.css";
 import "react-quill/dist/quill.snow.css";
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
@@ -9,14 +8,16 @@ import { getNoticeRequest, patchNoticeRequest } from "../../../../apis";
 import { PatchNoticeRequestDto } from "../../../../apis/dto/request/notice";
 import { NOTICE_ABSOLUTE_PATH } from "../../../../constants";
 
+// component: 공지사항 수정 페이지
 const NoticeUpdate = () => {
   const { noticeId } = useParams() as { noticeId: string };
   const navigate = useNavigate();
 
+  // state: 제목 및 내용
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
-  // 기존 공지사항 데이터 불러오기
+  // effect: 기존 공지사항 데이터 불러오기 //
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken") || "";
     if (!noticeId) return;
@@ -38,7 +39,7 @@ const NoticeUpdate = () => {
       });
   }, [noticeId, navigate]);
 
-  // 수정 요청
+  // event handler: 수정 요청 //
   const handleUpdate = async () => {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken || !noticeId) {
@@ -58,6 +59,7 @@ const NoticeUpdate = () => {
     }
   };
 
+  // render: 공지사항 수정 UI //
   return (
     <div className="notice-update-wrapper">
       <div className="notice-update-container">

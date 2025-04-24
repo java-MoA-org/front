@@ -6,26 +6,29 @@ import {
   NOTICE_VIEW_ABSOLUTE_PATH,
   NOTICE_WRITE_ABSOLUTE_PATH,
 } from "../../../constants";
-
 import { NoticeItem } from "../../../types/interfaces/notice.interface";
 
+// component: 공지사항 메인 컴포넌트
 const Notice = () => {
+  // state: 탭 상태
   const [activeTab, setActiveTab] = useState<"설명" | "공지사항">(
     () => (localStorage.getItem("noticeTab") as "설명" | "공지사항") || "설명",
   );
 
+  // state: 공지사항 목록 및 기타
   const [noticeList, setNoticeList] = useState<NoticeItem[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [page, setPage] = useState<number>(0);
+
   const navigate = useNavigate();
 
-  // effect: 관리자 권한 확인
+  // effect: 관리자 권한 확인 //
   useEffect(() => {
     const role = localStorage.getItem("userRole");
     if (role === "ADMIN") setIsAdmin(true);
   }, []);
 
-  // effect: 공지사항 목록 요청
+  // effect: 공지사항 목록 요청 //
   useEffect(() => {
     if (activeTab === "공지사항") {
       getNoticeListRequest()
@@ -41,15 +44,18 @@ const Notice = () => {
         });
     }
   }, [activeTab]);
+
+  // event handler: 탭 전환 처리 //
   const handleTabClick = (tab: "설명" | "공지사항") => {
     setActiveTab(tab);
     localStorage.setItem("noticeTab", tab);
   };
 
+  // render: 컴포넌트 출력 //
   return (
     <div className="notice-wrapper">
       <div className="notice-container">
-        {/* 탭 메뉴 */}
+        {/* render: 탭 메뉴 */}
         <div className="notice-tabs">
           <h2
             className={`section-title ${activeTab === "설명" ? "active" : ""}`}
@@ -65,7 +71,7 @@ const Notice = () => {
           </h2>
         </div>
 
-        {/* 공지 작성 버튼 */}
+        {/* render: 공지 작성 버튼 */}
         {activeTab === "공지사항" && isAdmin && (
           <div className="notice-write-button-wrapper">
             <button
@@ -77,23 +83,19 @@ const Notice = () => {
           </div>
         )}
 
-        {/* 설명 탭 */}
+        {/* render: 설명 탭 */}
         {activeTab === "설명" && (
           <div className="notice-content post-card">
-            <p>
-              이곳은 사이트 이용 방법이나 주요 안내사항을 알려주는 공간입니다.
-            </p>
+            <p>이곳은 사이트 이용 방법이나 주요 안내사항을 알려주는 공간입니다.</p>
             <ul>
               <li>회원가입은 이메일 또는 SNS 계정으로 가능합니다.</li>
-              <li>
-                게시판은 익명으로 운영되며 자유롭게 의견을 나눌 수 있습니다.
-              </li>
+              <li>게시판은 익명으로 운영되며 자유롭게 의견을 나눌 수 있습니다.</li>
               <li>중고거래는 반드시 유저 정보를 확인 후 이용해주세요.</li>
             </ul>
           </div>
         )}
 
-        {/* 검색바 (추후 구현용) */}
+        {/* render: 검색바 (추후 구현) */}
         {activeTab === "공지사항" && (
           <div className="notice-search-bar">
             <select className="notice-search-select">
@@ -108,7 +110,7 @@ const Notice = () => {
           </div>
         )}
 
-        {/* 공지사항 리스트 */}
+        {/* render: 공지사항 리스트 */}
         {activeTab === "공지사항" && (
           <section className="notice-list">
             {noticeList.length === 0 ? (
@@ -139,7 +141,7 @@ const Notice = () => {
           </section>
         )}
 
-        {/* 페이지네이션 */}
+        {/* render: 페이지네이션 */}
         {activeTab === "공지사항" && (
           <div className="board-pagination">
             <button
