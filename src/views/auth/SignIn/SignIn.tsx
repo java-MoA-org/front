@@ -1,34 +1,36 @@
-import "./SignIn.css";
-import { useNavigate } from "react-router-dom";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import { ROOT_PATH } from "../../../constants";
+import './SignIn.css';
+import { useNavigate } from 'react-router-dom';
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react';
+import { ROOT_PATH } from '../../../constants';
 
-import UserSignInRequestDto from "../../../apis/dto/request/auth/user-sign-in.request.dto";
-import { SNS_SIGN_IN_URL, userSignInRequest } from "../../../apis";
-import ResponseDto from "../../../apis/dto/response/response.dto";
-import UserSignInResponseDto from "../../../apis/dto/response/auth/user-sign-in.response.dto";
+import UserSignInRequestDto from '../../../apis/dto/request/auth/user-sign-in.request.dto';
+import { SNS_SIGN_IN_URL, userSignInRequest } from '../../../apis';
+import ResponseDto from '../../../apis/dto/response/response.dto';
+import UserSignInResponseDto from '../../../apis/dto/response/auth/user-sign-in.response.dto';
+import useSessionTimerStore from '../../../stores/session-timer.store';
 
 // interface: 로그인 컴포넌트 속성 //
 interface Props {
-  setActiveTab: Dispatch<
-    SetStateAction<"signin" | "signup" | "findid" | "findpassword">
-  >;
+  setActiveTab: Dispatch<SetStateAction<'signin' | 'signup' | 'findid' | 'findpassword'>>;
 }
 
 // component: 로그인 컴포넌트
 export default function SignIn({ setActiveTab }: Props) {
   const navigate = useNavigate();
+  const { setTimeLeft } = useSessionTimerStore();
 
-  const [userId, setUserId] = useState<string>("");
-  const [userPassword, setUserPassword] = useState<string>("");
-  const [signInHint, setSignInHint] = useState<string>("");
+  const [userId, setUserId] = useState<string>('');
+  const [userPassword, setUserPassword] = useState<string>('');
+  const [signInHint, setSignInHint] = useState<string>('');
+
+  const passwordInputRef = useRef<HTMLInputElement>(null);
 
   const handleKakaoLogin = () => {
-    window.location.href = SNS_SIGN_IN_URL("kakao");
+    window.location.href = SNS_SIGN_IN_URL('kakao');
   };
 
   const handleNaverLogin = () => {
-    window.location.href = SNS_SIGN_IN_URL("naver");
+    window.location.href = SNS_SIGN_IN_URL('naver');
   };
 
   // 입력 핸들러
@@ -41,34 +43,44 @@ export default function SignIn({ setActiveTab }: Props) {
   };
 
   // 서버 응답 처리
-  const userSignInResponse = (
-    responseBody: ResponseDto | UserSignInResponseDto | null,
-  ) => {
+  const userSignInResponse = (responseBody: ResponseDto | UserSignInResponseDto | null) => {
     const message = !responseBody
-      ? "서버에 문제가 있습니다"
-      : responseBody.code === "DBE"
-        ? "서버에 문제가 있습니다"
-        : responseBody.code === "SF"
-          ? "로그인 정보가 일치하지 않습니다."
-          : "";
-    const isSuccess = responseBody !== null && responseBody.code === "SU";
+      ? '서버에 문제가 있습니다'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다'
+      : responseBody.code === 'SF'
+      ? '로그인 정보가 일치하지 않습니다.'
+      : '';
+    const isSuccess = responseBody !== null && responseBody.code === 'SU';
 
     if (!isSuccess) {
       setSignInHint(message);
       return;
     }
 
-    const { accessToken, expiration, userRole } =
-      responseBody as UserSignInResponseDto;
-    localStorage.setItem("userRole", userRole); // ✅ "ADMIN" 또는 "USER"
+    const { accessToken, expiration, userRole } = responseBody as UserSignInResponseDto;
+    localStorage.setItem('userRole', userRole); // ✅ "ADMIN" 또는 "USER"
     const expires = new Date(Date.now() + expiration * 1000);
+    setTimeLeft(expiration);
 
     // 토큰 + 권한 저장
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("accessTokenExpiresAt", expires.getTime().toString());
-    localStorage.setItem("userRole", userRole); // 관리자 여부 판단용
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('accessTokenExpiresAt', expires.getTime().toString());
+    localStorage.setItem('userRole', userRole); // 관리자 여부 판단용
 
-    navigate("/");
+    navigate('/');
+  };
+
+  const handleIdEnterKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      passwordInputRef.current?.focus();
+    }
+  };
+
+  const handlePasswordEnterKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      onSignInClickHandler();
+    }
   };
 
   const onLogoClickHandler = () => {
@@ -77,12 +89,12 @@ export default function SignIn({ setActiveTab }: Props) {
 
   // 로그인 요청
   const onSignInClickHandler = () => {
-    if (userId.trim() === "") {
-      setSignInHint("아이디를 입력해주세요");
+    if (userId.trim() === '') {
+      setSignInHint('아이디를 입력해주세요');
       return;
     }
-    if (userPassword.trim() === "") {
-      setSignInHint("비밀번호를 입력해주세요");
+    if (userPassword.trim() === '') {
+      setSignInHint('비밀번호를 입력해주세요');
       return;
     }
 
@@ -104,6 +116,7 @@ export default function SignIn({ setActiveTab }: Props) {
             className="login-id"
             placeholder="아이디를 입력해주세요"
             onChange={handleUserIdChange}
+            onKeyDown={handleIdEnterKeyDown}
           />
         </div>
         <div className="login-password-input-container">
@@ -112,6 +125,8 @@ export default function SignIn({ setActiveTab }: Props) {
             type="password"
             placeholder="비밀번호를 입력해주세요"
             onChange={handleUserPasswordChange}
+            onKeyDown={handlePasswordEnterKeyDown}
+            ref={passwordInputRef}
           />
         </div>
         <div className="login-hint">{signInHint}</div>
@@ -123,24 +138,15 @@ export default function SignIn({ setActiveTab }: Props) {
         </div>
 
         <div className="login-others-container">
-          <div
-            className="login-find-id button"
-            onClick={() => setActiveTab("findid")}
-          >
+          <div className="login-find-id button" onClick={() => setActiveTab('findid')}>
             아이디 찾기
-          </div>{" "}
+          </div>{' '}
           |
-          <div
-            className="login-find-password button"
-            onClick={() => setActiveTab("findpassword")}
-          >
+          <div className="login-find-password button" onClick={() => setActiveTab('findpassword')}>
             비밀번호 찾기
-          </div>{" "}
+          </div>{' '}
           |
-          <div
-            className="login-register button"
-            onClick={() => setActiveTab("signup")}
-          >
+          <div className="login-register button" onClick={() => setActiveTab('signup')}>
             회원가입
           </div>
         </div>

@@ -6,8 +6,8 @@ import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { GetBoardListResponseDto } from '../../../apis/dto/response/board';
 import ResponseDto from '../../../apis/dto/response/response.dto';
-import { getBoardListRequest } from '../../../apis';
-import { usePagination } from '../../../hooks';
+import { getBoardListRequest, searchBoardRequest } from '../../../apis';
+import { useElapsedTime, usePagination } from '../../../hooks';
 import Pagination from '../../../components/pagination';
 import likeIcon from '../../../assets/images/likeClick.png';
 import commentIcon from '../../../assets/images/comment.png';
@@ -21,32 +21,25 @@ interface TableItemProps {
 
 // component: 게시판 테이블 레코드 컴포넌트 //
 function TableItem({ board }: TableItemProps) {
+
   // destructuring: 게시글 정보 추출 //
   const { boardSequence, title, content, creationDate, views, likeCount, tag, writerId, images, commentCount } = board;
+
+  // hook: 작성 시간 계산 //
+  const elapsedTime = useElapsedTime(creationDate);
 
   // function: 태그를 한글로 변환하는 함수 //
   const getTagInKorean = (tag: string) => {
     switch(tag) {
-      case 'GAME':
-        return '게임';
-      case 'TRAVEL':
-        return '여행';
-      case 'WORKOUT':
-        return '운동';
-      case 'MUSIC':
-        return '음악';
-      case 'ECONOMY':
-        return '경제';
-      case 'FASHION':
-        return '패션';
-      case 'FOOD':
-        return '음식';
-      case 'FREE':
-        return '자유';
-      case 'ALL':
-        return '전체';
-      default:
-        return tag; // 만약 예외가 있을 경우 태그 그대로 반환
+      case 'GAME': return '게임';
+      case 'TRAVEL': return '여행';
+      case 'WORKOUT': return '운동';
+      case 'MUSIC': return '음악';
+      case 'ECONOMY': return '경제';
+      case 'FASHION': return '패션';
+      case 'FOOD': return '음식';
+      case 'FREE': return '자유';
+      default: return tag;
     }
   };
 
@@ -54,36 +47,6 @@ function TableItem({ board }: TableItemProps) {
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
-
-  // function: 작성 시간 변환 함수 //
-  const getElapsedTime = (dateTime: string): string => {
-    const now = new Date();
-    const createdAt = new Date(dateTime);
-
-    // 오늘 자정 시간 계산
-    const todayMidnight = new Date();
-    todayMidnight.setHours(0, 0, 0, 0);
-
-    const diffMs = now.getTime() - createdAt.getTime();
-    const diffSec = Math.floor(diffMs / 1000);
-    const diffMin = Math.floor(diffSec / 60);
-    const diffHour = Math.floor(diffMin / 60);
-    const diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (createdAt >= todayMidnight) {
-      if (diffMin < 1) return '방금 전';
-      if (diffHour < 1) return `${diffMin}분 전`;
-      return `${diffHour}시간 전`;
-    }
-
-    if (diffDay === 1) return '어제';
-    if (diffDay >= 2 && diffDay <= 6) return `${diffDay}일 전`;
-
-    const week = Math.floor(diffDay / 7);
-    if (week >= 1 && week <= 4) return `${week}주 전`;
-
-    return `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(2, '0')}-${String(createdAt.getDate()).padStart(2, '0')}`;
-  };
 
   // event handler: 레코드 클릭 이벤트 처리 //
   const onClick = () => {
@@ -100,13 +63,13 @@ function TableItem({ board }: TableItemProps) {
         </div>
       </div>
       <div className="board-content">
-        {content.length > 100 ? content.slice(0, 100) + "..." : content}
+        {content.length > 70 ? content.slice(0, 70) + "..." : content}
       </div>
       <div className="board-footer">
         <div className="footer-left">
           <span className="category">{tagInKorean}</span>
-          <span className="creation-date">{getElapsedTime(creationDate)}</span>
-          <span className="check-image">{images && images.length > 0 ?  <img src={imageIcon} alt="Image" className="image-icon" /> : ''}</span>
+          <span className="creation-date">{elapsedTime}</span>
+          <span className="check-image">{images && images.length > 0 ?  <img src={imageIcon} alt="icon" className="image-icon" /> : ''}</span>
         </div>
         <div className="footer-right">
           <span className="like-count"><img src={likeIcon} alt="Like" className="icon" /> {likeCount}</span>
@@ -143,6 +106,9 @@ export default function BoardMain() {
   // variable: 태그 기준 //
   const tag = queryParams.get('tag') || 'ALL';
 
+  // state: 카테고리 선택 상태 //
+  const [selectedCategory, setSelectedCategory] = useState(tag);
+
   // state: 페이지네이션 상태 //
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -151,11 +117,13 @@ export default function BoardMain() {
   const [totalSection, setTotalSection] = useState(0);
   const [pageList, setPageList] = useState<number[]>([]);
 
+  // state: 검색어 상태 추가 //
+  const [searchQuery, setSearchQuery] = useState('');
+
   // hook: 페이지네이션 커스텀 훅 //
   const {
     setTotalList,
     viewList, 
-    pageList: paginationPageList,
   } = usePagination<Board>();
 
   // variable: 액세스 토큰 //
@@ -196,6 +164,7 @@ export default function BoardMain() {
 
   // event handler: 카테고리 탭 클릭 //
   const onCategoryClick = (category: string) => {
+    setSelectedCategory(category);
     setSearchParams({ tag: category, page: '1', sort });
     window.location.reload();
   };
@@ -206,44 +175,40 @@ export default function BoardMain() {
     window.location.reload();
   };
 
+  // event handler: 검색어 입력 변경
+  const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+  
+  // 검색 버튼 클릭 이벤트 핸들러
+  const onSearchClick = () => {
+    if (searchQuery) {
+      setSearchParams({ tag, searchQuery, page: '1' });
+      searchBoardRequest(tag, searchQuery, page, accessToken).then(getBoardListResponse);
+    }
+  };
+
   // effect: 컴포넌트 렌더링 시 게시글 목록 요청 //
   useEffect(() => {
+    if(searchQuery) return;
     getBoardListRequest(tag, page, sort, accessToken).then(getBoardListResponse);
   }, [tag, page, sort, accessToken]);
 
-  // render //
+  // render: 게시판 컴포넌트 렌더링 //
   return (
     <div id="board-main-wrapper">
       <div className="board-main">
         {/* 카테고리 탭 */}
         <div className="board-category">
-          <div className="all" onClick={() => onCategoryClick("ALL")}>
-            전체
-          </div>
-          <div className="free" onClick={() => onCategoryClick("FREE")}>
-            자유
-          </div>
-          <div className="game" onClick={() => onCategoryClick("GAME")}>
-            게임
-          </div>
-          <div className="travel" onClick={() => onCategoryClick("TRAVEL")}>
-            여행
-          </div>
-          <div className="work-out" onClick={() => onCategoryClick("WORKOUT")}>
-            운동
-          </div>
-          <div className="music" onClick={() => onCategoryClick("MUSIC")}>
-            음악
-          </div>
-          <div className="economy" onClick={() => onCategoryClick("ECONOMY")}>
-            경제
-          </div>
-          <div className="fashion" onClick={() => onCategoryClick("FASHION")}>
-            패션
-          </div>
-          <div className="food" onClick={() => onCategoryClick("FOOD")}>
-            음식
-          </div>
+          <div className={`category-tab ${selectedCategory === "ALL" ? 'active' : ''}`} onClick={() => onCategoryClick("ALL")}>전체</div>
+          <div className={`category-tab ${selectedCategory === "FREE" ? 'active' : ''}`} onClick={() => onCategoryClick("FREE")}>자유</div>
+          <div className={`category-tab ${selectedCategory === "GAME" ? 'active' : ''}`} onClick={() => onCategoryClick("GAME")}>게임</div>
+          <div className={`category-tab ${selectedCategory === "TRAVEL" ? 'active' : ''}`} onClick={() => onCategoryClick("TRAVEL")}>여행</div>
+          <div className={`category-tab ${selectedCategory === "WORKOUT" ? 'active' : ''}`} onClick={() => onCategoryClick("WORKOUT")}>운동</div>
+          <div className={`category-tab ${selectedCategory === "MUSIC" ? 'active' : ''}`} onClick={() => onCategoryClick("MUSIC")}>음악</div>
+          <div className={`category-tab ${selectedCategory === "ECONOMY" ? 'active' : ''}`} onClick={() => onCategoryClick("ECONOMY")}>경제</div>
+          <div className={`category-tab ${selectedCategory === "FASHION" ? 'active' : ''}`} onClick={() => onCategoryClick("FASHION")}>패션</div>
+          <div className={`category-tab ${selectedCategory === "FOOD" ? 'active' : ''}`} onClick={() => onCategoryClick("FOOD")}>음식</div>
         </div>
 
         {/* 검색 바 */}
@@ -255,8 +220,10 @@ export default function BoardMain() {
             type="text"
             placeholder="검색어를 입력해주세요."
             className="board-search-input"
+            value={searchQuery}
+            onChange={onSearchQueryChange}
           />
-          <button className="board-search-button">검색</button>
+          <button className="board-search-button" onClick={onSearchClick}>검색</button>
         </div>
 
         {/* 게시글 작성 및 정렬 */}

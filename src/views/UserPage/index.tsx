@@ -70,7 +70,7 @@ export default function MyUserPage({
               <div className="profile-line">
                 <div>프로필</div>
                 <FollowButton />
-                <UpdateButton />
+                <UpdateButton nickname={nickname!} />
               </div>
               <div className="profile-image">
                 <img src={userImage} alt="User" className="profile-img" />

@@ -1,3 +1,4 @@
-import usePagination from "./pagination.hook";
+import usePagination from "./pagination";
+import useElapsedTime from "./useElapsedTime";
 
-export { usePagination };
+export { usePagination, useElapsedTime };
