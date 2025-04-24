@@ -70,7 +70,6 @@ const Header = () => {
 
   useEffect(() => {
     if (!accessToken) {
-      console.log(accessToken);
       if (timeLeft === 0) {
         // 자동 로그아웃 처리 등
         resetTime();
