@@ -18,7 +18,7 @@ import UserNicknameCheckRequestDto from '../../../apis/dto/request/auth/user-nic
 import UserEmailCheckRequestDto from '../../../apis/dto/request/auth/user-email-check.request.dto';
 import UserPhoneNumberCheckRequestDto from '../../../apis/dto/request/auth/user-phone-number-check.request.dto';
 import UserSignUpRequestDto from '../../../apis/dto/request/auth/user-sign-up.request.dto';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { ROOT_PATH } from '../../../constants';
 import ProfileImageUploader from '../../../components/ProfileImage';
 import { InterestsType } from '../../../types/userInterests';
@@ -28,6 +28,7 @@ import VerifyResponseDto from '../../../apis/dto/response/auth/email-verify-resp
 import { Cookies, useCookies } from 'react-cookie';
 import UserSignInRequestDto from '../../../apis/dto/request/auth/user-sign-in.request.dto';
 import UserSignInResponseDto from '../../../apis/dto/response/auth/user-sign-in.response.dto';
+import PhoneNumberVerifyResponseDto from '../../../apis/dto/response/auth/phone-number-verify-response.dto';
 
 interface Props {
   setActiveTab: Dispatch<SetStateAction<'signin' | 'signup' | 'findid' | 'findpassword'>>;
@@ -35,7 +36,7 @@ interface Props {
 
 export default function SignUp({ setActiveTab }: Props) {
   const navigator = useNavigate();
-
+  const location = useLocation();
   const [cookies, removeCookie] = useCookies([
     'userId',
     'userPassword',
@@ -302,7 +303,7 @@ export default function SignUp({ setActiveTab }: Props) {
     }
   };
 
-  const userPhoneNumberCheckResponse = (responseBody: ResponseDto | null) => {
+  const userPhoneNumberCheckResponse = (responseBody: ResponseDto | PhoneNumberVerifyResponseDto | null) => {
     const message = !responseBody
       ? '서버에 문제가 있습니다'
       : responseBody.code === 'DBE'
@@ -317,10 +318,18 @@ export default function SignUp({ setActiveTab }: Props) {
 
     const token = isSuccess && responseBody && 'token' in responseBody ? (responseBody as VerifyResponseDto).token : '';
 
+    const verifyCode =
+      isSuccess && responseBody && 'verifyCode' in responseBody
+        ? (responseBody as PhoneNumberVerifyResponseDto).verifyCode
+        : '';
+
+    console.log('✅ 추출된 token:', token);
+
     setUserPhoneNumberToken(token);
     setUserPhoneNumberMessage(message);
     setUserPhoneNumberMessageError(!isSuccess);
     setUserPhoneNumberChecked(isSuccess);
+    alert(verifyCode);
   };
 
   const userPhoneNumberVerifyResponse = (responseBody: ResponseDto | null) => {

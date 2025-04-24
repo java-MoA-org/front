@@ -54,9 +54,7 @@
 
 .header-wrapper .user-info span {
   cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    color 0.2s ease;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .header-wrapper .user-info span:hover {
@@ -226,10 +224,14 @@
   z-index: 0;
 }
 
-.nav-container .nav-right .session-time {
+.nav-container .nav-right .session-container .session-time {
   font-size: 0.9rem;
   font-weight: 500;
   color: #555;
+}
+
+.nav-container .nav-right .session-container .session-button {
+  cursor: pointer;
 }
 
 .nav-container .nav-right .friend-search {
