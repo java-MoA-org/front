@@ -187,8 +187,8 @@ const Header = () => {
                   )}
                   {menu === "공지사항" && (
                     <>
-                      <p onClick={() => navigate("/notice")}>설명</p>
-                      <p onClick={() => navigate("/notice")}>이용방법</p>
+                      <p onClick={() => navigate("/notice")}>Moa 설명</p>
+                      <p onClick={() => navigate("/notice")}>공지사항</p>
                     </>
                   )}
                 </div>
