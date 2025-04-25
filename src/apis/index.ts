@@ -664,3 +664,5 @@ export const deleteNoticeRequest = async (noticeId: number | string, accessToken
     .catch(responseErrorHandler);
   return responseBody;
 };
+
+
