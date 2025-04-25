@@ -50,7 +50,7 @@ const NoticeUpdate = () => {
     const requestBody: PatchNoticeRequestDto = { title, content };
 
     try {
-      await patchNoticeRequest(noticeId, requestBody, accessToken);
+      await patchNoticeRequest(parseInt(noticeId, 10), requestBody, accessToken);
       alert("공지 수정 완료");
       navigate(NOTICE_ABSOLUTE_PATH);
     } catch (e) {

@@ -224,16 +224,53 @@
   z-index: 0;
 }
 
-.nav-container .nav-right .session-container .session-time {
+/* 세션 컨테이너 정렬 */
+.nav-container 
+.nav-right 
+.session-container {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.nav-container 
+.nav-right 
+.session-container 
+.session-icon {
+  width: 19px;
+  height: 15px;
+  vertical-align: middle;
+}
+
+.nav-container 
+.nav-right 
+.session-container 
+.session-time {
   font-size: 0.9rem;
   font-weight: 500;
   color: #555;
 }
 
-.nav-container .nav-right .session-container .session-button {
+/* 연장 버튼 */
+.nav-container 
+.nav-right 
+.session-container 
+.session-button {
+  background-color: #1877f2;
+  border: none;
+  color: white;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
+.nav-container .nav-right .session-container .session-button:hover {
+  background-color: #145fd3;
+}
+
+/* 친구 검색 */
 .nav-container .nav-right .friend-search {
   font-size: 0.9rem;
   padding: 0.4rem 0.7rem;
