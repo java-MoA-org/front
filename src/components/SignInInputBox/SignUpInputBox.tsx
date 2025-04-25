@@ -12,6 +12,7 @@ interface Props {
   isButtonActive?: boolean;
   readOnly?: boolean;
   hint?: string;
+  disable?: boolean;
 
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onButtonClick?: () => void;
@@ -28,12 +29,15 @@ export default function SignUpInputBox(props: Props) {
     isErrorMessage,
     isButtonActive,
     readOnly,
-    hint
+    hint,
+    disable
   } = props;
   const { onChange, onButtonClick } = props;
 
   const messageClass = `sign-up-message ${isErrorMessage ? "error" : "success"}`;
-  const buttonClass = `sign-up-button ${isButtonActive ? "posible" : "disable"}`;
+  const buttonClass = `sign-up-button ${
+    disable ? "disabled" : isButtonActive ? "posible" : "disable"
+  }`;
 
   return (
     <div className="sign-up-input-box">
@@ -46,12 +50,13 @@ export default function SignUpInputBox(props: Props) {
             placeholder={placeholder}
             onChange={onChange}
             readOnly={readOnly}
+            disabled={disable}
           />
           {onButtonClick && buttonName && (
             <div
               className={buttonClass}
               onClick={() => {
-                if (!isButtonActive) return;
+                if (disable || !isButtonActive) return;
                 onButtonClick();
               }}
             >

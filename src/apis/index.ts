@@ -42,6 +42,7 @@ import { ACCESS_TOKEN } from "../constants";
 import GetUserInfoResponseDto from "./dto/response/user/get-user-info.response.dto";
 import PatchPasswordRequestDto from "./dto/request/auth/patch-password.request.dto";
 import PasswordVerifyRequestDto from "./dto/request/userInfo/post-verify-pawword.request.dto";
+import PatchPasswordUserPageRequestDto from "./dto/request/userInfo/patch-password-userpage.request.dto";
 
 const API_DOMAIN = process.env.REACT_APP_API_DOMAIN;
 
@@ -142,6 +143,7 @@ const GET_USER_PAGE_URL = (nickname: string) => `${USER_PAGE_MODULE_URL}/boards/
 const GET_USER_UPDATE_PAGE_URL = `${USER_PAGE_MODULE_URL}/revise`;
 const PATCH_USER_UPDATE_PAGE_URL = `${USER_PAGE_MODULE_URL}/revise`;
 const POST_USER_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/verify`;
+const PATCH_USER_PAGE_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/change`;
 
 // function: Authorization Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({
@@ -288,6 +290,20 @@ export const passwordVerifyRequest = async (
 ): Promise<ResponseDto | null> => {
   try {
     const response = await axios.post(POST_USER_PASSWORD_VERIFY_URL, body, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    return response.data;
+  } catch {
+    return null;
+  }
+};
+// function: 새 비밀번호 수정 API 요청 함수 //
+export const patchPasswordUserPageRequest = async (
+  accessToken: string,
+  body: PatchPasswordUserPageRequestDto
+): Promise<ResponseDto | null> => {
+  try {
+    const response = await axios.patch(PATCH_USER_PAGE_PASSWORD_VERIFY_URL, body, {
       headers: { Authorization: `Bearer ${accessToken}` }
     });
     return response.data;
@@ -664,5 +680,3 @@ export const deleteNoticeRequest = async (noticeId: number | string, accessToken
     .catch(responseErrorHandler);
   return responseBody;
 };
-
-
