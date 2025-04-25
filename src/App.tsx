@@ -95,8 +95,10 @@ function App() {
           <Route path={BOARD_PATH}>
             <Route index element={<BoardMain />} />
             <Route path={BOARD_WRITE_PATH} element={<BoardWrite />} />
-            <Route path={BOARD_VIEW_PATH} element={<BoardView />} />
-            <Route path={BOARD_UPDATE_PATH} element={<BoardUpdate />} />
+            <Route path={BOARD_VIEW_PATH}>
+              <Route index element={<BoardView />} />
+              <Route path={BOARD_UPDATE_PATH} element={<BoardUpdate />} />
+            </Route>
           </Route>
 
           <Route path={DAILY_PATH}>

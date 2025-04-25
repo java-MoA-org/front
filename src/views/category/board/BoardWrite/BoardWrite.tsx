@@ -18,7 +18,7 @@ export default function BoardWrite() {
   const [tag, setTag] = useState<BoardTagType>(BoardTagType.FREE);
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [imageList, setImageList] = useState<string[]>([]);  // 이미지 목록 상태
+  const [imageList, setImageList] = useState<string[]>([]);
   const [location, setLocation] = useState<string>('');
   const [detailLocation, setDetailLocation] = useState<string>('');
 
@@ -46,9 +46,7 @@ export default function BoardWrite() {
   // variable: 게시판 글 작성 가능 여부 //
   const isActive = title !== "" && content !== "";
   // variable: 게시판 글 작성 버튼 클래스 //
-  const writeButtonClass = isActive
-    ? "button middle primary"
-    : "button middle disable";
+  const writeButtonClass = isActive ? "button middle primary" : "button middle disable";
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -80,12 +78,20 @@ export default function BoardWrite() {
   // event handler: 제목 변경 이벤트 처리 //
   const onTitleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
+    if (value.length > 50) {
+      alert("제목은 50자 이내로 작성해주세요.");
+      return;
+    }
     setTitle(value);
   };
 
   // event handler: 내용 변경 이벤트 처리 //
-  const onContentChangeHandler = (content: string) => {
-    setContent(content);
+  const onContentChangeHandler = (value: string) => {
+    if (value.length > 2000) {
+      alert("내용은 2000자 이내로 작성해주세요.");
+      return;
+    }
+    setContent(value);
   };
 
   // event handler: 이미지 목록 변경 이벤트 처리 //
@@ -163,29 +169,16 @@ export default function BoardWrite() {
             </div>
           </div>
           <div className="input-column-box">
-            <div className="title">제목</div>
-            <input
-              type="text"
-              value={title}
-              placeholder="제목을 입력하세요."
-              onChange={onTitleChangeHandler}
-            />
+            <div className='title'>제목 ({title.length}/50)</div>
+            <input type="text" value={title} placeholder="제목을 입력하세요." onChange={onTitleChangeHandler}
+/>
           </div>
           <div className='input-column-box'>
-            <div className='title'>내용</div>
-            <TextEditor
-            content={content}
-            setContent={setContent}
-            onImageListChange={onImageListChangeHandler}
-          />
+            <div className='title'>내용 ({content.length}/2000)</div>
+            <TextEditor content={content} setContent={onContentChangeHandler} onImageListChange={onImageListChangeHandler}/>
           </div>
           <div className="button-box">
-            <div
-              className={writeButtonClass}
-              onClick={onWriteButtonClickHandler}
-            >
-              작성 완료
-            </div>
+            <div className={writeButtonClass} onClick={onWriteButtonClickHandler}>작성 완료</div>
           </div>
         </div>
       </div>

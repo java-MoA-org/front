@@ -21,13 +21,14 @@ interface CommentItemProps {
 
 // component: 댓글 컴포넌트 //
 function CommentItem({ commentItem }: CommentItemProps) {
-  const { commentWriterId, commentWriteDate, comment } = commentItem;
+  const { anonymizedWriterId, commentWriteDate, comment } = commentItem;
 
   // render: 댓글 컴포넌트 렌더링 //
   return (
     <div className='comment-box'>
       <div className='title-box'>
-        <div className='title'>{commentWriterId}</div>
+        <div className="comment-default-user-image"></div>
+        <div className='user-name'>{anonymizedWriterId}</div>
         <div className='divider'></div>
         <div className='write-date'>{commentWriteDate}</div>
       </div>
@@ -45,11 +46,11 @@ export default function BoardView() {
   // state: cookie 상태 //
   const [cookies] = useCookies();
 
-  // state: 로그인 사용자 아이디 상태 //
+  // state: 로그인 사용자 닉네임 상태 //
   const { userId } = useSignInUserStore();
 
   // state: 게시글 내용 상태 //
-  const [writerId, setWriterId] = useState<string>('익명');
+  const [writerId, setWriterId] = useState<string>('');
   const [writeDate, setWriteDate] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
@@ -77,12 +78,17 @@ export default function BoardView() {
   // variable: 좋아요 클래스 //
   const likedClass = isLiked ? 'icon likes-click' : 'icon likes';
 
+  // variable: 댓글 작성 가능 여부 //
+  const isActive = comment !== ""
+  // variable: 댓글 작성 버튼 클래스 //
+  const commentButtonClass = isActive ? "button middle primary" : "button middle disable";
+
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
   // function: get board response 처리 함수 //
   const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null,) => {
-
+  
     const message =
       !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
@@ -97,10 +103,11 @@ export default function BoardView() {
       return;
     }
 
-    const { title, content, creationDate, views, tag, likeCount } = responseBody as GetBoardResponseDto;
+    const { title, content, creationDate, views, tag, likeCount, writerId } = responseBody as GetBoardResponseDto;
+
     setTitle(title);
     setContent(content);
-    setWriterId('익명');
+    setWriterId(writerId);
     setWriteDate(creationDate);
     setViews(views);
     setBoardTag(tag);
@@ -113,23 +120,41 @@ export default function BoardView() {
       !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
       responseBody.code === 'AF' ? '인증에 실패했습니다.' : '';
-
+  
     const isSuccess = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccess) {
       alert(message);
       return;
     }
-
+  
     const { comments } = responseBody as GetBoardCommentResponseDto;
-
-    // 댓글 작성자 익명 처리 //
-    const anonymizedComments = comments.map(comment => ({
-      ...comment,
-      commentWriterId: '익명'
-    }));
-
+  
+    const anonymousCountMap: { [userId: string]: string } = {};
+    let anonymousIndex = 1;
+  
+    const anonymizedComments = comments.map(comment => {
+      const commentWriterId = comment.commentWriterId;
+  
+      let anonymizedWriterId = '';
+  
+      if (commentWriterId === writerId) {
+        anonymizedWriterId = '익명(글쓴이)';
+        
+      } else {
+        if (!anonymousCountMap[commentWriterId]) {
+          anonymousCountMap[commentWriterId] = `익명${anonymousIndex}`;
+          anonymousIndex++;
+        }
+        anonymizedWriterId = anonymousCountMap[commentWriterId];
+      }
+  
+      return { ...comment, anonymizedWriterId };
+    });
+  
     setComments(anonymizedComments);
   };
+  
+  
 
   // function: delete board response 처리 함수 //
   const deleteBoardResponse = (responseBody: ResponseDto | null) => {
@@ -215,7 +240,7 @@ export default function BoardView() {
   // event handler: 댓글 아이콘 클릭 이벤트 처리 //
   const onCommentIconClickHandler = () => {
     if (accessToken) {
-      setShowCommentInput(prev => !prev); // 댓글 입력칸 토글
+      setShowCommentInput(prev => !prev);
     } else {
       alert('댓글을 작성하려면 로그인해야 합니다.');
     }
@@ -224,7 +249,6 @@ export default function BoardView() {
   // event handler: 좋아요 버튼 클릭 이벤트 처리 //
   const onLikeClickHandler = () => {
     if (!boardSequence || !accessToken) return;
-    window.location.reload();
     putBoardLikeRequest(boardSequence, accessToken).then(putLikeResponse);
     
   };
@@ -234,7 +258,7 @@ export default function BoardView() {
     if (!accessToken || !boardSequence || !comment.trim()) return;
 
     const requestBody: PostBoardCommentRequestDto = {
-      comment,
+      boardComment: comment,
     };
     postBoardCommentRequest(requestBody, boardSequence, accessToken).then(
       postCommentResponse,
@@ -256,12 +280,12 @@ export default function BoardView() {
     <div id='board-view-wrapper'>
       <div className="button-container">
         <div className='back-button' onClick={() => navigator(BOARD_ABSOLUTE_PATH)}>글 목록</div>
-        {/* {userId === writerId && ( */}
+        {userId === writerId &&
         <div className="button-group">
           <div className="patch-button" onClick={onUpdateClickHandler}>수정하기</div>
           <div className="delete-button" onClick={onDeleteClickHandler}>삭제하기</div>
         </div>
-      {/* )} */}
+        }
       </div>
   
       <div className='bulletin-info-container'>
@@ -272,7 +296,7 @@ export default function BoardView() {
         <div className="bottom-bar">
           <div className="default-user-image"></div>
           <div className="user-info-wrapper">
-            <div className="userName">{writerId}</div>
+            <div className="userName">익명</div>
             <div className="date">{writeDate}</div>
           </div>
           <div className='stats'>
@@ -295,44 +319,27 @@ export default function BoardView() {
         </div>
         <div className='content-bottom-bar'>
           <div className="like-button">
-            <img 
-              src={isLiked ? likeClickIcon : likeIcon} 
-              alt="Like" 
-              className={likedClass} 
-              onClick={onLikeClickHandler} 
-            />
-            {likeCount}
+            <img src={isLiked ? likeClickIcon : likeIcon} alt="Like" className={likedClass} onClick={onLikeClickHandler} />{likeCount}
           </div>
           <div className='comment-button' onClick={onCommentIconClickHandler}>
             <img src={commentIcon} alt="Comment" className="icon" />
           </div>
         </div>
       </div>
-  
-      <div className='bulletin-comment-container'>
-        <div className='comments-list'>
-          {comments.map((commentItem, index) => (
-            <CommentItem key={index} commentItem={commentItem} />
-          ))}
+
+      {showCommentInput && accessToken && (
+      <div className='comment-write'>
+        <div className="comment-write-container">
+          <textarea className='comment-write-content' placeholder='댓글을 입력하세요.' value={comment} onChange={onCommentChangeHandler} />
+          <div className={commentButtonClass} onClick={onPostCommentClickHandler}>댓글 작성</div>
         </div>
+      </div>
+      )}
   
-        {/* 댓글 입력 칸은 인증된 사용자만 보임 */}
-        {showCommentInput && accessToken && (
-          <div className='comment-write'>
-            <textarea
-              className='comment-write-content'
-              placeholder='댓글을 입력하세요.'
-              value={comment}
-              onChange={onCommentChangeHandler}
-            />
-            <button
-              className='comment-write-button'
-              onClick={onPostCommentClickHandler}
-            >
-              댓글 작성
-            </button>
-          </div>
-        )}
+      <div className='comments-list'>
+        {comments.map((commentItem, index) => (
+          <CommentItem key={index} commentItem={commentItem} />
+        ))}
       </div>
     </div>
   );

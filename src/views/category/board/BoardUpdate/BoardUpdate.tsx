@@ -28,6 +28,7 @@ export default function BoardUpdate() {
   const [boardTag, setBoardTag] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   // variable: acess token //
   const accessToken = cookies[ACCESS_TOKEN];
@@ -35,7 +36,7 @@ export default function BoardUpdate() {
   // variable: 게시글 수정 가능 여부 //
   const isActive = title !== '' && content !== "";
   // variable: 게시글 수정 버튼 클래스 //
-  const updateButtonClass = !isActive ? 'button middle primary' : 'button middle disable';
+  const updateButtonClass = isActive ? 'button middle primary' : 'button middle disable';
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -61,6 +62,7 @@ export default function BoardUpdate() {
     setBoardTag(tag);
     setTitle(title);
     setContent(content);
+    setIsLoaded(true);
   };
 
   // function: patch board response 처리 함수 //
@@ -119,36 +121,26 @@ export default function BoardUpdate() {
 
   // render: 게시판 게시글 수정 컴포넌트 렌더링 //
   return (
-    <div id='board-write-wrapper'>
-      <div className='write-container'>
-        <div className='write-title'>게시판 글 수정</div>
+    <div id='board-update-wrapper'>
+      <div className='update-container'>
+        <div className='update-title'>게시글수정</div>
         <div className='contents-container'>
           <div className='board-category'>카테고리</div>
           <div className='input-row-box'>
-            <div className='content disabled'>{boardTag}</div>
+            <div className="content">{boardTag}</div>
           </div>
-
-          <div className='input-box'>
-            <input
-              className='input title-input'
-              type='text'
-              placeholder='제목을 입력해주세요.'
-              value={title}
-              onChange={onTitleChangeHandler}
-            />
+          <div className="input-column-box">
+            <div className="title">제목</div>
+            <input type="text" value={title} placeholder="제목을 입력하세요." onChange={onTitleChangeHandler} />
           </div>
-
-          <div className='editor-box'>
-            <TextEditor content={content} setContent={onContentChangeHandler} />
+          <div className='input-column-box'>
+            <div className='title'>내용</div>
+            {isLoaded &&
+            <TextEditor content={content}setContent={onContentChangeHandler} />
+            }
           </div>
-
-          <div className='button-box'>
-            <div
-              className={updateButtonClass}
-              onClick={onUpdateButtonClickHandler}
-            >
-              게시글 수정
-            </div>
+          <div className="button-box">
+            <div className={updateButtonClass} onClick={onUpdateButtonClickHandler}>작성 완료</div>
           </div>
         </div>
       </div>

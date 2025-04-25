@@ -189,106 +189,107 @@
   height: 30px;
 }
 
-/* 댓글 영역 */
-#board-view-wrapper .bulletin-comment-container {
+/* 댓글 입력창 영역 */
+#board-view-wrapper .comment-write {
   border-top: 1px solid #bbbfca;
-  padding-top: 24px;
 }
 
-#board-view-wrapper .comment-write {
+#board-view-wrapper .comment-write-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  margin-top: 24px;
 }
 
 #board-view-wrapper .comment-write-content {
   flex: 1;
-  padding: 12px;
+  padding: 5px;
   border: 1px solid #bbbfca;
   border-radius: 8px;
   margin-right: 12px;
-  font-size: 14px;
+  font-size: 16px;
 }
 
-#board-view-wrapper .comment-write-button {
+#board-view-wrapper .button {
   background-color: #8eaccd;
   color: white;
-  padding: 8px 16px;
+  padding: 15px 20px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
 }
 
-#board-view-wrapper .comment {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  border-radius: 12px;
-  padding: 10px;
-  border: 1px solid #bbbfca;
+#board-view-wrapper .button.middle.primary {
+  background-color: #8eaccd;
+  color: white;
+  cursor: pointer;
 }
 
-#board-view-wrapper .comment .default-user-image {
-  width: 32px;
-  height: 32px;
+#board-view-wrapper .button.middle.primary:hover {
+  background-color: #007bbd;
 }
 
-#board-view-wrapper .comment .userName {
-  font-weight: 500;
+#board-view-wrapper .button.middle.disable {
+  background-color: #bbbfca;
+  color: white;
+  cursor: not-allowed;
 }
 
-#board-view-wrapper .comment .date {
-  font-size: 12px;
-  color: #aaa;
+/* 댓글 리스트 영역 */
+#board-view-wrapper .comments-list {
+  border-top: 1px solid #bbbfca;
 }
 
-#board-view-wrapper .comment-content {
+#board-view-wrapper .comment-box {
+  padding: 12px 16px;
+  border-bottom: 1px solid #bbbfca;
   font-size: 14px;
-  color: #444;
 }
 
-/* 댓글 프로필과 내용 한 줄로 정렬 */
-#board-view-wrapper .comment-wrapper {
+#board-view-wrapper .title-box {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 12px;
-}
-
-#board-view-wrapper .comment-wrapper .user-info {
-  display: flex;
   gap: 8px;
-  align-items: center;
+  margin-bottom: 6px;
 }
 
-#board-view-wrapper .comment-wrapper .user-info .default-user-image {
-  width: 28px;
-  height: 28px;
-  background-color: #dcdcdc;
+#board-view-wrapper .comment-default-user-image {
+  width: 25px;
+  height: 25px;
+  background-image: url('/src/assets/images/default-profile-image.jpg');
+  background-size: 100%;
   border-radius: 50%;
 }
 
-#board-view-wrapper .comment-wrapper .user-info .userName {
+#board-view-wrapper .user-name {
+  font-size: 14px;
   font-weight: bold;
-  color: #333;
-  font-size: 14px;
 }
 
-#board-view-wrapper .comment-wrapper .user-info .date {
-  font-size: 12px;
+#board-view-wrapper .divider {
+  width: 1px;
+  height: 16px;
+  background-color: #ccc;
+}
+
+#board-view-wrapper .write-date {
   color: #888;
-  margin-left: 8px;
-}
-
-#board-view-wrapper .comment-wrapper .comment-content {
   font-size: 14px;
-  color: #444;
-  margin-left: 12px;
 }
 
-/* 아이콘과 글자 수평 정렬 */
+#board-view-wrapper .comment {
+  margin-left: 40px;
+  white-space: pre-wrap;
+  color: #444;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 10px;
+  border: 1px solid #bbbfca;
+  border-radius: 20px;
+}
+
+/* 아이콘 영역 */
 .icon {
   width: 18px;
   height: 18px;
