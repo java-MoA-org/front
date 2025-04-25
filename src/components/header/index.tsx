@@ -4,7 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import moaHeaderLogo from "../../assets/images/moa_main_logo.png";
 import userImg from "../../assets/images/ex-user1.png";
 import cameraIcon from "../../assets/images/camera.png";
+<<<<<<< HEAD
 import sessionIcon from "../../assets/images/session.png";
+=======
+>>>>>>> 786eea0059da45f0c2c64b7b1a87e6bc507ac650
 import {
   ACCESS_TOKEN,
   BOARD_ABSOLUTE_PATH,
@@ -17,11 +20,20 @@ import {
   ROOT_PATH,
   USED_TRADE_ABSOLUTE_PATH,
   USED_TRADE_PATH,
+<<<<<<< HEAD
   USED_TRADE_WRITE_ABSOLUTE_PATH,
 } from "../../constants";
 import { useCookies } from "react-cookie";
 import useSignInUserStore from "../../stores/sign-in-user.store";
 import { refreshAccessTokenRequest, userSignOutRequest } from "../../apis";
+=======
+  USED_TRADE_WRITE_ABSOLUTE_PATH
+} from "../../constants";
+import { Cookies, useCookies } from "react-cookie";
+import useSignInUserStore from "../../stores/sign-in-user.store";
+import { refreshAccessTokenRequest, userSignOutRequest } from "../../apis";
+import { access } from "fs";
+>>>>>>> 786eea0059da45f0c2c64b7b1a87e6bc507ac650
 import useSessionTimerStore from "../../stores/session-timer.store";
 
 const Header = () => {
@@ -66,6 +78,7 @@ const Header = () => {
       window.location.reload();
       return;
     }
+
     setTimeLeft(parseInt(expirationTime, 10));
   };
 
@@ -79,9 +92,16 @@ const Header = () => {
 
   // 세션 만료 시 처리 (로그아웃 상태일 때는 제외)
   useEffect(() => {
+<<<<<<< HEAD
     if (!accessToken || isLoggingOut || timeLeft === -1) return;
   
     if (timeLeft === 0) {
+=======
+    if (accessToken) {
+      return;
+    }
+    if (accessToken && timeLeft === 0) {
+>>>>>>> 786eea0059da45f0c2c64b7b1a87e6bc507ac650
       resetTime();
       alert("세션이 만료되었습니다.");
       removeCookie(ACCESS_TOKEN);
@@ -91,7 +111,33 @@ const Header = () => {
     }
   }, [timeLeft]);
 
+<<<<<<< HEAD
   // 페이지 이동 시 세션 연장
+=======
+  useEffect(() => {
+    if (accessToken) {
+      onExtendSessionClickHandler();
+    }
+  }, [location.pathname]);
+
+  // click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const formatTime = (seconds: number) => {
+    const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const s = String(seconds % 60).padStart(2, "0");
+    return `${m}:${s}`;
+  };
+
+>>>>>>> 786eea0059da45f0c2c64b7b1a87e6bc507ac650
   useEffect(() => {
     if (accessToken) {
       onExtendSessionClickHandler();
@@ -129,7 +175,11 @@ const Header = () => {
           <span>⭐</span>
           <div className="profile-wrapper" ref={dropdownRef}>
             <img
+<<<<<<< HEAD
               src={userProfileImage || userImg}
+=======
+              src={userImg}
+>>>>>>> 786eea0059da45f0c2c64b7b1a87e6bc507ac650
               className="profile-img"
               onClick={() => setDropdownOpen((prev) => !prev)}
               alt="프로필"
@@ -142,7 +192,11 @@ const Header = () => {
                     className="dropdown-profile-img"
                     onClick={() => {
                       setDropdownOpen(false);
+<<<<<<< HEAD
                       navigate(`/userpage/${userNickname}`);
+=======
+                      navigate("/mypage");
+>>>>>>> 786eea0059da45f0c2c64b7b1a87e6bc507ac650
                     }}
                     alt="드롭다운 프로필"
                   />
@@ -151,7 +205,11 @@ const Header = () => {
                     className="camera-icon"
                     onClick={() => {
                       setDropdownOpen(false);
+<<<<<<< HEAD
                       navigate(`/userpage/${userNickname}`);
+=======
+                      navigate("/mypage");
+>>>>>>> 786eea0059da45f0c2c64b7b1a87e6bc507ac650
                     }}
                     alt="카메라 변경 아이콘"
                   />
@@ -162,7 +220,11 @@ const Header = () => {
                   <button
                     onClick={() => {
                       setDropdownOpen(false);
+<<<<<<< HEAD
                       navigate(`/userpage/${userNickname}`);
+=======
+                      navigate("/mypage");
+>>>>>>> 786eea0059da45f0c2c64b7b1a87e6bc507ac650
                     }}
                   >
                     마이페이지
@@ -234,9 +296,16 @@ const Header = () => {
             <div className="session-container">
               <img src={sessionIcon} alt="세션 아이콘" className="session-icon" />
               <span className="session-time">세션 남은시간 : {formatTime(timeLeft)}</span>
+<<<<<<< HEAD
               <button className="session-extend-button" onClick={onExtendSessionClickHandler}>
                 연장
               </button>
+=======
+              <div className="session-button" onClick={onExtendSessionClickHandler}>
+                {" "}
+                세션 연장하기
+              </div>
+>>>>>>> 786eea0059da45f0c2c64b7b1a87e6bc507ac650
             </div>
           )}
           <input className="friend-search" placeholder="친구 검색" />

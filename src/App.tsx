@@ -83,6 +83,8 @@ function App() {
 
   return (
     <CookiesProvider>
+      {" "}
+      {/* CookiesProvider로 애플리케이션 감싸기 */}
       <BrowserRouter>
         <Marquee />
         <Header />
