@@ -11,4 +11,5 @@ export default interface GetUserInfoResponseDto extends ResponseDto {
   userPhoneNumber: string;
   userIntroduce: string;
   userInterests: InterestsType;
+  joinType: string;
 }

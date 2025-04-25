@@ -62,6 +62,11 @@
 .sign-up-input-box .sign-up-button:hover {
   opacity: 0.85;
 }
+.sign-up-button.disabled {
+  background-color: #ccc;
+  color: #888;
+  cursor: not-allowed;
+}
 
 .sign-up-input-box .posible {
   cursor: pointer;

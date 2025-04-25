@@ -55,7 +55,16 @@ import { getUserInfoRequest } from "./apis";
 import GetUserInfoResponseDto from "./apis/dto/response/user/get-user-info.response.dto";
 
 function App() {
-  const { setUserId, setUserNickname, setUserProfileImage, setUserIntroduce, setUserPhoneNumber, setUserEmail, setUserRole, setUserInterests } = useSignInUserStore();
+  const {
+    setUserId,
+    setUserNickname,
+    setUserProfileImage,
+    setUserIntroduce,
+    setUserPhoneNumber,
+    setUserEmail,
+    setUserRole,
+    setUserInterests
+  } = useSignInUserStore();
   const [cookies] = useCookies([ACCESS_TOKEN]);
 
   useEffect(() => {
@@ -126,7 +135,7 @@ function App() {
             <Route path=":nickname" element={<UserPageContainer />} />
             <Route path=":nickname/follow" element={<UserPageFollow />} />
             <Route path=":nickname/user-board" element={<UserBoard />} />
-            <Route path=":nickname/user-update" element={<UserPageUpdate />} />
+            <Route path="user-update" element={<UserPageUpdate />} />
           </Route>
 
           <Route path="/user-update" element={<UserPageUpdate />} />

@@ -10,7 +10,7 @@ export default function UpdateButton({ nickname }: Props) {
   const navigator = useNavigate();
 
   const onUpdateClickHandler = () => {
-    navigator(MY_USER_UPDATE_ABSOLUTE_PATH(nickname));
+    navigator(MY_USER_UPDATE_ABSOLUTE_PATH);
   };
 
   return (
