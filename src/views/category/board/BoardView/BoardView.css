@@ -146,7 +146,10 @@
 /* 본문 내용 */
 #board-view-wrapper .bulletin-content-container {
   position: relative;
-  height: 500px;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-bottom: 50px;
+  min-height: 500px;
 }
 
 #board-view-wrapper .content-top-bar {
@@ -162,8 +165,6 @@
 
 #board-view-wrapper .bulletin-content img {
   max-width: 100%;
-  height: auto;
-  margin-top: 16px;
   border-radius: 8px;
 }
 

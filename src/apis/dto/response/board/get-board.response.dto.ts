@@ -14,4 +14,5 @@ export default interface GetBoardResponseDto extends ResponseDto {
   writerNickname: string;
   likeCount: number;
   comments: Comment[];
+  imageUrls: string[];
 }

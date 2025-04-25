@@ -48,6 +48,13 @@ function TableItem({ board }: TableItemProps) {
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
+  function stripHtmlTags(html: string): string {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  }
+  
+
   // event handler: 레코드 클릭 이벤트 처리 //
   const onClick = () => {
     navigator(BOARD_VIEW_ABSOLUTE_PATH(boardSequence));
@@ -63,7 +70,9 @@ function TableItem({ board }: TableItemProps) {
         </div>
       </div>
       <div className="board-content">
-        {content.length > 70 ? content.slice(0, 70) + "..." : content}
+        {stripHtmlTags(content).length > 70
+          ? stripHtmlTags(content).slice(0, 70) + "..."
+          : stripHtmlTags(content)}
       </div>
       <div className="board-footer">
         <div className="footer-left">
