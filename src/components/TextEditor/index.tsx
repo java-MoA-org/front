@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Color } from '@tiptap/extension-color';
 import ListItem from '@tiptap/extension-list-item';
@@ -66,14 +66,24 @@ export default function TextEditor({ content, setContent, onImageListChange }: P
   const [isUploading, setIsUploading] = useState(false);
   const [imageList, setImageList] = useState<string[]>([]);
 
-  // state: editor 상태 //
+  // editor 상태 변수
+  const [initialized, setInitialized] = useState(false);
+
   const editor = useEditor({
     extensions,
     content,
     onUpdate: ({ editor }) => {
       setContent(editor.getText());
-    }
+    },
   });
+
+  // content가 변경되면 editor에 내용이 반영되도록 설정
+  useEffect(() => {
+    if (editor && content !== undefined && !initialized) {
+      editor.commands.setContent(content);
+      setInitialized(true);
+    }
+  }, [editor, content, initialized]);
 
   // 이미지 업로드 처리 함수 //
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {

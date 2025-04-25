@@ -3,4 +3,5 @@ export default interface Comment {
   commentWriterId: string;
   commentWriteDate: string;
   comment: string;
+  anonymizedWriterId?: string; 
 }

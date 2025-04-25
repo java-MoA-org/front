@@ -135,6 +135,7 @@
 #board-main-wrapper .board-title {
   font-size: 18px;
   font-weight: bold;
+  width: 900px;
   color: #333;
   margin-bottom: 10px;
 }
