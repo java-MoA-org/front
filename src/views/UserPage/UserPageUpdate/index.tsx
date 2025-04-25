@@ -8,13 +8,14 @@ import { UserInterest } from "../../../types/interfaces";
 import { ACCESS_TOKEN } from "../../../constants";
 import ResponseDto from "../../../apis/dto/response/response.dto";
 import UserNicknameCheckRequestDto from "../../../apis/dto/request/auth/user-nickname-check.request.dto";
-import { getUserInfoRequest, userNicknameCheckRequest } from "../../../apis";
+import { getUserInfoRequest, passwordVerifyRequest, userNicknameCheckRequest } from "../../../apis";
 import SignUpInputBox from "../../../components/SignInInputBox/SignUpInputBox";
 import useSignInUser from "../../../hooks/sign-in-user.hook";
 import { useNavigate, useParams } from "react-router-dom";
 import GetUserInfoResponseDto from "../../../apis/dto/response/user/get-user-info.response.dto";
 import { InterestsType } from "../../../types/userInterests";
 import Modal from "../../../components/Modal";
+import PasswordVerifyRequestDto from "../../../apis/dto/request/userInfo/post-verify-pawword.request.dto";
 
 export default function UserPageUpdate() {
   // state: 로그인 사용자 정보 //
@@ -22,14 +23,6 @@ export default function UserPageUpdate() {
     useSignInUserStore();
   const { nickname } = useParams();
   const navigate = useNavigate();
-
-  // URL 닉네임과 로그인 유저 닉네임이 다르면 메인으로 이동
-  // useEffect(() => {
-  //   if (!nickname || nickname !== userNickname) {
-  //     alert("접근 권한이 없습니다.");
-  //     navigate("/main"); // 혹은 홈 페이지 등으로 리다이렉트
-  //   }
-  // }, [nickname, userNickname]);
 
   //! 받아오는걸 기다린 후 비교 하는 형식
   useEffect(() => {
@@ -153,10 +146,26 @@ export default function UserPageUpdate() {
   // function: 현재 비밀번호 입력 처리 함수 //
   function CurrentPasswordStep({ onNext, onCancel }: { onNext: () => void; onCancel: () => void }) {
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const [cookies] = useCookies();
+    const accessToken = cookies[ACCESS_TOKEN];
 
-    const checkPassword = () => {
-      if (password === "") onNext();
-      else alert("비밀번호가 틀렸습니다");
+    const checkPassword = async () => {
+      if (!password) {
+        setErrorMessage("비밀번호를 입력해주세요");
+        return;
+      }
+
+      const requestBody: PasswordVerifyRequestDto = { userPassword: password };
+      const response = await passwordVerifyRequest(accessToken, requestBody);
+
+      if (!response || response.code === "DBE") {
+        setErrorMessage("서버 오류가 발생했습니다");
+      } else if (response.code === "NPW") {
+        setErrorMessage("비밀번호가 일치하지 않습니다.");
+      } else if (response.code === "SU") {
+        onNext();
+      }
     };
 
     return (
@@ -167,23 +176,15 @@ export default function UserPageUpdate() {
           type="password"
           placeholder="현재 비밀번호 입력"
           onChange={(e) => setPassword(e.target.value)}
-          message=""
+          message={errorMessage}
+          isErrorMessage={!!errorMessage}
+          hint="naver및kakao로 회원가입 하신 분들은 비밀번호 변경할 수 없습니다"
         />
         <button onClick={checkPassword}>확인</button>
         <button onClick={onCancel}>취소</button>
       </div>
     );
   }
-
-  // const [userPassword, setUserPassword] = useState("");
-  // const [userPasswordMessage, setUserPasswordMessage] = useState("");
-  // const [userPasswordValid, setUserPasswordValid] = useState(false);
-  // // const [userPasswordReadOnlyActive, setUserPasswordReadOnlyActive] = useState(false);
-
-  // const [confirmPassword, setConfirmPassword] = useState("");
-  // const [confirmPasswordValid, setConfirmPasswordValid] = useState(false);
-  // const [confirmPasswordMessage, setConfirmPasswordMessage] = useState<string>("");
-  // const [confirmPasswordChecked, setConfirmPasswordChecked] = useState(false);
 
   // function: 새 비밀번호 입력 처리 함수 //
   function NewPasswordStep({
@@ -250,27 +251,6 @@ export default function UserPageUpdate() {
   }
 
   // function: 기존 비밀번호 확인 처리 함수 //
-
-  // // function: 새 비밀번호 유효 함수 //
-  // const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const { value } = e.target;
-  //   setUserPassword(value);
-  //   const isValid =
-  //     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+[\]{};:'",.<>/?\\|`~]).{8,12}$/.test(value) ||
-  //     value == "";
-  //   setUserPasswordValid(isValid);
-
-  //   setUserPasswordMessage(isValid ? "" : "비밀번호를 다시 확인해주세요.");
-  // };
-  // // function: 새 비밀번호 확인 함수
-  // const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const { value } = e.target;
-  //   setConfirmPassword(value);
-  //   const isValid = userPassword === value || value == "";
-  //   setConfirmPasswordValid(isValid);
-  //   setConfirmPasswordMessage(isValid ? "" : "비밀번호가 일치하지 않습니다.");
-  //   setConfirmPasswordChecked(userPassword === value);
-  // };
 
   // function: patch userinfo response 처리 함수 //
   const patchUserInfoResponse = (responseBody: ResponseDto | null) => {
