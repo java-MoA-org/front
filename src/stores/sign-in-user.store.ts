@@ -5,25 +5,36 @@ interface SignInUserState {
   userId: string;
   userNickname: string;
   userProfileImage: string | null;
-  userIntroduce: string | "";
+  userIntroduce: string;
   userPhoneNumber: string;
   userEmail: string;
   userRole: string;
   userInterests: UserInterest;
 
   setUserId: (userId: string) => void;
-  setUserNickname: (name: string) => void;
+  setUserNickname: (userNickname: string) => void;
   setUserProfileImage: (userProfileImage: string | null) => void;
-  setUserPhoneNumber: (userPhoneNumber: string) => void;
   setUserIntroduce: (userIntroduce: string) => void;
+  setUserPhoneNumber: (userPhoneNumber: string) => void;
   setUserEmail: (userEmail: string) => void;
   setUserRole: (userRole: string) => void;
   setUserInterests: (userInterests: UserInterest) => void;
 
+  setUserAll: (user: {
+    userId: string;
+    userNickname: string;
+    userProfileImage: string | null;
+    userIntroduce: string;
+    userPhoneNumber: string;
+    userEmail: string;
+    userRole: string;
+    userInterests: UserInterest;
+  }) => void;
+
   resetUser: () => void;
 }
 
-const defaultInterests = {
+const defaultInterests: UserInterest = {
   userInterestTrip: false,
   userInterestGame: false,
   userInterestFashion: false,
@@ -52,6 +63,18 @@ const useSignInUserStore = create<SignInUserState>((set) => ({
   setUserEmail: (userEmail) => set({ userEmail }),
   setUserRole: (userRole) => set({ userRole }),
   setUserInterests: (userInterests) => set({ userInterests }),
+
+  setUserAll: (user) =>
+    set({
+      userId: user.userId,
+      userNickname: user.userNickname,
+      userProfileImage: user.userProfileImage,
+      userIntroduce: user.userIntroduce,
+      userPhoneNumber: user.userPhoneNumber,
+      userEmail: user.userEmail,
+      userRole: user.userRole,
+      userInterests: user.userInterests || defaultInterests,
+    }),
 
   resetUser: () =>
     set({

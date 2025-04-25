@@ -1,0 +1,64 @@
+#modal-wrapper {
+  position: fixed; /* 뷰포트 기반으로 가게 하기위해 설정*/
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  min-width: 1440px;
+  height: 100vh;
+
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+#modal-wrapper .modal-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /*자기 몸뚱아리 비례해서 50%식 움직임*/
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: 24px;
+  width: 580px;
+  border: 1px solid rgba(0, 0, 0, 1);
+
+  background-color: rgba(255, 255, 255, 1);
+}
+
+#modal-wrapper .modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#modal-wrapper .modal-head .title {
+  color: rgba(64, 64, 64, 1);
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+#modal-wrapper .modal-head .close-button {
+  width: 32px;
+  height: 32px;
+
+  /* background-image: url(src/assets/images/close.png);
+  background-size: 100% 100%; */
+
+  cursor: pointer;
+}
+
+#modal-wrapper .modal-body {
+  max-height: 800px;
+}
+
+#modal-wrapper .modal-body .input-box input {
+  border: 1px solid rgba(0, 0, 0, 1);
+  border-radius: 6px;
+  padding: 10px;
+  background-color: #fff;
+  font-size: 16px;
+}

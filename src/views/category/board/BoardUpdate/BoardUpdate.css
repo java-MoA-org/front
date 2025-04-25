@@ -1,0 +1,109 @@
+#board-write-wrapper {
+  background-color: #f4f4f4;
+  padding: 40px 0;
+  min-height: 100vh;
+}
+
+#board-write-wrapper .write-container {
+  width: 1000px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 32px;
+}
+
+#board-write-wrapper .write-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #bbbfca;
+}
+
+#board-write-wrapper .contents-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+#board-write-wrapper .board-category {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+#board-write-wrapper .input-row-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #bbbfca;
+}
+
+#board-write-wrapper .content {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  border: 1px solid #8eaccd;
+  color: white;
+  background-color: #8eaccd;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#board-write-wrapper .content:hover {
+  background-color: #007bbd;
+}
+
+#board-write-wrapper .content.active {
+  color: #ffffff;
+  background-color: #007bbd;
+  border: 1px solid #007bbd;
+}
+
+#board-write-wrapper .input-column-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#board-write-wrapper .input-column-box .title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+#board-write-wrapper .input-column-box input[type="text"] {
+  padding: 10px 14px;
+  border: 1px solid #bbbfca;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+#board-write-wrapper .button-box {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#board-write-wrapper .button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+
+#board-write-wrapper .button.middle.primary {
+  background-color: #8eaccd;
+  color: white;
+  cursor: pointer;
+}
+
+#board-write-wrapper .button.middle.primary:hover {
+  background-color: #007bbd;
+}
+
+#board-write-wrapper .button.middle.disable {
+  background-color: #bbbfca;
+  color: white;
+  cursor: not-allowed;
+}

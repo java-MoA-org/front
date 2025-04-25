@@ -13,6 +13,8 @@ interface Props {
   isButtonActive?: boolean;
   readOnly?: boolean;
   disable?: boolean;
+  hint?: string;
+  maxLength?: number;
 
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onButtonClick?: () => void;
@@ -31,6 +33,8 @@ export default function InputBox(props: Props) {
     isButtonActive,
     readOnly,
     disable,
+    hint,
+    maxLength
   } = props;
   const { onChange, onButtonClick } = props;
 
@@ -53,6 +57,7 @@ export default function InputBox(props: Props) {
               readOnly={readOnly}
               disabled={disable}
               className="textarea" // height 적용 위해 클래스 부여
+              maxLength={maxLength}
             />
           ) : (
             <input
@@ -70,6 +75,7 @@ export default function InputBox(props: Props) {
             </div>
           )}
         </div>
+        <div className="sign-up-hint">{hint}</div>
         <div className={messageClass}>{message}</div>
       </div>
     </div>

@@ -7,7 +7,7 @@ interface Props {
   placeholder: string;
   type: "text" | "password" | "tel";
   buttonName?: string;
-  message: string;
+  message?: string;
   isErrorMessage?: boolean;
   isButtonActive?: boolean;
   readOnly?: boolean;
@@ -28,7 +28,7 @@ export default function SignUpInputBox(props: Props) {
     isErrorMessage,
     isButtonActive,
     readOnly,
-    hint,
+    hint
   } = props;
   const { onChange, onButtonClick } = props;
 

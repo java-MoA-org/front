@@ -134,7 +134,8 @@ export default function BoardMain() {
     const message = 
       !responseBody ? '서버에 문제가 있습니다.' :
       responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'AF' ? '인증에 실패했습니다.' : '';
+      responseBody.code === 'AF' ? '인증에 실패했습니다.' : 
+      responseBody.code === 'IP' ? '게시글이 존재하지 않습니다.' : '';
 
     const isSuccess = responseBody !== null && responseBody.code === "SU";
     if (!isSuccess) {
@@ -175,12 +176,12 @@ export default function BoardMain() {
     window.location.reload();
   };
 
-  // event handler: 검색어 입력 변경
+  // event handler: 검색어 입력 변경 //
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
-  
-  // 검색 버튼 클릭 이벤트 핸들러
+
+  // event handler: 검색 버튼 클릭 //
   const onSearchClick = () => {
     if (searchQuery) {
       setSearchParams({ tag, searchQuery, page: '1' });
