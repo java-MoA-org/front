@@ -87,12 +87,20 @@ export default function BoardUpdate() {
   // event handler: 제목 변경 이벤트 처리 //
   const onTitleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
+    if (value.length > 50) {
+      alert("제목은 50자 이내로 작성해주세요.");
+      return;
+    }
     setTitle(value);
   };
 
   // event handler: 내용 변경 이벤트 처리 //
-  const onContentChangeHandler = (content: string) => {
-    setContent(content);
+  const onContentChangeHandler = (value: string) => {
+    if (value.length > 2000) {
+      alert("내용은 2000자 이내로 작성해주세요.");
+      return;
+    }
+    setContent(value);
   };
 
   // event handler: 게시글 수정 버튼 클릭 이벤트 처리 //
@@ -130,11 +138,11 @@ export default function BoardUpdate() {
             <div className="content">{boardTag}</div>
           </div>
           <div className="input-column-box">
-            <div className="title">제목</div>
+            <div className='title'>제목 ({title.length}/50)</div>
             <input type="text" value={title} placeholder="제목을 입력하세요." onChange={onTitleChangeHandler} />
           </div>
           <div className='input-column-box'>
-            <div className='title'>내용</div>
+            <div className='title'>내용 ({content.length}/2000)</div>
             {isLoaded &&
             <TextEditor content={content}setContent={onContentChangeHandler} />
             }

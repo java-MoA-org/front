@@ -22,6 +22,8 @@ export default function BoardWrite() {
   const [location, setLocation] = useState<string>('');
   const [detailLocation, setDetailLocation] = useState<string>('');
 
+  const [textLength, setTextLength] = useState(0);
+
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
 
@@ -53,13 +55,10 @@ export default function BoardWrite() {
 
   // function: post board response 처리 함수 //
   const postBoardResponse = (responseBody: ResponseDto | null) => {
-    const message = !responseBody
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "DBE"
-        ? "서버에 문제가 있습니다."
-        : responseBody.code === "AF"
-          ? "인증에 실패했습니다."
-          : "";
+    const message = 
+      !responseBody ? "서버에 문제가 있습니다." : 
+      responseBody.code === "DBE" ? "서버에 문제가 있습니다." : 
+      responseBody.code === "AF" ? "인증에 실패했습니다." : "";
 
     const isSuccess = responseBody !== null && responseBody.code === "SU";
     if (!isSuccess) {
@@ -94,9 +93,15 @@ export default function BoardWrite() {
     setContent(value);
   };
 
+  // 이미지 업로드 이후 content에 삽입
+  const onImageUpload = (imageUrl: string) => {
+    const imageTag = `<img src="${imageUrl}" alt="업로드 이미지" />`;
+    setContent(prev => prev + imageTag);
+  };
+
   // event handler: 이미지 목록 변경 이벤트 처리 //
   const onImageListChangeHandler = (imageList: string[]) => {
-    setImageList(imageList);  // 이미지를 상태로 업데이트
+    setImageList(imageList);
   };
 
   // event handler: 게시판 글 작성 버튼 클릭 이벤트 처리 //
@@ -170,12 +175,16 @@ export default function BoardWrite() {
           </div>
           <div className="input-column-box">
             <div className='title'>제목 ({title.length}/50)</div>
-            <input type="text" value={title} placeholder="제목을 입력하세요." onChange={onTitleChangeHandler}
-/>
+            <input type="text" value={title} placeholder="제목을 입력하세요." onChange={onTitleChangeHandler} />
           </div>
           <div className='input-column-box'>
             <div className='title'>내용 ({content.length}/2000)</div>
-            <TextEditor content={content} setContent={onContentChangeHandler} onImageListChange={onImageListChangeHandler}/>
+            <TextEditor
+              content={content}
+              setContent={onContentChangeHandler}
+              onImageListChange={onImageListChangeHandler}
+              onImageUpload={onImageUpload}
+            />
           </div>
           <div className="button-box">
             <div className={writeButtonClass} onClick={onWriteButtonClickHandler}>작성 완료</div>

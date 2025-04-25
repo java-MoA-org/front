@@ -70,6 +70,9 @@ export default function BoardView() {
   // state: 댓글창 보이기 상태 //
   const [showCommentInput, setShowCommentInput] = useState<boolean>(false);
 
+  // state: 이미지 목록 상태 (새로 추가된 부분) //
+  const [images, setImages] = useState<string[]>([]);
+
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
 
@@ -85,7 +88,9 @@ export default function BoardView() {
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
-
+  useEffect(() => {
+    console.log(images);  // images 값 확인
+  }, [images]);
   // function: get board response 처리 함수 //
   const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null,) => {
   
@@ -103,7 +108,7 @@ export default function BoardView() {
       return;
     }
 
-    const { title, content, creationDate, views, tag, likeCount, writerId } = responseBody as GetBoardResponseDto;
+    const { title, content, creationDate, views, tag, likeCount, writerId, imageUrls } = responseBody as GetBoardResponseDto;
 
     setTitle(title);
     setContent(content);
@@ -112,6 +117,10 @@ export default function BoardView() {
     setViews(views);
     setBoardTag(tag);
     setLikeCount(likeCount);
+    console.log(images);
+    const uniqueImages = Array.from(new Set(imageUrls));
+    setImages(uniqueImages);
+
   };
 
   // function: get comment response 처리 함수 //
@@ -312,11 +321,9 @@ export default function BoardView() {
 
       <div className="bulletin-content-container">
         <div className="content-top-bar">
-          <div
-            className="bulletin-content"
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
+          <div className="bulletin-content" dangerouslySetInnerHTML={{ __html: content }} />
         </div>
+
         <div className='content-bottom-bar'>
           <div className="like-button">
             <img src={isLiked ? likeClickIcon : likeIcon} alt="Like" className={likedClass} onClick={onLikeClickHandler} />{likeCount}
