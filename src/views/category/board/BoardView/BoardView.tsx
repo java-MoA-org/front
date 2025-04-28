@@ -40,14 +40,18 @@ function CommentItem({ commentItem }: CommentItemProps) {
 
 // component: 게시판 게시글 상세보기 컴포넌트 //
 export default function BoardView() {
+
   // state: 경로 변수 상태 //
   const { boardSequence } = useParams();
 
   // state: cookie 상태 //
   const [cookies] = useCookies();
 
-  // state: 로그인 사용자 닉네임 상태 //
+  // state: 로그인 사용자 아이디 상태 //
   const { userId } = useSignInUserStore();
+
+  // userId 값 확인
+  console.log("User ID:", userId);
 
   // state: 게시글 내용 상태 //
   const [writerId, setWriterId] = useState<string>('');
@@ -70,7 +74,7 @@ export default function BoardView() {
   // state: 댓글창 보이기 상태 //
   const [showCommentInput, setShowCommentInput] = useState<boolean>(false);
 
-  // state: 이미지 목록 상태 (새로 추가된 부분) //
+  // state: 이미지 목록 상태 //
   const [images, setImages] = useState<string[]>([]);
 
   // variable: access token //
@@ -108,6 +112,7 @@ export default function BoardView() {
 
     const { title, content, creationDate, views, tag, likeCount, writerId, imageUrls } = responseBody as GetBoardResponseDto;
 
+    console.log("Writer ID:", writerId);
     setTitle(title);
     setContent(content);
     setWriterId(writerId);
@@ -160,8 +165,6 @@ export default function BoardView() {
     setComments(anonymizedComments);
   };
   
-  
-
   // function: delete board response 처리 함수 //
   const deleteBoardResponse = (responseBody: ResponseDto | null) => {
     const message =

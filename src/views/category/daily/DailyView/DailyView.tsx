@@ -64,7 +64,7 @@ export default function DailyView() {
   // state: 댓글창 보이기 상태 //
   const [showCommentInput, setShowCommentInput] = useState<boolean>(false);
 
-  // state: 이미지 목록 상태 (새로 추가된 부분) //
+  // state: 이미지 목록 상태 //
   const [images, setImages] = useState<string[]>([]);
 
   // variable: access token //
