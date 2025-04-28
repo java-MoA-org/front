@@ -1,5 +1,5 @@
 import "./style.css";
-import userImage from "../../assets/images/ex-user1.png";
+import userImage from "../../assets/images/default-profile.png";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ACCESS_TOKEN,
