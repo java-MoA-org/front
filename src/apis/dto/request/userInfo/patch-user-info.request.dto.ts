@@ -5,5 +5,5 @@ export default interface PatchUserInfoRequestDto {
   userIntroduce: string;
   userEmail: string;
   profileImage: string;
-  userIntersets: InterestsType;
+  userInterests: InterestsType;
 }

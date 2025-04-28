@@ -197,6 +197,8 @@ export default function UserPageUpdate() {
     userInterestEconomics: false,
     userInterestNull: false
   });
+  const [isUserInterestNullSelectedManually, setIsUserInterestNullSelectedManually] =
+    useState(false);
 
   // 비밀번호
   // state: 모달 오픈 상태 //
@@ -446,7 +448,7 @@ export default function UserPageUpdate() {
       userIntroduce: updateIntroduce,
       userEmail: updateUserEmail,
       profileImage: previewProfile ?? "",
-      userIntersets: updateInterest
+      userInterests: updateInterest
     };
 
     const response = await patchUserInfoRequest(accessToken, requestBody);
@@ -457,6 +459,7 @@ export default function UserPageUpdate() {
       useSignInUserStore.getState().setUserNickname(updateNickName);
       useSignInUserStore.getState().setUserIntroduce(updateIntroduce);
       useSignInUserStore.getState().setUserEmail(updateUserEmail);
+      useSignInUserStore.getState().setUserInterests(updateInterest);
       useSignInUserStore.getState().setUserProfileImage(previewProfile ?? "");
       navigate(ROOT_ABSOULTE_PATH);
     } else {
@@ -519,12 +522,32 @@ export default function UserPageUpdate() {
                   key={key}
                   className={`interest-button ${updateInterest[key] ? "selected" : ""}`}
                   onClick={() => {
+                    if (!updateInterest) return;
                     setUpdateInterest((prev) => {
                       const updated = { ...prev, [key]: !prev[key] };
 
-                      // 선택된 관심사가 하나도 없으면 userInterestNull만 true로
-                      const isAllUnselected = Object.values(updated).every((v) => v === false);
+                      // 사용자가 직접 일상 버튼을 누른 경우
+                      if (key === "userInterestNull") {
+                        setIsUserInterestNullSelectedManually(updated.userInterestNull);
+                        return {
+                          userInterestTrip: false,
+                          userInterestGame: false,
+                          userInterestFashion: false,
+                          userInterestWorkout: false,
+                          userInterestFood: false,
+                          userInterestMusic: false,
+                          userInterestEconomics: false,
+                          userInterestNull: updated.userInterestNull
+                        };
+                      }
+
+                      // 다른 관심사를 눌렀을 때
+                      const isAllUnselected = Object.entries(updated)
+                        .filter(([k]) => k !== "userInterestNull")
+                        .every(([_, v]) => v === false);
+
                       if (isAllUnselected) {
+                        setIsUserInterestNullSelectedManually(false); // 자동 일상 설정
                         return {
                           userInterestTrip: false,
                           userInterestGame: false,
@@ -536,10 +559,12 @@ export default function UserPageUpdate() {
                           userInterestNull: true
                         };
                       }
-                      // 하나라도 선택되어 있다면 일상을 false로
-                      if (key !== "userInterestNull" && updated.userInterestNull) {
-                        updated.userInterestNull = false;
+
+                      // 하나라도 선택되어 있으면
+                      if (updated.userInterestNull && !isUserInterestNullSelectedManually) {
+                        updated.userInterestNull = false; // 자동 일상만 꺼줌
                       }
+
                       return updated;
                     });
                   }}
