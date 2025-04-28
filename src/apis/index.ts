@@ -1,4 +1,6 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+// src/apis/index.ts
+
+import axios, { AxiosError, AxiosResponse,  } from "axios";
 import IdCheckRequestDto from "./dto/request/auth/user-id-check.request.dto";
 import ResponseDto from "./dto/response/response.dto";
 
@@ -12,6 +14,7 @@ import UserEmailCheckRequestDto from "./dto/request/auth/user-email-check.reques
 import UserPhoneNumberCheckRequestDto from "./dto/request/auth/user-phone-number-check.request.dto";
 import UserSignUpRequestDto from "./dto/request/auth/user-sign-up.request.dto";
 import UserSignInRequestDto from "./dto/request/auth/user-sign-in.request.dto";
+
 import {
   PatchBoardRequestDto,
   PostBoardCommentRequestDto,
@@ -43,6 +46,8 @@ import GetUserInfoResponseDto from "./dto/response/user/get-user-info.response.d
 import PatchPasswordRequestDto from "./dto/request/auth/patch-password.request.dto";
 import PasswordVerifyRequestDto from "./dto/request/userInfo/post-verify-pawword.request.dto";
 
+export { searchUserRequest } from "./dto/request/usersearch/search-user.request";
+
 const API_DOMAIN = process.env.REACT_APP_API_DOMAIN;
 
 const AUTH_MODULE_URL = `${API_DOMAIN}/api/v1/auth`;
@@ -56,6 +61,7 @@ const FIND_ID_EMAIL_CHECK_URL = `${AUTH_MODULE_URL}/find-id/email/verify/require
 const FIND_ID_EMAIL_CHECK_VERIFY_URL = `${AUTH_MODULE_URL}/find-id/email/verify`;
 const PHONE_NUMBER_CHECK_URL = `${AUTH_MODULE_URL}/phone/verify/require`;
 const PHONE_NUMBER_VERIFY_URL = `${AUTH_MODULE_URL}/phone/verify`;
+
 
 const SIGN_UP_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_URL = `${AUTH_MODULE_URL}/sign-in`;
@@ -664,5 +670,6 @@ export const deleteNoticeRequest = async (noticeId: number | string, accessToken
     .catch(responseErrorHandler);
   return responseBody;
 };
+
 
 

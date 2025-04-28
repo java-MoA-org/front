@@ -77,3 +77,10 @@ export const NOTICE_WRITE_ABSOLUTE_PATH = `${NOTICE_ABSOLUTE_PATH}/${NOTICE_WRIT
 export const NOTICE_VIEW_ABSOLUTE_PATH = (id: number | string) => `${NOTICE_ABSOLUTE_PATH}/${id}`;
 export const NOTICE_UPDATE_ABSOLUTE_PATH = (id: number | string) =>
   `${NOTICE_ABSOLUTE_PATH}/${id}/${NOTICE_UPDATE_PATH}`;
+
+
+// API 도메인 추가
+export const API_DOMAIN = process.env.REACT_APP_API_DOMAIN || "http://localhost:4000"; 
+
+// 친구 검색 API URL (수정 완료)
+export const SEARCH_USER_URL = (keyword: string) => `${API_DOMAIN}/api/v1/user/search?keyword=${encodeURIComponent(keyword)}`;
