@@ -43,6 +43,7 @@ import GetUserInfoResponseDto from "./dto/response/user/get-user-info.response.d
 import PatchPasswordRequestDto from "./dto/request/auth/patch-password.request.dto";
 import PasswordVerifyRequestDto from "./dto/request/userInfo/post-verify-pawword.request.dto";
 import PatchPasswordUserPageRequestDto from "./dto/request/userInfo/patch-password-userpage.request.dto";
+import PatchUserInfoRequestDto from "./dto/request/userInfo/patch-user-info.request.dto";
 
 const API_DOMAIN = process.env.REACT_APP_API_DOMAIN;
 
@@ -308,6 +309,22 @@ export const patchPasswordUserPageRequest = async (
     });
     return response.data;
   } catch {
+    return null;
+  }
+};
+// function: 유저 정보 수정 API 요청 함수 //
+export const patchUserInfoRequest = async (
+  accessToken: string,
+  requestBody: PatchUserInfoRequestDto
+): Promise<ResponseDto | null> => {
+  try {
+    const response = await axios.patch(PATCH_USER_UPDATE_PAGE_URL, requestBody, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+    return response.data;
+  } catch (error) {
     return null;
   }
 };
