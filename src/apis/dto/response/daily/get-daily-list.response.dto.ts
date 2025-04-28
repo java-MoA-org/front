@@ -4,6 +4,11 @@ import ResponseDto from "../response.dto";
 export default interface GetDailyListResponseDto extends ResponseDto {
   dailyList: DailySummaryResponseDto[];
   totalPages: number;
+  totalElements: number;
+  currentPage: number;
+  currentSection: number;
+  totalSection: number;
+  pageList: number[];
 }
 
 // interface: daily summary response body DTO //
@@ -17,4 +22,5 @@ export interface DailySummaryResponseDto {
   views: number;
   likeCount: number;
   commentCount: number;
+  images: string[];
 }
