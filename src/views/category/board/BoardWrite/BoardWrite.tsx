@@ -11,6 +11,7 @@ import TextEditor from "../../../../components/TextEditor";
 
 // component: 게시판 게시글 작성 컴포넌트 //
 export default function BoardWrite() {
+
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
 

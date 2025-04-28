@@ -48,6 +48,7 @@ function TableItem({ board }: TableItemProps) {
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
+  // function: HTML 문자열에서 HTML 태그 제거 함수 //
   function stripHtmlTags(html: string): string {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
@@ -60,7 +61,7 @@ function TableItem({ board }: TableItemProps) {
     navigator(BOARD_VIEW_ABSOLUTE_PATH(boardSequence));
   };
 
-  // render 게시판 테이블 레코드 컴포넌트 렌더링 //
+  // render: 게시판 테이블 레코드 컴포넌트 렌더링 //
   return (
     <div className="board-item" onClick={onClick}>
       <div className="board-header">
@@ -91,6 +92,7 @@ function TableItem({ board }: TableItemProps) {
 
 // component: 게시판 컴포넌트 //
 export default function BoardMain() {
+
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
 
@@ -130,10 +132,7 @@ export default function BoardMain() {
   const [selectedCategory, setSelectedCategory] = useState(tag);
 
   // hook: 페이지네이션 커스텀 훅 //
-  const {
-    setTotalList,
-    viewList, 
-  } = usePagination<Board>();
+  const { setTotalList, viewList } = usePagination<Board>();
 
   // variable: 액세스 토큰 //
   const accessToken = cookies[ACCESS_TOKEN];

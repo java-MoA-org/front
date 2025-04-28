@@ -1,70 +1,105 @@
 import { useState, useEffect } from 'react';
 
-// 작성 시간 변환 함수 (커스텀 훅)
+// component: 작성 시간 변환 커스텀 훅 //
 const useElapsedTime = (dateTime: string) => {
+  
+  // state: 경과 시간 저장 상태 //
   const [elapsedTime, setElapsedTime] = useState<string>('');
 
+  // effect: `dateTime` 변경 시마다 경과 시간 계산 //
   useEffect(() => {
+
+    // function: 작성 시간을 기준으로 경과 시간 계산 함수 //
     const getElapsedTime = (dateTime: string): string => {
+
+      // object: 현재 시간 객체 //
       const now = new Date();
+
+      // object: 작성 시간 객체 //
       const createdAt = new Date(dateTime);
 
-      // 오늘 자정 시간 계산 (오늘 00:00:00 기준)
-      const todayMidnight = new Date();
-      todayMidnight.setHours(0, 0, 0, 0);
+      // object: 오늘 자정 기준 시간 객체 //
+      const todayMidnight = new Date(now);
+      todayMidnight.setHours(0, 0, 0, 0); 
 
-      // 어제 자정 시간 계산 (어제 00:00:00 기준)
+      // object: 어제 자정 기준 시간 객체 //
       const yesterdayMidnight = new Date(todayMidnight);
       yesterdayMidnight.setDate(todayMidnight.getDate() - 1);
 
-      // 2일 전 자정 시간 계산
+      // object: 이틀 전 자정 기준 시간 객체 //
       const twoDaysAgoMidnight = new Date(todayMidnight);
       twoDaysAgoMidnight.setDate(todayMidnight.getDate() - 2);
 
-      const diffMs = now.getTime() - createdAt.getTime();
-      const diffSec = Math.floor(diffMs / 1000);
-      const diffMin = Math.floor(diffSec / 60);
-      const diffHour = Math.floor(diffMin / 60);
-      const diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      // object: 삼일 전 자정 기준 시간 객체 //
+      const threeDaysAgoMidnight = new Date(todayMidnight);
+      threeDaysAgoMidnight.setDate(todayMidnight.getDate() - 3);
 
-      // 오늘 자정부터 현재까지 비교
-      if (createdAt >= todayMidnight) {
+      // object: 작성 날짜만 추출한 객체 //
+      const createdAtDateOnly = new Date(createdAt);
+      createdAtDateOnly.setHours(0, 0, 0, 0); 
+
+      // object: 현재 시간과 작성 시간 차이 (밀리초) //
+      const diffMs = now.getTime() - createdAt.getTime();
+
+      // object: 차이를 초 단위로 변환 //
+      const diffSec = Math.floor(diffMs / 1000); 
+
+      // object: 차이를 분 단위로 변환 //
+      const diffMin = Math.floor(diffSec / 60); 
+
+      // object: 차이를 시간 단위로 변환 //
+      const diffHour = Math.floor(diffMin / 60); 
+
+      // object: 차이를 일 단위로 변환 //
+      const diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24)); 
+
+      // condition: 오늘 자정 이후인 경우 //
+      if (createdAtDateOnly.getTime() === todayMidnight.getTime()) {
         if (diffMin < 1) return '방금 전';
         if (diffHour < 1) return `${diffMin}분 전`;
         return `${diffHour}시간 전`;
       }
 
-      // 어제 자정부터 오늘 자정까지 비교
-      if (createdAt >= yesterdayMidnight && createdAt < todayMidnight) {
+      // condition: 어제 자정 이후인 경우 //
+      if (createdAtDateOnly.getTime() === yesterdayMidnight.getTime()) {
         return '어제';
       }
 
-      // 2일 전 자정부터 3일 전 자정까지 비교
-      if (createdAt >= twoDaysAgoMidnight && createdAt < yesterdayMidnight) {
+      // condition: 이틀 전 자정 이후인 경우 //
+      if (createdAtDateOnly.getTime() === twoDaysAgoMidnight.getTime()) {
         return '2일 전';
       }
 
-      // 3일 전부터 6일 전까지는 "3일 전", "4일 전" ... "6일 전"
-      if (diffDay >= 3 && diffDay <= 6) {
+      // condition: 삼일 전 자정 이후인 경우 //
+      if (createdAtDateOnly.getTime() === threeDaysAgoMidnight.getTime()) {
+        return '3일 전';
+      }
+
+      // condition: 4일 이상 6일 이내인 경우 //
+      if (diffDay >= 4 && diffDay <= 6) {
         return `${diffDay}일 전`;
       }
 
-      // 7일 이상부터는 주 단위로 처리
-      const diffWeek = Math.floor(diffDay / 7);
+      // object: 주 단위 계산 //
+      const diffWeek = Math.floor(diffDay / 7); 
+
+      // condition: 1주 이상 3주 이내인 경우 //
       if (diffWeek >= 1 && diffWeek <= 3) {
         return `${diffWeek}주 전`;
       }
 
-      // 4주 이상부터는 날짜 형식으로 출력
-      return `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(2, '0')}-${String(createdAt.getDate()).padStart(2, '0')}`;
+      return `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(2, '0')}-${String(createdAt.getDate()).padStart(2, '0')}`; 
     };
 
-    // 날짜 변환 함수 실행
+    // effect: 경과 시간 계산 //
     const elapsedTimeString = getElapsedTime(dateTime);
+
+    // state 업데이트 //
     setElapsedTime(elapsedTimeString);
 
   }, [dateTime]);
 
+  // 반환: 경과 시간 //
   return elapsedTime;
 };
 
