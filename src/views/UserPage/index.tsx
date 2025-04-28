@@ -55,9 +55,6 @@ export default function MyUserPage({
     }
   }, [userNickname, accessToken]);
 
-  console.log("nickname", nickname);
-  console.log("userNickname", userNickname);
-
   const activeInterests = Object.entries(interests)
     .filter(([_, value]) => value)
     .map(([key]) => key.replace("userInterest", ""));

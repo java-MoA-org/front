@@ -8,7 +8,8 @@ import { UserInterest } from "../../../types/interfaces";
 import {
   ACCESS_TOKEN,
   MY_USER_ABSOLUTE_PATH,
-  MY_USER_BOARD_ABSOLUTE_PATH
+  MY_USER_BOARD_ABSOLUTE_PATH,
+  ROOT_ABSOULTE_PATH
 } from "../../../constants";
 import ResponseDto from "../../../apis/dto/response/response.dto";
 import UserNicknameCheckRequestDto from "../../../apis/dto/request/auth/user-nickname-check.request.dto";
@@ -17,6 +18,9 @@ import {
   passwordVerifyRequest,
   PatchPasswordRequest,
   patchPasswordUserPageRequest,
+  patchUserInfoRequest,
+  userEmailCheckRequest,
+  UserEmailVerifyRequest,
   userNicknameCheckRequest
 } from "../../../apis";
 import SignUpInputBox from "../../../components/SignInInputBox/SignUpInputBox";
@@ -27,10 +31,14 @@ import { InterestsType } from "../../../types/userInterests";
 import Modal from "../../../components/Modal";
 import PasswordVerifyRequestDto from "../../../apis/dto/request/userInfo/post-verify-pawword.request.dto";
 import PatchPasswordUserPageRequestDto from "../../../apis/dto/request/userInfo/patch-password-userpage.request.dto";
+import UserEmailCheckRequestDto from "../../../apis/dto/request/auth/user-email-check.request.dto";
+import VerifyResponseDto from "../../../apis/dto/response/auth/email-verify-response.dto";
+import UserEmailVerifyRequestDto from "../../../apis/dto/request/auth/user-email-verify.request.dto";
+import PatchUserInfoRequestDto from "../../../apis/dto/request/userInfo/patch-user-info.request.dto";
 
 export default function UserPageUpdate() {
   // state: 로그인 사용자 정보 //
-  const { userProfileImage, userIntroduce, userInterests, userNickname, userPhoneNumber } =
+  const { userProfileImage, userIntroduce, userInterests, userNickname, userEmail } =
     useSignInUserStore();
   const navigate = useNavigate();
 
@@ -78,8 +86,106 @@ export default function UserPageUpdate() {
   const [userNicknameMessage, setUserNicknameMessage] = useState<string>("");
   const [userNicknameMessageError, setUserNicknameMessageError] = useState<boolean>(false);
 
-  // state: 수정 사용자 전화번호 상태 //
-  const [updatePhoneNumber, setUpdatePhoneNumber] = useState<string>("");
+  // state: 수정 사용자 이메일 상태 //
+  const [updateUserEmail, setUpdateUserEmail] = useState<string>("");
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false);
+
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [userEmailValid, setUserEmailValid] = useState(false);
+  const [userEmailChecked, setUserEmailChecked] = useState(false);
+  const [userEmailReadOnlyActive, setUserEmailReadOnlyActive] = useState(false);
+
+  const [userEmailVC, setUserEmailVC] = useState("");
+  const [userEmailVCValid, setUserEmailVCValid] = useState(false);
+  const [userEmailVerified, setUserEmailVerified] = useState(false);
+
+  const [userEmailMessage, setUserEmailMessage] = useState("");
+  const [userEmailMessageError, setUserEmailMessageError] = useState(false);
+  const [userEmailVCMessage, setUserEmailVCMessage] = useState("");
+  const [userEmailVCMessageError, setUserEmailVCMessageError] = useState(false);
+
+  const [emailToken, setEmailToken] = useState("");
+
+  const openEmailModal = () => setIsEmailModalOpen(true);
+  const resetEmailModalState = () => {
+    setNewUserEmail("");
+    setUserEmailValid(false);
+    setUserEmailChecked(false);
+    setUserEmailReadOnlyActive(false);
+    setUserEmailVC("");
+    setUserEmailVCValid(false);
+    setUserEmailVerified(false);
+    setUserEmailMessage("");
+    setUserEmailMessageError(false);
+    setUserEmailVCMessage("");
+    setUserEmailVCMessageError(false);
+  };
+
+  const closeEmailModal = () => {
+    resetEmailModalState();
+    setIsEmailModalOpen(false);
+  };
+
+  const onCheckUserEmailClickHandler = async () => {
+    console.log("📨 인증 요청 시작");
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const isValid = emailRegex.test(newUserEmail);
+
+    if (!isValid) {
+      setUserEmailMessage("유효한 이메일을 입력하세요.");
+      setUserEmailMessageError(true);
+      return;
+    }
+    console.log("✅ 이메일 형식 통과, 요청 전송");
+
+    const requestBody: UserEmailCheckRequestDto = {
+      userEmail: newUserEmail
+    };
+
+    const response = await userEmailCheckRequest(requestBody);
+    console.log("📦 응답:", response);
+    if (!response || response.code !== "SU") {
+      setUserEmailMessage("이메일 전송 실패 또는 이미 사용 중입니다.");
+      setUserEmailMessageError(true);
+      return;
+    }
+
+    // 성공 시
+    setUserEmailMessage("인증 코드가 이메일로 전송되었습니다.");
+    setUserEmailMessageError(false);
+    setEmailToken((response as VerifyResponseDto).token); // 토큰 저장
+    setUserEmailChecked(true);
+  };
+
+  const onCheckUserEmailVCClickHandler = async () => {
+    console.log("newUserEmail", newUserEmail);
+    console.log("emailVerificationCode", userEmailVC);
+    if (newUserEmail === "" || userEmailVC === "") {
+      return;
+    }
+
+    const requestBody: UserEmailVerifyRequestDto = {
+      userEmail: newUserEmail,
+      userEmailVC: userEmailVC,
+      emailToken: emailToken
+    };
+
+    const response = await UserEmailVerifyRequest(requestBody);
+
+    if (!response || response.code !== "SU") {
+      setUserEmailVCMessage("인증번호가 일치하지 않습니다.");
+      setUserEmailVCMessageError(true);
+      return;
+    }
+
+    // 인증 성공
+    setUserEmailVCMessage("인증 완료되었습니다.");
+    setUserEmailVCMessageError(false);
+    setUserEmailVerified(true);
+    setUserEmailReadOnlyActive(true);
+    setUpdateUserEmail(newUserEmail);
+  };
+
   // state: 수정 사용자 관심사 상태 //
   const [updateInterest, setUpdateInterest] = useState<UserInterest>({
     userInterestTrip: false,
@@ -94,6 +200,7 @@ export default function UserPageUpdate() {
 
   // 비밀번호
   // state: 모달 오픈 상태 //
+  const isUserPasswordCheckButtonActive = joinType === "NORMAL" ? true : false;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [step, setStep] = useState<1 | 2>(1); // 1: 현재 비번, 2: 새 비번
   const [tempCurrentPassword, setTempCurrentPassword] = useState<string>("");
@@ -123,20 +230,14 @@ export default function UserPageUpdate() {
       ? "인증에 실패했습니다."
       : "";
 
-    const {
-      userNickname,
-      userProfileImage,
-      userPhoneNumber,
-      userIntroduce,
-      userInterests,
-      joinType
-    } = responseBody as GetUserInfoResponseDto;
+    const { userNickname, userProfileImage, userEmail, userIntroduce, userInterests, joinType } =
+      responseBody as GetUserInfoResponseDto;
 
     setUpdateNickName(userNickname);
     setPreviewProfile(userProfileImage);
     setUpdateInterest(userInterests);
     setUpdateIntroduce(userIntroduce);
-    setUpdatePhoneNumber(userPhoneNumber);
+    setUpdateUserEmail(userEmail);
     setJoinType(joinType as "NORMAL" | "KAKAO" | "NAVER");
   };
 
@@ -338,7 +439,30 @@ export default function UserPageUpdate() {
   const onClickCancelHandler = () => {
     navigate(-1);
   };
+  // event handler: 저장 버튼 클릭 이벤트 처리 //
+  const onSaveUserInfoClickHandler = async () => {
+    const requestBody: PatchUserInfoRequestDto = {
+      userNickname: updateNickName,
+      userIntroduce: updateIntroduce,
+      userEmail: updateUserEmail,
+      profileImage: previewProfile ?? "",
+      userIntersets: updateInterest
+    };
 
+    const response = await patchUserInfoRequest(accessToken, requestBody);
+    if (response?.code === "SU") {
+      alert("회원 정보가 수정되었습니다.");
+      // navigate(MY_USER_ABSOLUTE_PATH(updateNickName)); 애매한게 바로 열로 보내면 지금 바뀐 닉네임이 자기인지 인지를 못함
+      // 상태 업데이트 후 바로 navigate 호출
+      useSignInUserStore.getState().setUserNickname(updateNickName);
+      useSignInUserStore.getState().setUserIntroduce(updateIntroduce);
+      useSignInUserStore.getState().setUserEmail(updateUserEmail);
+      useSignInUserStore.getState().setUserProfileImage(previewProfile ?? "");
+      navigate(ROOT_ABSOULTE_PATH);
+    } else {
+      alert("회원 정보 수정에 실패했습니다.");
+    }
+  };
   // effect: 컴포넌트 로드 시 실행할 함수 //
   useEffect(() => {
     getUserInfoRequest(accessToken).then(getUserInfoResponse);
@@ -443,23 +567,89 @@ export default function UserPageUpdate() {
             hint="2자 이상 8자 이하, 특수문자를 포함할 수 없습니다."
           />
 
-          {/* 수정!!! */}
           <SignUpInputBox
             type={"text"}
-            label="전화번호"
-            value={updatePhoneNumber}
-            placeholder={"전화번호를 입력하세요."}
-            onChange={onNicknameChangeHandler}
-            message={userNicknameMessage}
-            isErrorMessage={userNicknameMessageError}
-            buttonName={"전화번호 변경"}
-            onButtonClick={onCheckUserNicknameClickHandler}
-            isButtonActive={isUserNicknameCheckButtonActive}
-            hint="Naver로 회원가입 하신분은 변경이 안됩니다."
+            label="이메일"
+            value={updateUserEmail}
+            placeholder={"이메일을 입력하세요."}
+            onChange={(e) => setNewUserEmail(e.target.value)}
+            buttonName={"이메일 변경"}
+            onButtonClick={openEmailModal}
+            isButtonActive={true}
             readOnly
           />
+          {isEmailModalOpen && (
+            <Modal title="이메일 변경" onClose={closeEmailModal}>
+              <div className="email-modal-container">
+                {/* 이메일 입력 */}
+                <SignUpInputBox
+                  type="text"
+                  label="새 이메일"
+                  value={newUserEmail}
+                  placeholder="새 이메일을 입력하세요"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setNewUserEmail(value);
+
+                    const isValid = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+                    setUserEmailValid(isValid);
+                  }}
+                  buttonName="인증 코드 보내기"
+                  onButtonClick={onCheckUserEmailClickHandler}
+                  isButtonActive={userEmailValid}
+                  message={userEmailMessage}
+                  isErrorMessage={userEmailMessageError}
+                  readOnly={userEmailReadOnlyActive}
+                />
+
+                {/* 인증번호 입력 */}
+                {userEmailChecked && (
+                  <SignUpInputBox
+                    type="text"
+                    label="인증번호"
+                    value={userEmailVC}
+                    placeholder="6자리 인증번호 입력"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setUserEmailVC(value);
+
+                      const isValid = /^[A-Za-z0-9]{6}$/.test(value);
+                      setUserEmailVCValid(isValid);
+                    }}
+                    buttonName="확인"
+                    onButtonClick={onCheckUserEmailVCClickHandler}
+                    isButtonActive={userEmailVCValid}
+                    message={userEmailVCMessage}
+                    isErrorMessage={userEmailVCMessageError}
+                    readOnly={userEmailVerified}
+                  />
+                )}
+
+                {/* 완료 버튼 */}
+                <div className="modal-button-container">
+                  {userEmailVerified && (
+                    <button
+                      className="button-modal-ok"
+                      onClick={() => {
+                        setUpdateUserEmail(newUserEmail); // 이메일 최종 적용
+                        closeEmailModal(); // 모달 닫기
+                      }}
+                    >
+                      완료
+                    </button>
+                  )}
+                  <button className="button-modal-cancel" onClick={closeEmailModal}>
+                    닫기
+                  </button>
+                </div>
+              </div>
+            </Modal>
+          )}
+
           <div className="button-container">
-            <div className="user-update-save-button">저장</div>
+            <div className="user-update-save-button" onClick={onSaveUserInfoClickHandler}>
+              저장
+            </div>
             <div className="user-update-cancel-button" onClick={onClickCancelHandler}>
               취소
             </div>
@@ -473,10 +663,9 @@ export default function UserPageUpdate() {
             onChange={onNicknameChangeHandler}
             buttonName={"비밀번호 변경"}
             onButtonClick={openModal}
-            isButtonActive={isUserNicknameCheckButtonActive}
+            isButtonActive={isUserPasswordCheckButtonActive}
             readOnly
             hint="naver 및 kakao로 회원가입 하신 분들은 비밀번호 변경할 수 없습니다"
-            disable={joinType !== "NORMAL"}
           />
           {isModalOpen && (
             <Modal title="비밀번호 변경" onClose={closeModal}>
