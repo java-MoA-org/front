@@ -23,6 +23,7 @@ interface MyUserPageProps {
   trades: Trade[];
   interests: UserInterest;
   userIntroduce: string;
+  userProfileImage: string;
 }
 
 export default function MyUserPage({
@@ -30,7 +31,8 @@ export default function MyUserPage({
   dailys,
   trades,
   interests,
-  userIntroduce
+  userIntroduce,
+  userProfileImage
 }: MyUserPageProps) {
   const { nickname } = useParams(); // ✅ URL에서 :nickname 추출
   const [cookies] = useCookies([ACCESS_TOKEN]);
@@ -100,7 +102,11 @@ export default function MyUserPage({
                 {nickname === userNickname && <UpdateButton nickname={nickname!} />}
               </div>
               <div className="profile-image">
-                <img src={userImage} alt="User" className="profile-img" />
+                <img
+                  src={userProfileImage === null ? userImage : userProfileImage}
+                  alt="User"
+                  className="profile-img"
+                />
               </div>
               <div className="follower-followee-container">
                 <div className="follower" onClick={onFollowerClickHandler}>

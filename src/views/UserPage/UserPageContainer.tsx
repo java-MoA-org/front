@@ -15,6 +15,7 @@ export default function UserPageContainer() {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [interests, setInterest] = useState<UserInterest>();
   const [userIntroduce, setUserIntroduce] = useState<string>("");
+  const [userProfileImage, setUserProfileImage] = useState<string>("");
 
   useEffect(() => {
     if (!nickname) return;
@@ -29,6 +30,7 @@ export default function UserPageContainer() {
         setTrades(response.tradeBoards);
         setInterest(response.interests);
         setUserIntroduce(response.userIntroduce);
+        setUserProfileImage(response.userProfileImage);
       }
     };
 
@@ -39,6 +41,7 @@ export default function UserPageContainer() {
 
   return (
     <MyUserPage
+      userProfileImage={userProfileImage}
       boards={boards}
       dailys={dailys}
       trades={trades}
