@@ -82,7 +82,7 @@ export default function BoardUpdate() {
 
     if(!boardSequence) return;
     navigator(BOARD_VIEW_ABSOLUTE_PATH(boardSequence));
-  }
+  };
 
   // event handler: 제목 변경 이벤트 처리 //
   const onTitleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -125,13 +125,13 @@ export default function BoardUpdate() {
       alert('권한이 없습니다.');
       navigator(BOARD_ABSOLUTE_PATH);
     }
-  }, [writerId, userId])
+  }, [writerId, userId]);
 
   // render: 게시판 게시글 수정 컴포넌트 렌더링 //
   return (
     <div id='board-update-wrapper'>
       <div className='update-container'>
-        <div className='update-title'>게시글수정</div>
+        <div className='update-title'>게시글 수정</div>
         <div className='contents-container'>
           <div className='board-category'>카테고리</div>
           <div className='input-row-box'>
