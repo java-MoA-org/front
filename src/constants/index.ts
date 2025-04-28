@@ -32,8 +32,7 @@ export const MY_USER_FOLLOW_ABSOLUTE_PATH = (nickname: string) =>
 export const MY_USER_BOARD_ABSOLUTE_PATH = (nickname: string) =>
   `/${MY_USER_PATH}/${nickname}/${MY_USER_BOARD_PATH}`;
 
-export const MY_USER_UPDATE_ABSOLUTE_PATH = (nickname: string) =>
-  `/${MY_USER_PATH}/${nickname}/${MY_USER_UPDATE_PATH}`;
+export const MY_USER_UPDATE_ABSOLUTE_PATH = `/${MY_USER_PATH}/${MY_USER_UPDATE_PATH}`;
 
 export const BOARD_ABSOLUTE_PATH = `${ROOT_PATH}${BOARD_PATH}`;
 

@@ -48,6 +48,13 @@ function TableItem({ board }: TableItemProps) {
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
+  function stripHtmlTags(html: string): string {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  }
+  
+
   // event handler: 레코드 클릭 이벤트 처리 //
   const onClick = () => {
     navigator(BOARD_VIEW_ABSOLUTE_PATH(boardSequence));
@@ -63,7 +70,9 @@ function TableItem({ board }: TableItemProps) {
         </div>
       </div>
       <div className="board-content">
-        {content.length > 70 ? content.slice(0, 70) + "..." : content}
+        {stripHtmlTags(content).length > 70
+          ? stripHtmlTags(content).slice(0, 70) + "..."
+          : stripHtmlTags(content)}
       </div>
       <div className="board-footer">
         <div className="footer-left">
@@ -88,11 +97,22 @@ export default function BoardMain() {
   // state: URL 쿼리 파라미터 //
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // variable: 페이지 번호 //
-  const page = parseInt(searchParams.get('page') || '1', 10);
+  // state: 페이지네이션 상태 //
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentSection, setCurrentSection] = useState(1);
+  const [totalSection, setTotalSection] = useState(0);
+  const [pageList, setPageList] = useState<number[]>([]);
+
+  // state: 검색어 상태 추가 //
+  const [searchQuery, setSearchQuery] = useState('');
 
   // state: 현재 위치 객체 //
   const location = useLocation();
+
+  // variable: 페이지 번호 //
+  const page = parseInt(searchParams.get('page') || '1', 10);
 
   // function: 네비게이션 함수 //
   const navigate = useNavigate();
@@ -108,17 +128,6 @@ export default function BoardMain() {
 
   // state: 카테고리 선택 상태 //
   const [selectedCategory, setSelectedCategory] = useState(tag);
-
-  // state: 페이지네이션 상태 //
-  const [totalElements, setTotalElements] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentSection, setCurrentSection] = useState(1);
-  const [totalSection, setTotalSection] = useState(0);
-  const [pageList, setPageList] = useState<number[]>([]);
-
-  // state: 검색어 상태 추가 //
-  const [searchQuery, setSearchQuery] = useState('');
 
   // hook: 페이지네이션 커스텀 훅 //
   const {
@@ -267,24 +276,6 @@ export default function BoardMain() {
           )}
         </div>
       </div>
-
-      {/* 사이드바: 인기 게시글 */}
-      <aside className="board-sidebar">
-        <div className="board-sidebar-title">💙 오늘의 인기 글</div>
-        <ul className="board-sidebar-list">
-          {[
-            "친구없는 외딴의 모음",
-            "서울에서 공방 관광했을때",
-            "귀염보스간만!",
-            "충청도 같이 학식분 모십니다"
-          ].map((title, i) => (
-            <li key={i} className="board-sidebar-item">
-              <span>{title}</span>
-              <span>❤️ 11</span>
-            </li>
-          ))}
-        </ul>
-      </aside>
     </div>
   );
 }

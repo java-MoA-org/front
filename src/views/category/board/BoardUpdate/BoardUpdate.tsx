@@ -28,6 +28,7 @@ export default function BoardUpdate() {
   const [boardTag, setBoardTag] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   // variable: acess token //
   const accessToken = cookies[ACCESS_TOKEN];
@@ -35,7 +36,7 @@ export default function BoardUpdate() {
   // variable: 게시글 수정 가능 여부 //
   const isActive = title !== '' && content !== "";
   // variable: 게시글 수정 버튼 클래스 //
-  const updateButtonClass = !isActive ? 'button middle primary' : 'button middle disable';
+  const updateButtonClass = isActive ? 'button middle primary' : 'button middle disable';
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -61,6 +62,7 @@ export default function BoardUpdate() {
     setBoardTag(tag);
     setTitle(title);
     setContent(content);
+    setIsLoaded(true);
   };
 
   // function: patch board response 처리 함수 //
@@ -80,17 +82,25 @@ export default function BoardUpdate() {
 
     if(!boardSequence) return;
     navigator(BOARD_VIEW_ABSOLUTE_PATH(boardSequence));
-  }
+  };
 
   // event handler: 제목 변경 이벤트 처리 //
   const onTitleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
+    if (value.length > 50) {
+      alert("제목은 50자 이내로 작성해주세요.");
+      return;
+    }
     setTitle(value);
   };
 
   // event handler: 내용 변경 이벤트 처리 //
-  const onContentChangeHandler = (content: string) => {
-    setContent(content);
+  const onContentChangeHandler = (value: string) => {
+    if (value.length > 2000) {
+      alert("내용은 2000자 이내로 작성해주세요.");
+      return;
+    }
+    setContent(value);
   };
 
   // event handler: 게시글 수정 버튼 클릭 이벤트 처리 //
@@ -115,40 +125,30 @@ export default function BoardUpdate() {
       alert('권한이 없습니다.');
       navigator(BOARD_ABSOLUTE_PATH);
     }
-  }, [writerId, userId])
+  }, [writerId, userId]);
 
   // render: 게시판 게시글 수정 컴포넌트 렌더링 //
   return (
-    <div id='board-write-wrapper'>
-      <div className='write-container'>
-        <div className='write-title'>게시판 글 수정</div>
+    <div id='board-update-wrapper'>
+      <div className='update-container'>
+        <div className='update-title'>게시글 수정</div>
         <div className='contents-container'>
           <div className='board-category'>카테고리</div>
           <div className='input-row-box'>
-            <div className='content disabled'>{boardTag}</div>
+            <div className="content">{boardTag}</div>
           </div>
-
-          <div className='input-box'>
-            <input
-              className='input title-input'
-              type='text'
-              placeholder='제목을 입력해주세요.'
-              value={title}
-              onChange={onTitleChangeHandler}
-            />
+          <div className="input-column-box">
+            <div className='title'>제목 ({title.length}/50)</div>
+            <input type="text" value={title} placeholder="제목을 입력하세요." onChange={onTitleChangeHandler} />
           </div>
-
-          <div className='editor-box'>
-            <TextEditor content={content} setContent={onContentChangeHandler} />
+          <div className='input-column-box'>
+            <div className='title'>내용 ({content.length}/2000)</div>
+            {isLoaded &&
+            <TextEditor content={content}setContent={onContentChangeHandler} />
+            }
           </div>
-
-          <div className='button-box'>
-            <div
-              className={updateButtonClass}
-              onClick={onUpdateButtonClickHandler}
-            >
-              게시글 수정
-            </div>
+          <div className="button-box">
+            <div className={updateButtonClass} onClick={onUpdateButtonClickHandler}>작성 완료</div>
           </div>
         </div>
       </div>

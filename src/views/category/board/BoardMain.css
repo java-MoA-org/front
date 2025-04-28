@@ -135,6 +135,7 @@
 #board-main-wrapper .board-title {
   font-size: 18px;
   font-weight: bold;
+  width: 900px;
   color: #333;
   margin-bottom: 10px;
 }
@@ -190,43 +191,6 @@
 #board-main-wrapper .footer-right .like-count,
 #board-main-wrapper .footer-right .comment-count {
   font-weight: bold;
-}
-
-/* 사이드바 */
-#board-main-wrapper .board-sidebar {
-  width: 280px;
-  background-color: white;
-  border: 1px solid #bbbfca;
-  border-radius: 8px;
-  padding: 20px;
-  height: fit-content;
-  margin-top: 60px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-#board-main-wrapper .board-sidebar-title {
-  font-weight: bold;
-  font-size: 16px;
-  margin-bottom: 12px;
-}
-
-#board-main-wrapper .board-sidebar-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-#board-main-wrapper .board-sidebar-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #bbbfca;
-  font-size: 14px;
-  color: #444;
-}
-
-#board-main-wrapper .board-sidebar-item:last-child {
-  border-bottom: none;
 }
 
 /* 미디어 쿼리 - 화면 크기가 800px 이하일 때 */

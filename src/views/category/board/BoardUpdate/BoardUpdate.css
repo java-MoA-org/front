@@ -1,10 +1,10 @@
-#board-write-wrapper {
+#board-update-wrapper {
   background-color: #f4f4f4;
   padding: 40px 0;
   min-height: 100vh;
 }
 
-#board-write-wrapper .write-container {
+#board-update-wrapper .update-container {
   width: 1000px;
   margin: 0 auto;
   background-color: #ffffff;
@@ -12,7 +12,7 @@
   padding: 32px;
 }
 
-#board-write-wrapper .write-title {
+#board-update-wrapper .update-title {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 24px;
@@ -20,18 +20,18 @@
   border-bottom: 1px solid #bbbfca;
 }
 
-#board-write-wrapper .contents-container {
+#board-update-wrapper .contents-container {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-#board-write-wrapper .board-category {
+#board-update-wrapper .board-category {
   font-size: 20px;
   font-weight: 600;
 }
 
-#board-write-wrapper .input-row-box {
+#board-update-wrapper .input-row-box {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -39,7 +39,7 @@
   border-bottom: 1px solid #bbbfca;
 }
 
-#board-write-wrapper .content {
+#board-update-wrapper .content {
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
@@ -50,40 +50,40 @@
   transition: all 0.2s ease;
 }
 
-#board-write-wrapper .content:hover {
+#board-update-wrapper .content:hover {
   background-color: #007bbd;
 }
 
-#board-write-wrapper .content.active {
+#board-update-wrapper .content.active {
   color: #ffffff;
   background-color: #007bbd;
   border: 1px solid #007bbd;
 }
 
-#board-write-wrapper .input-column-box {
+#board-update-wrapper .input-column-box {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-#board-write-wrapper .input-column-box .title {
+#board-update-wrapper .input-column-box .title {
   font-size: 20px;
   font-weight: 600;
 }
 
-#board-write-wrapper .input-column-box input[type="text"] {
+#board-update-wrapper .input-column-box input[type="text"] {
   padding: 10px 14px;
   border: 1px solid #bbbfca;
   border-radius: 8px;
   font-size: 14px;
 }
 
-#board-write-wrapper .button-box {
+#board-update-wrapper .button-box {
   display: flex;
   justify-content: flex-end;
 }
 
-#board-write-wrapper .button {
+#board-update-wrapper .button {
   padding: 10px 20px;
   border-radius: 8px;
   font-weight: 600;
@@ -92,17 +92,17 @@
   transition: background-color 0.2s ease;
 }
 
-#board-write-wrapper .button.middle.primary {
+#board-update-wrapper .button.middle.primary {
   background-color: #8eaccd;
   color: white;
   cursor: pointer;
 }
 
-#board-write-wrapper .button.middle.primary:hover {
+#board-update-wrapper .button.middle.primary:hover {
   background-color: #007bbd;
 }
 
-#board-write-wrapper .button.middle.disable {
+#board-update-wrapper .button.middle.disable {
   background-color: #bbbfca;
   color: white;
   cursor: not-allowed;

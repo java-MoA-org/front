@@ -5,10 +5,20 @@ import useSignInUserStore from "../../../stores/sign-in-user.store";
 import "./style.css";
 import { useCookies } from "react-cookie";
 import { UserInterest } from "../../../types/interfaces";
-import { ACCESS_TOKEN } from "../../../constants";
+import {
+  ACCESS_TOKEN,
+  MY_USER_ABSOLUTE_PATH,
+  MY_USER_BOARD_ABSOLUTE_PATH
+} from "../../../constants";
 import ResponseDto from "../../../apis/dto/response/response.dto";
 import UserNicknameCheckRequestDto from "../../../apis/dto/request/auth/user-nickname-check.request.dto";
-import { getUserInfoRequest, passwordVerifyRequest, userNicknameCheckRequest } from "../../../apis";
+import {
+  getUserInfoRequest,
+  passwordVerifyRequest,
+  PatchPasswordRequest,
+  patchPasswordUserPageRequest,
+  userNicknameCheckRequest
+} from "../../../apis";
 import SignUpInputBox from "../../../components/SignInInputBox/SignUpInputBox";
 import useSignInUser from "../../../hooks/sign-in-user.hook";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,41 +26,44 @@ import GetUserInfoResponseDto from "../../../apis/dto/response/user/get-user-inf
 import { InterestsType } from "../../../types/userInterests";
 import Modal from "../../../components/Modal";
 import PasswordVerifyRequestDto from "../../../apis/dto/request/userInfo/post-verify-pawword.request.dto";
+import PatchPasswordUserPageRequestDto from "../../../apis/dto/request/userInfo/patch-password-userpage.request.dto";
 
 export default function UserPageUpdate() {
   // state: 로그인 사용자 정보 //
   const { userProfileImage, userIntroduce, userInterests, userNickname, userPhoneNumber } =
     useSignInUserStore();
-  const { nickname } = useParams();
   const navigate = useNavigate();
 
-  //! 받아오는걸 기다린 후 비교 하는 형식
-  useEffect(() => {
-    if (!userNickname) {
-      // accessToken이 있고 zustand 상태가 비어있으면 fetch
-      if (accessToken) {
-        getUserInfoRequest(accessToken).then((response) => {
-          if (response && response.code === "SU") {
-            // Zustand에 정보 저장
-            const { userNickname } = response as GetUserInfoResponseDto;
-            useSignInUserStore.getState().setUserNickname(userNickname);
-          }
-        });
-      }
-      return;
-    }
+  // //! 받아오는걸 기다린 후 비교 하는 형식
+  // useEffect(() => {
+  //   if (!userNickname) {
+  //     // accessToken이 있고 zustand 상태가 비어있으면 fetch
+  //     if (accessToken) {
+  //       getUserInfoRequest(accessToken).then((response) => {
+  //         if (response && response.code === "SU") {
+  //           // Zustand에 정보 저장
+  //           const { userNickname } = response as GetUserInfoResponseDto;
+  //           useSignInUserStore.getState().setUserNickname(userNickname);
+  //         }
+  //       });
+  //     }
+  //     return;
+  //   }
 
-    // 유저 닉네임이 세팅된 이후 접근 제한 처리
-    if (nickname !== userNickname) {
-      alert("접근 권한이 없습니다.");
-      navigate(-1);
-    }
-  }, [nickname, userNickname, ACCESS_TOKEN]);
+  //   // 유저 닉네임이 세팅된 이후 접근 제한 처리
+  //   if (nickname !== userNickname) {
+  //     alert("접근 권한이 없습니다.");
+  //     navigate(-1);
+  //   }
+  // }, [nickname, userNickname, ACCESS_TOKEN]); // 이거 필요없음... 닉네임을 안가져오고 그냥 token값 추출해서 자기 편집페이지만 보이게 하면 되기에...
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
 
   // state: 파일 인풋 참조 상태 //
   const fileRef = useRef<HTMLInputElement | null>(null);
+
+  // state: join type 상태 //
+  const [joinType, setJoinType] = useState<"NORMAL" | "KAKAO" | "NAVER" | null>("NORMAL");
 
   // state: 프로필 이미지 미리보기 상태 //
   const [previewProfile, setPreviewProfile] = useState<string | null>(null);
@@ -83,6 +96,7 @@ export default function UserPageUpdate() {
   // state: 모달 오픈 상태 //
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [step, setStep] = useState<1 | 2>(1); // 1: 현재 비번, 2: 새 비번
+  const [tempCurrentPassword, setTempCurrentPassword] = useState<string>("");
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
@@ -109,14 +123,21 @@ export default function UserPageUpdate() {
       ? "인증에 실패했습니다."
       : "";
 
-    const { userNickname, userProfileImage, userPhoneNumber, userIntroduce, userInterests } =
-      responseBody as GetUserInfoResponseDto;
+    const {
+      userNickname,
+      userProfileImage,
+      userPhoneNumber,
+      userIntroduce,
+      userInterests,
+      joinType
+    } = responseBody as GetUserInfoResponseDto;
 
     setUpdateNickName(userNickname);
     setPreviewProfile(userProfileImage);
     setUpdateInterest(userInterests);
     setUpdateIntroduce(userIntroduce);
     setUpdatePhoneNumber(userPhoneNumber);
+    setJoinType(joinType as "NORMAL" | "KAKAO" | "NAVER");
   };
 
   // function: 닉네임 중복 확인 response 처리 함수
@@ -144,19 +165,25 @@ export default function UserPageUpdate() {
   };
 
   // function: 현재 비밀번호 입력 처리 함수 //
-  function CurrentPasswordStep({ onNext, onCancel }: { onNext: () => void; onCancel: () => void }) {
-    const [password, setPassword] = useState("");
+  function CurrentPasswordStep({
+    onNext,
+    onCancel
+  }: {
+    onNext: (currentPassword: string) => void;
+    onCancel: () => void;
+  }) {
+    const [currentPassword, setCurrentPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [cookies] = useCookies();
     const accessToken = cookies[ACCESS_TOKEN];
 
     const checkPassword = async () => {
-      if (!password) {
+      if (!currentPassword) {
         setErrorMessage("비밀번호를 입력해주세요");
         return;
       }
 
-      const requestBody: PasswordVerifyRequestDto = { userPassword: password };
+      const requestBody: PasswordVerifyRequestDto = { userPassword: currentPassword };
       const response = await passwordVerifyRequest(accessToken, requestBody);
 
       if (!response || response.code === "DBE") {
@@ -164,7 +191,7 @@ export default function UserPageUpdate() {
       } else if (response.code === "NPW") {
         setErrorMessage("비밀번호가 일치하지 않습니다.");
       } else if (response.code === "SU") {
-        onNext();
+        onNext(currentPassword);
       }
     };
 
@@ -172,25 +199,33 @@ export default function UserPageUpdate() {
       <div>
         <InputBox
           label="현재 비밀번호"
-          value={password}
+          value={currentPassword}
           type="password"
           placeholder="현재 비밀번호 입력"
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => setCurrentPassword(e.target.value)}
           message={errorMessage}
           isErrorMessage={!!errorMessage}
-          hint="naver및kakao로 회원가입 하신 분들은 비밀번호 변경할 수 없습니다"
+          hint="비밀번호 변경 시 마이페이지로 이동합니다"
         />
-        <button onClick={checkPassword}>확인</button>
-        <button onClick={onCancel}>취소</button>
+        <div className="modal-button-container">
+          <button className="button-modal-ok" onClick={checkPassword}>
+            확인
+          </button>
+          <button className="button-modal-cancel" onClick={onCancel}>
+            취소
+          </button>
+        </div>
       </div>
     );
   }
 
   // function: 새 비밀번호 입력 처리 함수 //
   function NewPasswordStep({
+    currentPassword,
     onSave,
     onCancel
   }: {
+    currentPassword: string;
     onSave: (password: string) => void;
     onCancel: () => void;
   }) {
@@ -244,13 +279,17 @@ export default function UserPageUpdate() {
           onChange={handleConfirmPwChange}
           message={confirmMessage}
         />
-        <button onClick={handleSave}>저장</button>
-        <button onClick={onCancel}>취소</button>
+        <div className="modal-button-container">
+          <button className="button-modal-ok" onClick={handleSave}>
+            저장
+          </button>
+          <button className="button-modal-cancel" onClick={onCancel}>
+            취소
+          </button>
+        </div>
       </div>
     );
   }
-
-  // function: 기존 비밀번호 확인 처리 함수 //
 
   // function: patch userinfo response 처리 함수 //
   const patchUserInfoResponse = (responseBody: ResponseDto | null) => {
@@ -294,6 +333,10 @@ export default function UserPageUpdate() {
     const { value } = event.target;
     setUpdateNickName(value);
     setUserNicknameChecked(false);
+  };
+  //event handler: 취소 버튼 클릭 이벤트 처리 //
+  const onClickCancelHandler = () => {
+    navigate(-1);
   };
 
   // effect: 컴포넌트 로드 시 실행할 함수 //
@@ -415,10 +458,16 @@ export default function UserPageUpdate() {
             hint="Naver로 회원가입 하신분은 변경이 안됩니다."
             readOnly
           />
+          <div className="button-container">
+            <div className="user-update-save-button">저장</div>
+            <div className="user-update-cancel-button" onClick={onClickCancelHandler}>
+              취소
+            </div>
+          </div>
 
           <SignUpInputBox
             type={"password"}
-            label="비밀번호"
+            label="비밀번호 변경"
             value="**********"
             placeholder={""}
             onChange={onNicknameChangeHandler}
@@ -426,18 +475,42 @@ export default function UserPageUpdate() {
             onButtonClick={openModal}
             isButtonActive={isUserNicknameCheckButtonActive}
             readOnly
+            hint="naver 및 kakao로 회원가입 하신 분들은 비밀번호 변경할 수 없습니다"
+            disable={joinType !== "NORMAL"}
           />
           {isModalOpen && (
             <Modal title="비밀번호 변경" onClose={closeModal}>
               {step === 1 ? (
-                <CurrentPasswordStep onNext={() => setStep(2)} onCancel={closeModal} />
+                <CurrentPasswordStep
+                  onNext={(currentPassword: string) => {
+                    setTempCurrentPassword(currentPassword); // ✅ 비밀번호 받아서 저장
+                    setStep(2);
+                  }}
+                  onCancel={closeModal}
+                />
               ) : (
-                <NewPasswordStep onSave={closeModal} onCancel={closeModal} />
+                <NewPasswordStep
+                  currentPassword={tempCurrentPassword}
+                  onSave={async (newPw: string) => {
+                    const requestBody: PatchPasswordUserPageRequestDto = {
+                      currentPassword: tempCurrentPassword,
+                      userPassword: newPw
+                    };
+
+                    const response = await patchPasswordUserPageRequest(accessToken, requestBody);
+                    if (response?.code === "SU") {
+                      alert("비밀번호가 변경되었습니다!");
+                      closeModal();
+                      navigate(MY_USER_ABSOLUTE_PATH(userNickname));
+                    } else {
+                      alert("비밀번호 변경에 실패했습니다.");
+                    }
+                  }}
+                  onCancel={closeModal}
+                />
               )}
             </Modal>
           )}
-
-          <div className="user-update-save-button">저장</div>
         </div>
       </div>
     </div>
