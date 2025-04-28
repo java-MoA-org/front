@@ -1,13 +1,225 @@
-.diary-page {
-  padding: 2rem;
+#daily-main-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 32px 0;
+  background-color: white;
+  flex-wrap: wrap;
+}
+
+/* 검색 바 */
+#daily-main-wrapper .daily-search-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+#daily-main-wrapper .daily-search-select,
+#daily-main-wrapper .daily-search-input {
+  padding: 10px;
+  border: 1px solid #bbbfca;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+#daily-main-wrapper .daily-search-input {
+  width: 830px;
+}
+
+#daily-main-wrapper .daily-search-button {
+  padding: 10px 16px;
+  background-color: #8eaccd;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+#daily-main-wrapper .daily-search-button:hover {
+  cursor: pointer;
+  background-color: #007bbd;
+}
+
+/* 작성 버튼 + 정렬 */
+#daily-main-wrapper .daily-item-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+#daily-main-wrapper .daily-write-button {
+  background-color: #8eaccd;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
   text-align: center;
+  transition: background-color 0.2s ease;
 }
 
-.diary-page h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+#daily-main-wrapper .daily-write-button:hover {
+  background-color: #007bbd;
+  cursor: pointer;
 }
 
-.diary-page p {
+#daily-main-wrapper .daily-order-list {
+  font-size: 14px;
+  color: #394867;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#daily-main-wrapper .likes-order:hover,
+#daily-main-wrapper .up-to-date-order:hover,
+#daily-main-wrapper .views-order:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* 글 목록 리스트 */
+#daily-main-wrapper .daily-item {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  border: 1px solid #bbbfca;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+#daily-main-wrapper .daily-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#daily-main-wrapper .daily-title {
+  font-size: 18px;
+  font-weight: bold;
+  width: 900px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+#daily-main-wrapper .daily-stats {
+  display: flex;
+  font-size: 14px;
+  font-weight: bold;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+#daily-main-wrapper .daily-content {
+  font-size: 15px;
   color: #555;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+#daily-main-wrapper .daily-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #aaa;
+  align-items: center;
+  margin-top: 12px;
+}
+
+#daily-main-wrapper .check-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#daily-main-wrapper .footer-left {
+  display: flex;
+  gap: 16px;
+}
+
+#daily-main-wrapper .footer-right {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+}
+
+#daily-main-wrapper .footer-right span {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  color: #888;
+}
+
+#daily-main-wrapper .footer-right .like-count,
+#daily-main-wrapper .footer-right .comment-count {
+  font-weight: bold;
+}
+
+/* 사이드바 */
+#daily-main-wrapper .daily-sidebar {
+  width: 280px;
+  background-color: white;
+  border: 1px solid #bbbfca;
+  border-radius: 8px;
+  padding: 20px;
+  height: fit-content;
+  margin-top: 60px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+#daily-main-wrapper .daily-sidebar-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+#daily-main-wrapper .daily-sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#daily-main-wrapper .daily-sidebar-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #bbbfca;
+  font-size: 14px;
+  color: #444;
+}
+
+#daily-main-wrapper .daily-sidebar-item:last-child {
+  border-bottom: none;
+}
+
+/* 미디어 쿼리 - 화면 크기가 800px 이하일 때 */
+@media screen and (max-width: 800px) {
+  #daily-main-wrapper .daily-sidebar {
+    display: none;
+  }
+
+  #daily-main-wrapper .daily-item {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  #daily-main-wrapper {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  #daily-main-wrapper .daily-search-input {
+    width: 100%;
+  }
 }
