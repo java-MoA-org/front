@@ -1,6 +1,6 @@
 // src/apis/index.ts
 
-import axios, { AxiosError, AxiosResponse,  } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import IdCheckRequestDto from "./dto/request/auth/user-id-check.request.dto";
 import ResponseDto from "./dto/response/response.dto";
 
@@ -64,7 +64,6 @@ const FIND_ID_EMAIL_CHECK_VERIFY_URL = `${AUTH_MODULE_URL}/find-id/email/verify`
 const PHONE_NUMBER_CHECK_URL = `${AUTH_MODULE_URL}/phone/verify/require`;
 const PHONE_NUMBER_VERIFY_URL = `${AUTH_MODULE_URL}/phone/verify`;
 
-
 const SIGN_UP_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_URL = `${AUTH_MODULE_URL}/sign-in`;
 export const SNS_SIGN_IN_URL = (sns: "kakao" | "naver") => `${AUTH_MODULE_URL}/sns/${sns}`;
@@ -81,44 +80,63 @@ const GET_USER_INFO_URL = `${USER_MODULE_URL}/info`;
 const BOARD_MODULE_URL = `${API_DOMAIN}/api/v1/board`;
 
 const POST_BOARD_URL = BOARD_MODULE_URL;
-const GET_BOARD_LIST_URL = (tag: string, page: number, sort = "LATEST") => `${BOARD_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
+const GET_BOARD_LIST_URL = (tag: string, page: number, sort = "LATEST") =>
+  `${BOARD_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
 const GET_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
 const PATCH_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
 const DELETE_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
-const SEARCH_BOARD_LIST_URL = (tag: string, keyword: string, page: number) => `${BOARD_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
+const SEARCH_BOARD_LIST_URL = (tag: string, keyword: string, page: number) =>
+  `${BOARD_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
 
-const TOGGLE_BOARD_LIKE_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/likes`;
+const TOGGLE_BOARD_LIKE_URL = (boardSequence: number | string) =>
+  `${BOARD_MODULE_URL}/${boardSequence}/likes`;
 
-const POST_BOARD_COMMENT_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/comments`;
-const GET_BOARD_COMMENT_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/comments`;
-const DELETE_BOARD_COMMENT_URL = (commentSequence: number | string) => `${BOARD_MODULE_URL}/${commentSequence}/comments`;
+const POST_BOARD_COMMENT_URL = (boardSequence: number | string) =>
+  `${BOARD_MODULE_URL}/${boardSequence}/comments`;
+const GET_BOARD_COMMENT_URL = (boardSequence: number | string) =>
+  `${BOARD_MODULE_URL}/${boardSequence}/comments`;
+const DELETE_BOARD_COMMENT_URL = (commentSequence: number | string) =>
+  `${BOARD_MODULE_URL}/${commentSequence}/comments`;
 
 const DAILY_MODULE_URL = `${API_DOMAIN}/api/v1/daily`;
 
 const POST_DAILY_URL = DAILY_MODULE_URL;
 const GET_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
-const GET_DAILY_LIST_URL = (page: number, sort = "LATEST") => `${DAILY_MODULE_URL}/list/${page}?sortOption=${sort}`;
+const GET_DAILY_LIST_URL = (page: number, sort = "LATEST") =>
+  `${DAILY_MODULE_URL}/list/${page}?sortOption=${sort}`;
 const PATCH_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
 const DELETE_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
-const SEARCH_DAILY_LIST_URL = (keyword: string, page: number) => `${DAILY_MODULE_URL}/search?keyword=${keyword}&page=${page}`;
+const SEARCH_DAILY_LIST_URL = (keyword: string, page: number) =>
+  `${DAILY_MODULE_URL}/search?keyword=${keyword}&page=${page}`;
 
-const TOGGLE_DAILY_LIKE_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/likes`;
-const GET_DAILY_LIKES_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/likes`;
+const TOGGLE_DAILY_LIKE_URL = (dailySequence: number | string) =>
+  `${DAILY_MODULE_URL}/${dailySequence}/likes`;
+const GET_DAILY_LIKES_URL = (dailySequence: number | string) =>
+  `${DAILY_MODULE_URL}/${dailySequence}/likes`;
 
-const POST_DAILY_COMMENT_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/comments`;
-const GET_DAILY_COMMENT_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/comments`;
-const DELETE_DAILY_COMMENT_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/comments`;
+const POST_DAILY_COMMENT_URL = (dailySequence: number | string) =>
+  `${DAILY_MODULE_URL}/${dailySequence}/comments`;
+const GET_DAILY_COMMENT_URL = (dailySequence: number | string) =>
+  `${DAILY_MODULE_URL}/${dailySequence}/comments`;
+const DELETE_DAILY_COMMENT_URL = (dailySequence: number | string) =>
+  `${DAILY_MODULE_URL}/${dailySequence}/comments`;
 
 const USED_TRADE_MODULE_URL = `${API_DOMAIN}/api/v1/used-trade`;
 
 const POST_USED_TRADE_URL = USED_TRADE_MODULE_URL;
-const GET_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
-const GET_USED_TRADE_LIST_URL = (tag: string, page: number, sort = "LATEST") => `${USED_TRADE_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
-const PATCH_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
-const DELETE_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
-const SEARCH_USED_TRADE_LIST_URL = (tag: string, keyword: string, page: number) => `${USED_TRADE_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
+const GET_USED_TRADE_URL = (tradeSequence: number | string) =>
+  `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
+const GET_USED_TRADE_LIST_URL = (tag: string, page: number, sort = "LATEST") =>
+  `${USED_TRADE_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
+const PATCH_USED_TRADE_URL = (tradeSequence: number | string) =>
+  `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
+const DELETE_USED_TRADE_URL = (tradeSequence: number | string) =>
+  `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
+const SEARCH_USED_TRADE_LIST_URL = (tag: string, keyword: string, page: number) =>
+  `${USED_TRADE_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
 
-const TOGGLE_USED_TRADE_LIKE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}/likes`;
+const TOGGLE_USED_TRADE_LIKE_URL = (tradeSequence: number | string) =>
+  `${USED_TRADE_MODULE_URL}/${tradeSequence}/likes`;
 
 // notice API URL
 const NOTICE_MODULE_URL = `${API_DOMAIN}/api/v1/notice`;
@@ -134,6 +152,8 @@ const GET_USER_UPDATE_PAGE_URL = `${USER_PAGE_MODULE_URL}/revise`;
 const PATCH_USER_UPDATE_PAGE_URL = `${USER_PAGE_MODULE_URL}/revise`;
 const POST_USER_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/verify`;
 const PATCH_USER_PAGE_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/change`;
+const FILE_UPLOAD_URL = `${USER_PAGE_MODULE_URL}/images/file/upload`;
+const multipartFormData = { headers: { "Content-Type": "multipart/form-data" } };
 
 // function: Authorization Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({
@@ -318,6 +338,15 @@ export const patchUserInfoRequest = async (
   }
 };
 
+// function: 파일 업로드 요청 함수 //
+export const fileUploadRequest = async (requestBody: FormData) => {
+  const responseBody = await axios
+    .post(FILE_UPLOAD_URL, requestBody, multipartFormData)
+    .then(responseSuccessHandler<string>)
+    .catch((error) => null); // responseDto로 반환하기에 직접 에러는 적은 것
+  return responseBody;
+};
+
 const responseSuccessHandler = <T = ResponseDto>(response: AxiosResponse<T>) => {
   // response.data: Response Body
   const { data } = response;
@@ -498,11 +527,7 @@ export const deleteDailyRequest = async (dailySequence: number | string, accessT
 };
 
 // function: search Daily API 요청 함수 //
-export const searchDailyRequest = async (
-  keyword: string,
-  page: number,
-  accessToken: string
-) => {
+export const searchDailyRequest = async (keyword: string, page: number, accessToken: string) => {
   const responseBody = await axios
     .get(SEARCH_DAILY_LIST_URL(keyword, page), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetDailyListResponseDto>)
