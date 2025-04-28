@@ -60,7 +60,7 @@ const Header = () => {
         localStorage.clear();
         resetUser();
         alert('세션이 만료되어 로그아웃되었습니다. 다시 로그인해주세요.');
-        navigate('/');
+        navigate('/auth');
         return;
       }
       const expirationTime = await refreshAccessTokenRequest();
@@ -77,7 +77,7 @@ const Header = () => {
       removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
       localStorage.clear();
       resetUser();
-      alert('세션이 만료되어 로그아웃되었습니다. 다시 로그인해주세요.');
+      alert('세션이 만료되어 로그아웃되었습니다. 다시 로그인해주세요!');
       navigate('/');
     }
   };
@@ -146,7 +146,7 @@ const Header = () => {
       removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
       localStorage.clear();
       resetUser();
-      navigate('/');
+      navigate('/auth');
       return;
     }
 

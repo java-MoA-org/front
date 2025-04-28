@@ -7,6 +7,14 @@ import AuthPages from '../../types/aliases/auth-page.alias';
 import FindId from './FindId/FindId';
 import FindPassword from './FindPassword/FindPassword';
 
+const parseCookies = (): Record<string, string> => {
+  return document.cookie.split('; ').reduce((acc: Record<string, string>, cookie) => {
+    const [name, value] = cookie.split('=');
+    acc[name] = value;
+    return acc;
+  }, {});
+};
+
 export default function AuthPage() {
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<'signin' | 'signup' | 'findid' | 'findpassword'>('signin');
@@ -34,7 +42,9 @@ export default function AuthPage() {
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
+    const cookies = parseCookies();
+
+    const accessToken = cookies['accessToken'];
     const joinType = localStorage.getItem('joinType');
 
     if (accessToken) navigator(ROOT_PATH);
