@@ -88,9 +88,7 @@ export default function BoardView() {
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
-  useEffect(() => {
-    console.log(images);  // images 값 확인
-  }, [images]);
+
   // function: get board response 처리 함수 //
   const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null,) => {
   
@@ -120,7 +118,6 @@ export default function BoardView() {
     console.log(images);
     const uniqueImages = Array.from(new Set(imageUrls));
     setImages(uniqueImages);
-
   };
 
   // function: get comment response 처리 함수 //
@@ -202,8 +199,8 @@ export default function BoardView() {
       setLiked(responseBody.data.liked);
 
       if (!boardSequence || !accessToken) return;
-    };
-  }
+    }
+  };
 
   // function: post comment response 처리 함수 //
   const postCommentResponse = (responseBody: ResponseDto | null) => {
@@ -220,9 +217,7 @@ export default function BoardView() {
 
     setComment("");
     if (!boardSequence || !accessToken) return;
-    getBoardCommentRequest(boardSequence, accessToken).then(
-      getBoardCommentResponse,
-    );
+    getBoardCommentRequest(boardSequence, accessToken).then(getBoardCommentResponse);
   };
 
   // event handler: 댓글 변경 이벤트 처리 //
@@ -269,9 +264,7 @@ export default function BoardView() {
     const requestBody: PostBoardCommentRequestDto = {
       boardComment: comment,
     };
-    postBoardCommentRequest(requestBody, boardSequence, accessToken).then(
-      postCommentResponse,
-    );
+    postBoardCommentRequest(requestBody, boardSequence, accessToken).then(postCommentResponse);
   };
 
   // effect: 컴포넌트 로드시 실행할 함수 //

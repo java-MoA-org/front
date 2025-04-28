@@ -113,8 +113,10 @@ function App() {
           <Route path={DAILY_PATH}>
             <Route index element={<DailyMain />} />
             <Route path={DAILY_WRITE_PATH} element={<DailyWrite />} />
-            <Route path={DAILY_VIEW_PATH} element={<DailyView />} />
-            <Route path={DAILY_UPDATE_PATH} element={<DailyUpdate />} />
+            <Route path={DAILY_VIEW_PATH}>
+              <Route index element={<DailyView />} />
+              <Route path={DAILY_UPDATE_PATH} element={<DailyUpdate />} />
+            </Route>
           </Route>
 
           <Route path={USED_TRADE_PATH}>

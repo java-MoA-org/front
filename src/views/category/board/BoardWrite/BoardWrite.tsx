@@ -22,8 +22,6 @@ export default function BoardWrite() {
   const [location, setLocation] = useState<string>('');
   const [detailLocation, setDetailLocation] = useState<string>('');
 
-  const [textLength, setTextLength] = useState(0);
-
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
 
@@ -121,9 +119,9 @@ export default function BoardWrite() {
 
   // render: 게시판 게시글 작성 컴포넌트 렌더링 //
   return (
-    <div id='board-write-wrapper'>
+    <div id='write-wrapper'>
       <div className='write-container'>
-        <div className='write-title'>게시판 글 작성</div>
+        <div className='write-title'>익명 게시글 작성</div>
         <div className='contents-container'>
           <div className='board-category'>카테고리</div>
           <div className='input-row-box'>
