@@ -24,4 +24,5 @@ export interface UsedTradeSummaryResponseDto {
   userNickname: string;
   profileImage: string;
   price: number;
+  itemTypeTag: string;
 }
