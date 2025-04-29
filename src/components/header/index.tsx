@@ -13,6 +13,7 @@ import {
   BOARD_ABSOLUTE_PATH,
   DAILY_ABSOLUTE_PATH,
   USED_TRADE_ABSOLUTE_PATH,
+  AUTH_ABSOLUTE_PATH,
 } from '../../constants';
 import { useCookies } from 'react-cookie';
 import useSignInUserStore from '../../stores/sign-in-user.store';
@@ -40,27 +41,27 @@ const Header = () => {
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  const logout = () => {
+    removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
+    removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
+    localStorage.clear();
+    resetUser();
+    navigate(AUTH_ABSOLUTE_PATH);
+  };
+
   // 로그아웃
   const onSignOutClickHandler = () => {
     setIsLoggingOut(true);
     userSignOutRequest(accessToken);
-    removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
-    localStorage.clear();
-    resetUser();
-    removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
-    navigate('/');
+    logout();
   };
 
   // 세션 연장
   const onExtendSessionClickHandler = async () => {
     try {
       if (!accessToken) {
-        removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
-        removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
-        localStorage.clear();
-        resetUser();
         alert('세션이 만료되어 로그아웃되었습니다. 다시 로그인해주세요.');
-        navigate('/auth');
+        logout();
         return;
       }
       const expirationTime = await refreshAccessTokenRequest();
@@ -73,12 +74,8 @@ const Header = () => {
       setTimeLeft(parseInt(expirationTime, 10));
     } catch (error) {
       console.error(error);
-      removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
-      removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
-      localStorage.clear();
-      resetUser();
       alert('세션이 만료되어 로그아웃되었습니다. 다시 로그인해주세요!');
-      navigate('/');
+      logout();
     }
   };
 
@@ -142,11 +139,7 @@ const Header = () => {
       console.log('accessToken 만료 감지: 세션 만료 처리');
       resetTime();
       alert('세션이 만료되었습니다. 다시 로그인 해주세요.');
-      removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
-      removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
-      localStorage.clear();
-      resetUser();
-      navigate('/auth');
+      logout();
       return;
     }
 
@@ -156,11 +149,7 @@ const Header = () => {
       console.log('timeLeft 0: 세션 만료 처리');
       resetTime();
       alert('세션이 만료되었습니다. 다시 로그인 해주세요.');
-      removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
-      removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
-      localStorage.clear();
-      resetUser();
-      navigate('/');
+      logout();
     }
   }, [timeLeft, accessToken, refreshToken]);
 

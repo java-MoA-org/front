@@ -1,54 +1,42 @@
 // src/apis/index.ts
 
-import axios, { AxiosError, AxiosResponse,  } from "axios";
-import IdCheckRequestDto from "./dto/request/auth/user-id-check.request.dto";
-import ResponseDto from "./dto/response/response.dto";
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import IdCheckRequestDto from './dto/request/auth/user-id-check.request.dto';
+import ResponseDto from './dto/response/response.dto';
 
-import PostNoticeRequestDto from "./dto/request/notice/post-notice.request.dto";
-import PatchNoticeRequestDto from "./dto/request/notice/patch-notice.request.dto";
-import GetNoticeListResponseDto from "./dto/response/notice/get-notice-list.response.dto";
-import GetNoticeResponseDto from "./dto/response/notice/get-notice.response.dto";
-import UserIdCheckRequestDto from "./dto/request/auth/user-id-check.request.dto";
-import UserNicknameCheckRequestDto from "./dto/request/auth/user-nickname-check.request.dto";
-import UserEmailCheckRequestDto from "./dto/request/auth/user-email-check.request.dto";
-import UserPhoneNumberCheckRequestDto from "./dto/request/auth/user-phone-number-check.request.dto";
-import UserSignUpRequestDto from "./dto/request/auth/user-sign-up.request.dto";
-import UserSignInRequestDto from "./dto/request/auth/user-sign-in.request.dto";
+import PostNoticeRequestDto from './dto/request/notice/post-notice.request.dto';
+import PatchNoticeRequestDto from './dto/request/notice/patch-notice.request.dto';
+import GetNoticeListResponseDto from './dto/response/notice/get-notice-list.response.dto';
+import GetNoticeResponseDto from './dto/response/notice/get-notice.response.dto';
+import UserIdCheckRequestDto from './dto/request/auth/user-id-check.request.dto';
+import UserNicknameCheckRequestDto from './dto/request/auth/user-nickname-check.request.dto';
+import UserEmailCheckRequestDto from './dto/request/auth/user-email-check.request.dto';
+import UserPhoneNumberCheckRequestDto from './dto/request/auth/user-phone-number-check.request.dto';
+import UserSignUpRequestDto from './dto/request/auth/user-sign-up.request.dto';
+import UserSignInRequestDto from './dto/request/auth/user-sign-in.request.dto';
 
-import {
-  PatchBoardRequestDto,
-  PostBoardCommentRequestDto,
-  PostBoardRequestDto
-} from "./dto/request/board";
-import {
-  GetBoardCommentResponseDto,
-  GetBoardListResponseDto,
-  GetBoardResponseDto
-} from "./dto/response/board";
-import {
-  PatchDailyRequestDto,
-  PostDailyCommentRequestDto,
-  PostDailyRequestDto
-} from "./dto/request/daily";
+import { PatchBoardRequestDto, PostBoardCommentRequestDto, PostBoardRequestDto } from './dto/request/board';
+import { GetBoardCommentResponseDto, GetBoardListResponseDto, GetBoardResponseDto } from './dto/response/board';
+import { PatchDailyRequestDto, PostDailyCommentRequestDto, PostDailyRequestDto } from './dto/request/daily';
 import {
   GetDailyCommentResponseDto,
   GetDailyListResponseDto,
   GetDailyResponseDto,
-  GetLikedUserListResponseDto
-} from "./dto/response/daily";
-import { PatchUsedTradeRequestDto, PostUsedTradeRequestDto } from "./dto/request/usedtrade";
-import { GetUsedTradeListResponseDto, GetUsedTradeResponseDto } from "./dto/response/usedtrade";
-import GetUserPageResponseDto from "./dto/response/userpage/get-user-page.response.dto";
-import UserEmailVerifyRequestDto from "./dto/request/auth/user-email-verify.request.dto";
-import UserPhoneNumberVerifyRequestDto from "./dto/request/auth/user-phone-number-verify.request.dto";
-import { ACCESS_TOKEN } from "../constants";
-import GetUserInfoResponseDto from "./dto/response/user/get-user-info.response.dto";
-import PatchPasswordRequestDto from "./dto/request/auth/patch-password.request.dto";
-import PasswordVerifyRequestDto from "./dto/request/userInfo/post-verify-pawword.request.dto";
-import PatchPasswordUserPageRequestDto from "./dto/request/userInfo/patch-password-userpage.request.dto";
-import PatchUserInfoRequestDto from "./dto/request/userInfo/patch-user-info.request.dto";
+  GetLikedUserListResponseDto,
+} from './dto/response/daily';
+import { PatchUsedTradeRequestDto, PostUsedTradeRequestDto } from './dto/request/usedtrade';
+import { GetUsedTradeListResponseDto, GetUsedTradeResponseDto } from './dto/response/usedtrade';
+import GetUserPageResponseDto from './dto/response/userpage/get-user-page.response.dto';
+import UserEmailVerifyRequestDto from './dto/request/auth/user-email-verify.request.dto';
+import UserPhoneNumberVerifyRequestDto from './dto/request/auth/user-phone-number-verify.request.dto';
+import { ACCESS_TOKEN } from '../constants';
+import GetUserInfoResponseDto from './dto/response/user/get-user-info.response.dto';
+import PatchPasswordRequestDto from './dto/request/auth/patch-password.request.dto';
+import PasswordVerifyRequestDto from './dto/request/userInfo/post-verify-pawword.request.dto';
+import PatchPasswordUserPageRequestDto from './dto/request/userInfo/patch-password-userpage.request.dto';
+import PatchUserInfoRequestDto from './dto/request/userInfo/patch-user-info.request.dto';
 
-export { searchUserRequest } from "./dto/request/usersearch/search-user.request";
+export { searchUserRequest } from './dto/request/usersearch/search-user.request';
 
 const API_DOMAIN = process.env.REACT_APP_API_DOMAIN;
 
@@ -64,10 +52,11 @@ const FIND_ID_EMAIL_CHECK_VERIFY_URL = `${AUTH_MODULE_URL}/find-id/email/verify`
 const PHONE_NUMBER_CHECK_URL = `${AUTH_MODULE_URL}/phone/verify/require`;
 const PHONE_NUMBER_VERIFY_URL = `${AUTH_MODULE_URL}/phone/verify`;
 
+const GET_USER_INFO_URL = `${AUTH_MODULE_URL}/userInfo`;
 
 const SIGN_UP_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_URL = `${AUTH_MODULE_URL}/sign-in`;
-export const SNS_SIGN_IN_URL = (sns: "kakao" | "naver") => `${AUTH_MODULE_URL}/sns/${sns}`;
+export const SNS_SIGN_IN_URL = (sns: 'kakao' | 'naver') => `${AUTH_MODULE_URL}/sns/${sns}`;
 const SIGN_OUT_URL = `${AUTH_MODULE_URL}/sign-out`;
 
 const PATCH_PASSWORD_URL = (userId: string) => `${AUTH_MODULE_URL}/${userId}/password`;
@@ -76,31 +65,33 @@ const REFRESH_TOKEN_URL = `${AUTH_MODULE_URL}/refresh`;
 
 const USER_MODULE_URL = `${API_DOMAIN}/api/v1/user`;
 
-const GET_USER_INFO_URL = `${USER_MODULE_URL}/info`;
-
 const BOARD_MODULE_URL = `${API_DOMAIN}/api/v1/board`;
 
 const POST_BOARD_URL = BOARD_MODULE_URL;
-const GET_BOARD_LIST_URL = (tag: string, page: number, sort = "LATEST") => `${BOARD_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
+const GET_BOARD_LIST_URL = (tag: string, page: number, sort = 'LATEST') =>
+  `${BOARD_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
 const GET_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
 const PATCH_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
 const DELETE_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
-const SEARCH_BOARD_LIST_URL = (tag: string, keyword: string, page: number) => `${BOARD_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
+const SEARCH_BOARD_LIST_URL = (tag: string, keyword: string, page: number) =>
+  `${BOARD_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
 
 const TOGGLE_BOARD_LIKE_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/likes`;
 
 const POST_BOARD_COMMENT_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/comments`;
 const GET_BOARD_COMMENT_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/comments`;
-const DELETE_BOARD_COMMENT_URL = (commentSequence: number | string) => `${BOARD_MODULE_URL}/${commentSequence}/comments`;
+const DELETE_BOARD_COMMENT_URL = (commentSequence: number | string) =>
+  `${BOARD_MODULE_URL}/${commentSequence}/comments`;
 
 const DAILY_MODULE_URL = `${API_DOMAIN}/api/v1/daily`;
 
 const POST_DAILY_URL = DAILY_MODULE_URL;
 const GET_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
-const GET_DAILY_LIST_URL = (page: number, sort = "LATEST") => `${DAILY_MODULE_URL}/list/${page}?sortOption=${sort}`;
+const GET_DAILY_LIST_URL = (page: number, sort = 'LATEST') => `${DAILY_MODULE_URL}/list/${page}?sortOption=${sort}`;
 const PATCH_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
 const DELETE_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
-const SEARCH_DAILY_LIST_URL = (keyword: string, page: number) => `${DAILY_MODULE_URL}/search?keyword=${keyword}&page=${page}`;
+const SEARCH_DAILY_LIST_URL = (keyword: string, page: number) =>
+  `${DAILY_MODULE_URL}/search?keyword=${keyword}&page=${page}`;
 
 const TOGGLE_DAILY_LIKE_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/likes`;
 const GET_DAILY_LIKES_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/likes`;
@@ -113,12 +104,15 @@ const USED_TRADE_MODULE_URL = `${API_DOMAIN}/api/v1/used-trade`;
 
 const POST_USED_TRADE_URL = USED_TRADE_MODULE_URL;
 const GET_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
-const GET_USED_TRADE_LIST_URL = (tag: string, page: number, sort = "LATEST") => `${USED_TRADE_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
+const GET_USED_TRADE_LIST_URL = (tag: string, page: number, sort = 'LATEST') =>
+  `${USED_TRADE_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
 const PATCH_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
 const DELETE_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
-const SEARCH_USED_TRADE_LIST_URL = (tag: string, keyword: string, page: number) => `${USED_TRADE_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
+const SEARCH_USED_TRADE_LIST_URL = (tag: string, keyword: string, page: number) =>
+  `${USED_TRADE_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
 
-const TOGGLE_USED_TRADE_LIKE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}/likes`;
+const TOGGLE_USED_TRADE_LIKE_URL = (tradeSequence: number | string) =>
+  `${USED_TRADE_MODULE_URL}/${tradeSequence}/likes`;
 
 // notice API URL
 const NOTICE_MODULE_URL = `${API_DOMAIN}/api/v1/notice`;
@@ -137,7 +131,7 @@ const PATCH_USER_PAGE_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/ch
 
 // function: Authorization Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({
-  headers: { Authorization: `Bearer ${accessToken}` }
+  headers: { Authorization: `Bearer ${accessToken}` },
 });
 
 export const userIdCheckRequest = async (requestBody: UserIdCheckRequestDto) => {
@@ -196,9 +190,7 @@ export const userPhoneNumberCheckRequest = async (requestBody: UserPhoneNumberCh
   return responseBody;
 };
 
-export const UserPhoneNumberVerifyRequest = async (
-  requestBody: UserPhoneNumberVerifyRequestDto
-) => {
+export const UserPhoneNumberVerifyRequest = async (requestBody: UserPhoneNumberVerifyRequestDto) => {
   const responseBody = await axios
     .post(PHONE_NUMBER_VERIFY_URL, requestBody)
     .then(responseSuccessHandler)
@@ -222,6 +214,14 @@ export const userSignInRequest = async (requestBody: UserSignInRequestDto) => {
   return responseBody;
 };
 
+export const getUserInfoReques = async () => {
+  const responseBody = await axios
+    .get(GET_USER_INFO_URL, { withCredentials: true })
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
 export const userSignOutRequest = async (accessToken: string) => {
   await axios.post(SIGN_OUT_URL, bearerAuthorization(accessToken));
 };
@@ -236,7 +236,7 @@ export const PatchPasswordRequest = async (requestBody: PatchPasswordRequestDto)
 
 export const userProfileImageUpload = async (requestBody: FormData) => {
   const url = await axios.post(PROFILE_IMAGE_UPLOAD_URL, requestBody, {
-    withCredentials: true
+    withCredentials: true,
   });
   return url;
 };
@@ -246,7 +246,7 @@ export const refreshAccessTokenRequest = async () => {
   const { accessToken, expiration } = response.data;
 
   if (accessToken) {
-    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem('accessToken', accessToken);
     return expiration;
   }
 
@@ -280,7 +280,7 @@ export const passwordVerifyRequest = async (
 ): Promise<ResponseDto | null> => {
   try {
     const response = await axios.post(POST_USER_PASSWORD_VERIFY_URL, body, {
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
     return response.data;
   } catch {
@@ -294,7 +294,7 @@ export const patchPasswordUserPageRequest = async (
 ): Promise<ResponseDto | null> => {
   try {
     const response = await axios.patch(PATCH_USER_PAGE_PASSWORD_VERIFY_URL, body, {
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
     return response.data;
   } catch {
@@ -309,8 +309,8 @@ export const patchUserInfoRequest = async (
   try {
     const response = await axios.patch(PATCH_USER_UPDATE_PAGE_URL, requestBody, {
       headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
     return response.data;
   } catch (error) {
@@ -349,12 +349,7 @@ export const getBoardRequest = async (boardSequence: number | string, accessToke
 };
 
 // function: get board list API 요청 함수 //
-export const getBoardListRequest = async (
-  tag: string,
-  page: number,
-  sort: string = "LATEST",
-  accessToken: string
-) => {
+export const getBoardListRequest = async (tag: string, page: number, sort: string = 'LATEST', accessToken: string) => {
   const responseBody = await axios
     .get(GET_BOARD_LIST_URL(tag, page, sort), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetBoardListResponseDto>)
@@ -385,12 +380,7 @@ export const deleteBoardRequest = async (boardSequence: number | string, accessT
 };
 
 // function: search board API 요청 함수 //
-export const searchBoardRequest = async (
-  tag: string,
-  keyword: string,
-  page: number,
-  accessToken: string
-) => {
+export const searchBoardRequest = async (tag: string, keyword: string, page: number, accessToken: string) => {
   const responseBody = await axios
     .get(SEARCH_BOARD_LIST_URL(tag, keyword, page), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetBoardListResponseDto>)
@@ -421,10 +411,7 @@ export const postBoardCommentRequest = async (
 };
 
 // function: get board comment API 요청 함수 //
-export const getBoardCommentRequest = async (
-  boardSequence: number | string,
-  accessToken: string
-) => {
+export const getBoardCommentRequest = async (boardSequence: number | string, accessToken: string) => {
   const responseBody = await axios
     .get(GET_BOARD_COMMENT_URL(boardSequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetBoardCommentResponseDto>)
@@ -433,10 +420,7 @@ export const getBoardCommentRequest = async (
 };
 
 // function: delete board comment API 요청 함수 //
-export const deleteBoardCommentRequest = async (
-  commentSequence: number | string,
-  accessToken: string
-) => {
+export const deleteBoardCommentRequest = async (commentSequence: number | string, accessToken: string) => {
   const responseBody = await axios
     .delete(DELETE_BOARD_COMMENT_URL(commentSequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -463,11 +447,7 @@ export const getDailyRequest = async (dailySequence: number | string, accessToke
 };
 
 // function: get daily list API 요청 함수 //
-export const getDailyListRequest = async (
-  page: number,
-  sort: string = "LATEST",
-  accessToken: string
-) => {
+export const getDailyListRequest = async (page: number, sort: string = 'LATEST', accessToken: string) => {
   const responseBody = await axios
     .get(GET_DAILY_LIST_URL(page, sort), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetDailyListResponseDto>)
@@ -498,11 +478,7 @@ export const deleteDailyRequest = async (dailySequence: number | string, accessT
 };
 
 // function: search Daily API 요청 함수 //
-export const searchDailyRequest = async (
-  keyword: string,
-  page: number,
-  accessToken: string
-) => {
+export const searchDailyRequest = async (keyword: string, page: number, accessToken: string) => {
   const responseBody = await axios
     .get(SEARCH_DAILY_LIST_URL(keyword, page), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetDailyListResponseDto>)
@@ -542,10 +518,7 @@ export const postDailyCommentRequest = async (
 };
 
 // function: get daily comment API 요청 함수 //
-export const getDailyCommentRequest = async (
-  dailySequence: number | string,
-  accessToken: string
-) => {
+export const getDailyCommentRequest = async (dailySequence: number | string, accessToken: string) => {
   const responseBody = await axios
     .get(GET_DAILY_COMMENT_URL(dailySequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetDailyCommentResponseDto>)
@@ -554,10 +527,7 @@ export const getDailyCommentRequest = async (
 };
 
 // function: delete daily comment API 요청 함수 //
-export const deleteDailyCommentRequest = async (
-  commentSequence: number | string,
-  accessToken: string
-) => {
+export const deleteDailyCommentRequest = async (commentSequence: number | string, accessToken: string) => {
   const responseBody = await axios
     .delete(DELETE_DAILY_COMMENT_URL(commentSequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -566,10 +536,7 @@ export const deleteDailyCommentRequest = async (
 };
 
 // function: post used trade API 요청 함수 //
-export const postUsedTradeRequest = async (
-  requestBody: PostUsedTradeRequestDto,
-  accessToken: string
-) => {
+export const postUsedTradeRequest = async (requestBody: PostUsedTradeRequestDto, accessToken: string) => {
   const responseBody = await axios
     .post(POST_USED_TRADE_URL, requestBody, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -590,7 +557,7 @@ export const getUsedTradeRequest = async (tradeSequence: number | string, access
 export const getUsedTradeListRequest = async (
   tag: string,
   page: number,
-  sort: string = "LATEST",
+  sort: string = 'LATEST',
   accessToken: string
 ) => {
   const responseBody = await axios
@@ -614,10 +581,7 @@ export const patchUsedTradeRequest = async (
 };
 
 // function: delete used trade API 요청 함수 //
-export const deleteUsedTradeRequest = async (
-  tradeSequence: number | string,
-  accessToken: string
-) => {
+export const deleteUsedTradeRequest = async (tradeSequence: number | string, accessToken: string) => {
   const responseBody = await axios
     .delete(DELETE_USED_TRADE_URL(tradeSequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -626,12 +590,7 @@ export const deleteUsedTradeRequest = async (
 };
 
 // function: search used trade API 요청 함수 //
-export const searchUsedTradeRequest = async (
-  tag: string,
-  keyword: string,
-  page: number,
-  accessToken: string
-) => {
+export const searchUsedTradeRequest = async (tag: string, keyword: string, page: number, accessToken: string) => {
   const responseBody = await axios
     .get(SEARCH_USED_TRADE_LIST_URL(tag, keyword, page), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetUsedTradeListResponseDto>)
@@ -640,10 +599,7 @@ export const searchUsedTradeRequest = async (
 };
 
 // function: put used trade like API 요청 함수 //
-export const putUsedTradeLikeRequest = async (
-  tradeSequence: number | string,
-  accessToken: string
-) => {
+export const putUsedTradeLikeRequest = async (tradeSequence: number | string, accessToken: string) => {
   const responseBody = await axios
     .put(TOGGLE_USED_TRADE_LIKE_URL(tradeSequence), {}, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
