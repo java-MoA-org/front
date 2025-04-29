@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { UserInterest } from "../types/interfaces";
+import { create } from 'zustand';
+import { UserInterest } from '../types/interfaces';
 
 interface SignInUserState {
   userId: string;
@@ -46,13 +46,13 @@ const defaultInterests: UserInterest = {
 };
 
 const useSignInUserStore = create<SignInUserState>((set) => ({
-  userId: "",
-  userNickname: "",
+  userId: '',
+  userNickname: '',
   userProfileImage: null,
-  userIntroduce: "",
-  userPhoneNumber: "",
-  userEmail: "",
-  userRole: "",
+  userIntroduce: '',
+  userPhoneNumber: '',
+  userEmail: '',
+  userRole: '',
   userInterests: defaultInterests,
 
   setUserId: (userId) => set({ userId }),
@@ -78,13 +78,13 @@ const useSignInUserStore = create<SignInUserState>((set) => ({
 
   resetUser: () =>
     set({
-      userId: "",
-      userNickname: "",
+      userId: '',
+      userNickname: '',
       userProfileImage: null,
-      userIntroduce: "",
-      userPhoneNumber: "",
-      userEmail: "",
-      userRole: "",
+      userIntroduce: '',
+      userPhoneNumber: '',
+      userEmail: '',
+      userRole: '',
       userInterests: defaultInterests,
     }),
 }));
