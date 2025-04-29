@@ -73,6 +73,7 @@ function App() {
 
     const fetchUserInfo = async () => {
       const response = await getUserInfoRequest(accessToken);
+      console.log(response);
       // const response = await getUserPageInfoRequest(accessToken);
       if (!response || response.code !== 'SU') return;
 
