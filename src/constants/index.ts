@@ -15,7 +15,7 @@ export const DAILY_VIEW_PATH = ':dailySequence';
 export const DAILY_UPDATE_PATH = 'update';
 export const USED_TRADE_PATH = 'usedtrade';
 export const USED_TRADE_WRITE_PATH = 'write';
-export const USED_TRADE_VIEW_PATH = ':usedTradeSequence';
+export const USED_TRADE_VIEW_PATH = ':tradeSequence';
 export const USED_TRADE_UPDATE_PATH = 'update';
 export const NOTICE_PATH = 'notice';
 export const NOTICE_WRITE_PATH = 'write';
@@ -39,11 +39,9 @@ export const BOARD_ABSOLUTE_PATH = `${ROOT_PATH}${BOARD_PATH}`;
 
 export const BOARD_WRITE_ABSOLUTE_PATH = `${ROOT_PATH}${BOARD_PATH}/${BOARD_WRITE_PATH}`;
 
-export const BOARD_VIEW_ABSOLUTE_PATH = (boardSequence: number | string) =>
-  `${ROOT_PATH}${BOARD_PATH}/${boardSequence}`;
+export const BOARD_VIEW_ABSOLUTE_PATH = (boardSequence: number | string) => `${ROOT_PATH}${BOARD_PATH}/${boardSequence}`;
 
-export const BOARD_UPDATE_ABSOLUTE_PATH = (boardSequence: number | string) =>
-  `${ROOT_PATH}${BOARD_PATH}/${boardSequence}/${BOARD_UPDATE_PATH}`;
+export const BOARD_UPDATE_ABSOLUTE_PATH = (boardSequence: number | string) => `${ROOT_PATH}${BOARD_PATH}/${boardSequence}/${BOARD_UPDATE_PATH}`;
 
 export const GET_BOARD_LIST_ABSOLUTE_PATH = (tag: string) => `${BOARD_ABSOLUTE_PATH}/${tag}`;
 
@@ -51,21 +49,17 @@ export const DAILY_ABSOLUTE_PATH = `${ROOT_PATH}${DAILY_PATH}`;
 
 export const DAILY_WRITE_ABSOLUTE_PATH = `${ROOT_PATH}${DAILY_PATH}/${DAILY_WRITE_PATH}`;
 
-export const DAILY_VIEW_ABSOLUTE_PATH = (dailySequence: number | string) =>
-  `${ROOT_PATH}${DAILY_PATH}/${dailySequence}`;
+export const DAILY_VIEW_ABSOLUTE_PATH = (dailySequence: number | string) => `${ROOT_PATH}${DAILY_PATH}/${dailySequence}`;
 
-export const DAILY_UPDATE_ABSOLUTE_PATH = (dailySequence: number | string) =>
-  `${ROOT_PATH}${DAILY_PATH}/${dailySequence}/${DAILY_UPDATE_PATH}`;
+export const DAILY_UPDATE_ABSOLUTE_PATH = (dailySequence: number | string) => `${ROOT_PATH}${DAILY_PATH}/${dailySequence}/${DAILY_UPDATE_PATH}`;
 
 export const USED_TRADE_ABSOLUTE_PATH = `${ROOT_PATH}${USED_TRADE_PATH}`;
 
 export const USED_TRADE_WRITE_ABSOLUTE_PATH = `${ROOT_PATH}${USED_TRADE_PATH}/${USED_TRADE_WRITE_PATH}`;
 
-export const USED_TRADE_VIEW_ABSOLUTE_PATH = (usedTradeSequence: number | string) =>
-  `${ROOT_PATH}${USED_TRADE_PATH}/${usedTradeSequence}`;
+export const USED_TRADE_VIEW_ABSOLUTE_PATH = (usedTradeSequence: number | string) => `${ROOT_PATH}${USED_TRADE_PATH}/${usedTradeSequence}`;
 
-export const USED_TRADE_UPDATE_ABSOLUTE_PATH = (usedTradeSequence: number | string) =>
-  `${ROOT_PATH}${USED_TRADE_PATH}/${usedTradeSequence}/${USED_TRADE_UPDATE_PATH}`;
+export const USED_TRADE_UPDATE_ABSOLUTE_PATH = (usedTradeSequence: number | string) => `${ROOT_PATH}${USED_TRADE_PATH}/${usedTradeSequence}/${USED_TRADE_UPDATE_PATH}`;
 
 // variable: access token 속성명 //
 export const ACCESS_TOKEN = 'accessToken';

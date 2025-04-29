@@ -135,6 +135,7 @@ export default function DailyMain() {
   // event handler: 작성하기 버튼 클릭 //
   const onWriteButtonClick = () => {
     if (!accessToken) {
+      alert("로그인이 필요합니다.");
       navigate('/auth');
       return;
     }
@@ -181,6 +182,11 @@ export default function DailyMain() {
             className="daily-search-input"
             value={searchQuery}
             onChange={onSearchQueryChange}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                onSearchClick();
+              }
+            }}
           />
           <button className="daily-search-button" onClick={onSearchClick}>검색</button>
         </div>
