@@ -274,7 +274,7 @@ export const refreshAccessTokenRequest = async () => {
 };
 
 // function: get user info API 요청 함수 //
-export const getUserInfoRequest = async (accessToken: string) => {
+export const getUserPageInfoRequest = async (accessToken: string) => {
   const responseBody = await axios
     .get(GET_USER_UPDATE_PAGE_URL, bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetUserInfoResponseDto>)
