@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import News from "../../components/news/news";
 
 import iphoneImg from "../../assets/images/iphone_ex.png";
-
+//
 const Home = () => {
   // function: 페이지 이동 함수 //
   const navigate = useNavigate();
