@@ -18,7 +18,7 @@ export default function UsedTradeView() {
   const [cookies] = useCookies();
 
   // state: 로그인 사용자 아이디 상태 //
-  const { userId } = useSignInUserStore();
+  const { userNickname } = useSignInUserStore();
 
   // state: 중고거래 판매글 내용 상태 
   const [writerId, setWriterId] = useState<string>('');

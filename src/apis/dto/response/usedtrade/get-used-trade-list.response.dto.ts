@@ -18,7 +18,11 @@ export interface UsedTradeSummaryResponseDto {
   views: number;
   likeCount: number;
   creationDate: string;
-  userNickname: string;
+  location: string;
+  usedItemStatusTag: string;
   thumbnailImage: string;
+  userNickname: string;
+  profileImage: string;
   price: number;
+  itemTypeTag: string;
 }

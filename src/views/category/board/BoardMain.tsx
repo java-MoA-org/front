@@ -12,7 +12,8 @@ import Pagination from '../../../components/pagination';
 import likeIcon from '../../../assets/images/likeClick.png';
 import commentIcon from '../../../assets/images/comment.png';
 import viewsIcon from '../../../assets/images/views.png';
-import imageIcon from '../../../assets/images/image.png'
+import imageIcon from '../../../assets/images/image.png';
+import useSignInUserStore from '../../../stores/sign-in-user.store';
 
 // interface: 게시판 테이블 레코드 컴포넌트 속성 //
 interface TableItemProps {
@@ -21,25 +22,32 @@ interface TableItemProps {
 
 // component: 게시판 테이블 레코드 컴포넌트 //
 function TableItem({ board }: TableItemProps) {
-
   // destructuring: 게시글 정보 추출 //
   const { boardSequence, title, content, creationDate, views, likeCount, tag, writerId, images, commentCount } = board;
-
   // hook: 작성 시간 계산 //
   const elapsedTime = useElapsedTime(creationDate);
 
   // function: 태그를 한글로 변환하는 함수 //
   const getTagInKorean = (tag: string) => {
-    switch(tag) {
-      case 'GAME': return '게임';
-      case 'TRAVEL': return '여행';
-      case 'WORKOUT': return '운동';
-      case 'MUSIC': return '음악';
-      case 'ECONOMY': return '경제';
-      case 'FASHION': return '패션';
-      case 'FOOD': return '음식';
-      case 'FREE': return '자유';
-      default: return tag;
+    switch (tag) {
+      case 'GAME':
+        return '게임';
+      case 'TRAVEL':
+        return '여행';
+      case 'WORKOUT':
+        return '운동';
+      case 'MUSIC':
+        return '음악';
+      case 'ECONOMY':
+        return '경제';
+      case 'FASHION':
+        return '패션';
+      case 'FOOD':
+        return '음식';
+      case 'FREE':
+        return '자유';
+      default:
+        return tag;
     }
   };
 
@@ -50,11 +58,10 @@ function TableItem({ board }: TableItemProps) {
 
   // function: HTML 문자열에서 HTML 태그 제거 함수 //
   function stripHtmlTags(html: string): string {
-    const tempDiv = document.createElement("div");
+    const tempDiv = document.createElement('div');
     tempDiv.innerHTML = html;
-    return tempDiv.textContent || tempDiv.innerText || "";
+    return tempDiv.textContent || tempDiv.innerText || '';
   }
-  
 
   // event handler: 레코드 클릭 이벤트 처리 //
   const onClick = () => {
@@ -67,23 +74,29 @@ function TableItem({ board }: TableItemProps) {
       <div className="board-header">
         <div className="board-title">{title}</div>
         <div className="board-stats">
-          <span className="view-count"><img src={viewsIcon} alt="Views" className="icon" /> {views}</span>
+          <span className="view-count">
+            <img src={viewsIcon} alt="Views" className="icon" /> {views}
+          </span>
         </div>
       </div>
       <div className="board-content">
-        {stripHtmlTags(content).length > 70
-          ? stripHtmlTags(content).slice(0, 70) + "..."
-          : stripHtmlTags(content)}
+        {stripHtmlTags(content).length > 70 ? stripHtmlTags(content).slice(0, 70) + '...' : stripHtmlTags(content)}
       </div>
       <div className="board-footer">
         <div className="footer-left">
           <span className="category">{tagInKorean}</span>
           <span className="creation-date">{elapsedTime}</span>
-          <span className="check-image">{images && images.length > 0 ?  <img src={imageIcon} alt="icon" className="image-icon" /> : ''}</span>
+          <span className="check-image">
+            {images && images.length > 0 ? <img src={imageIcon} alt="icon" className="image-icon" /> : ''}
+          </span>
         </div>
         <div className="footer-right">
-          <span className="like-count"><img src={likeIcon} alt="Like" className="icon" /> {likeCount}</span>
-          <span className="comment-count"><img src={commentIcon} alt="Comment" className="icon" /> {commentCount}</span>
+          <span className="like-count">
+            <img src={likeIcon} alt="Like" className="icon" /> {likeCount}
+          </span>
+          <span className="comment-count">
+            <img src={commentIcon} alt="Comment" className="icon" /> {commentCount}
+          </span>
         </div>
       </div>
     </div>
@@ -92,7 +105,6 @@ function TableItem({ board }: TableItemProps) {
 
 // component: 게시판 컴포넌트 //
 export default function BoardMain() {
-
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
 
@@ -139,19 +151,24 @@ export default function BoardMain() {
 
   // function: 게시글 목록 요청 응답 처리 //
   const getBoardListResponse = (responseBody: GetBoardListResponseDto | ResponseDto | null) => {
-    const message = 
-      !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'AF' ? '인증에 실패했습니다.' : 
-      responseBody.code === 'IP' ? '게시글이 존재하지 않습니다.' : '';
+    const message = !responseBody
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'AF'
+      ? '인증에 실패했습니다.'
+      : responseBody.code === 'IP'
+      ? '게시글이 존재하지 않습니다.'
+      : '';
 
-    const isSuccess = responseBody !== null && responseBody.code === "SU";
+    const isSuccess = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccess) {
       alert(message);
       return;
     }
 
-    const { boardList, totalElements, totalPages, currentPage, currentSection, totalSection, pageList } = responseBody as GetBoardListResponseDto;
+    const { boardList, totalElements, totalPages, currentPage, currentSection, totalSection, pageList } =
+      responseBody as GetBoardListResponseDto;
 
     setTotalList(boardList);
     setTotalElements(totalElements);
@@ -165,6 +182,7 @@ export default function BoardMain() {
   // event handler: 작성하기 버튼 클릭 //
   const onWriteButtonClick = () => {
     if (!accessToken) {
+      alert("로그인이 필요합니다.");
       navigate('/auth');
       return;
     }
@@ -199,7 +217,7 @@ export default function BoardMain() {
 
   // effect: 컴포넌트 렌더링 시 게시글 목록 요청 //
   useEffect(() => {
-    if(searchQuery) return;
+    if (searchQuery) return;
     getBoardListRequest(tag, page, sort, accessToken).then(getBoardListResponse);
   }, [tag, page, sort, accessToken]);
 
@@ -209,15 +227,60 @@ export default function BoardMain() {
       <div className="board-main">
         {/* 카테고리 탭 */}
         <div className="board-category">
-          <div className={`category-tab ${selectedCategory === "ALL" ? 'active' : ''}`} onClick={() => onCategoryClick("ALL")}>전체</div>
-          <div className={`category-tab ${selectedCategory === "FREE" ? 'active' : ''}`} onClick={() => onCategoryClick("FREE")}>자유</div>
-          <div className={`category-tab ${selectedCategory === "GAME" ? 'active' : ''}`} onClick={() => onCategoryClick("GAME")}>게임</div>
-          <div className={`category-tab ${selectedCategory === "TRAVEL" ? 'active' : ''}`} onClick={() => onCategoryClick("TRAVEL")}>여행</div>
-          <div className={`category-tab ${selectedCategory === "WORKOUT" ? 'active' : ''}`} onClick={() => onCategoryClick("WORKOUT")}>운동</div>
-          <div className={`category-tab ${selectedCategory === "MUSIC" ? 'active' : ''}`} onClick={() => onCategoryClick("MUSIC")}>음악</div>
-          <div className={`category-tab ${selectedCategory === "ECONOMY" ? 'active' : ''}`} onClick={() => onCategoryClick("ECONOMY")}>경제</div>
-          <div className={`category-tab ${selectedCategory === "FASHION" ? 'active' : ''}`} onClick={() => onCategoryClick("FASHION")}>패션</div>
-          <div className={`category-tab ${selectedCategory === "FOOD" ? 'active' : ''}`} onClick={() => onCategoryClick("FOOD")}>음식</div>
+          <div
+            className={`category-tab ${selectedCategory === 'ALL' ? 'active' : ''}`}
+            onClick={() => onCategoryClick('ALL')}
+          >
+            전체
+          </div>
+          <div
+            className={`category-tab ${selectedCategory === 'FREE' ? 'active' : ''}`}
+            onClick={() => onCategoryClick('FREE')}
+          >
+            자유
+          </div>
+          <div
+            className={`category-tab ${selectedCategory === 'GAME' ? 'active' : ''}`}
+            onClick={() => onCategoryClick('GAME')}
+          >
+            게임
+          </div>
+          <div
+            className={`category-tab ${selectedCategory === 'TRAVEL' ? 'active' : ''}`}
+            onClick={() => onCategoryClick('TRAVEL')}
+          >
+            여행
+          </div>
+          <div
+            className={`category-tab ${selectedCategory === 'WORKOUT' ? 'active' : ''}`}
+            onClick={() => onCategoryClick('WORKOUT')}
+          >
+            운동
+          </div>
+          <div
+            className={`category-tab ${selectedCategory === 'MUSIC' ? 'active' : ''}`}
+            onClick={() => onCategoryClick('MUSIC')}
+          >
+            음악
+          </div>
+          <div
+            className={`category-tab ${selectedCategory === 'ECONOMY' ? 'active' : ''}`}
+            onClick={() => onCategoryClick('ECONOMY')}
+          >
+            경제
+          </div>
+          <div
+            className={`category-tab ${selectedCategory === 'FASHION' ? 'active' : ''}`}
+            onClick={() => onCategoryClick('FASHION')}
+          >
+            패션
+          </div>
+          <div
+            className={`category-tab ${selectedCategory === 'FOOD' ? 'active' : ''}`}
+            onClick={() => onCategoryClick('FOOD')}
+          >
+            음식
+          </div>
         </div>
 
         {/* 검색 바 */}
@@ -231,8 +294,15 @@ export default function BoardMain() {
             className="board-search-input"
             value={searchQuery}
             onChange={onSearchQueryChange}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                onSearchClick();
+              }
+            }}
           />
-          <button className="board-search-button" onClick={onSearchClick}>검색</button>
+          <button className="board-search-button" onClick={onSearchClick}>
+            검색
+          </button>
         </div>
 
         {/* 게시글 작성 및 정렬 */}
@@ -241,9 +311,15 @@ export default function BoardMain() {
             작성하기
           </div>
           <div className="board-order-list">
-            <div className="up-to-date-order" onClick={() => onSortClick('LATEST')}>최신순</div>
-            <div className="views-order" onClick={() => onSortClick('VIEWS')}>조회순</div>
-            <div className="likes-order" onClick={() => onSortClick('LIKES')}>인기순</div>
+            <div className="up-to-date-order" onClick={() => onSortClick('LATEST')}>
+              최신순
+            </div>
+            <div className="views-order" onClick={() => onSortClick('VIEWS')}>
+              조회순
+            </div>
+            <div className="likes-order" onClick={() => onSortClick('LIKES')}>
+              인기순
+            </div>
           </div>
         </div>
 
@@ -252,9 +328,7 @@ export default function BoardMain() {
           {viewList.length === 0 ? (
             <div className="board-empty">게시글이 없습니다.</div>
           ) : (
-            viewList.map((board) => (
-              <TableItem key={board.boardSequence} board={board} />
-            ))
+            viewList.map((board) => <TableItem key={board.boardSequence} board={board} />)
           )}
         </div>
 
@@ -270,7 +344,7 @@ export default function BoardMain() {
               setCurrentPage={setCurrentPage}
               setCurrentSection={setCurrentSection}
               basePath="/board"
-              queryParams={{ tag, sort }}
+              queryParams={{ tag, sort, searchQuery }}
             />
           )}
         </div>

@@ -1,5 +1,6 @@
-import { create } from "zustand";
-import { UserInterest } from "../types/interfaces";
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import { UserInterest } from '../types/interfaces';
 
 interface SignInUserState {
   userId: string;
@@ -45,48 +46,56 @@ const defaultInterests: UserInterest = {
   userInterestNull: false,
 };
 
-const useSignInUserStore = create<SignInUserState>((set) => ({
-  userId: "",
-  userNickname: "",
-  userProfileImage: null,
-  userIntroduce: "",
-  userPhoneNumber: "",
-  userEmail: "",
-  userRole: "",
-  userInterests: defaultInterests,
-
-  setUserId: (userId) => set({ userId }),
-  setUserNickname: (userNickname) => set({ userNickname }),
-  setUserProfileImage: (userProfileImage) => set({ userProfileImage }),
-  setUserIntroduce: (userIntroduce) => set({ userIntroduce }),
-  setUserPhoneNumber: (userPhoneNumber) => set({ userPhoneNumber }),
-  setUserEmail: (userEmail) => set({ userEmail }),
-  setUserRole: (userRole) => set({ userRole }),
-  setUserInterests: (userInterests) => set({ userInterests }),
-
-  setUserAll: (user) =>
-    set({
-      userId: user.userId,
-      userNickname: user.userNickname,
-      userProfileImage: user.userProfileImage,
-      userIntroduce: user.userIntroduce,
-      userPhoneNumber: user.userPhoneNumber,
-      userEmail: user.userEmail,
-      userRole: user.userRole,
-      userInterests: user.userInterests || defaultInterests,
-    }),
-
-  resetUser: () =>
-    set({
-      userId: "",
-      userNickname: "",
+const useSignInUserStore = create<SignInUserState>()(
+  persist(
+    (set) => ({
+      userId: '',
+      userNickname: '',
       userProfileImage: null,
-      userIntroduce: "",
-      userPhoneNumber: "",
-      userEmail: "",
-      userRole: "",
+      userIntroduce: '',
+      userPhoneNumber: '',
+      userEmail: '',
+      userRole: '',
       userInterests: defaultInterests,
+
+      setUserId: (userId) => set({ userId }),
+      setUserNickname: (userNickname) => set({ userNickname }),
+      setUserProfileImage: (userProfileImage) => set({ userProfileImage }),
+      setUserIntroduce: (userIntroduce) => set({ userIntroduce }),
+      setUserPhoneNumber: (userPhoneNumber) => set({ userPhoneNumber }),
+      setUserEmail: (userEmail) => set({ userEmail }),
+      setUserRole: (userRole) => set({ userRole }),
+      setUserInterests: (userInterests) => set({ userInterests }),
+
+      setUserAll: (user) =>
+        set({
+          userId: user.userId,
+          userNickname: user.userNickname,
+          userProfileImage: user.userProfileImage,
+          userIntroduce: user.userIntroduce,
+          userPhoneNumber: user.userPhoneNumber,
+          userEmail: user.userEmail,
+          userRole: user.userRole,
+          userInterests: user.userInterests || defaultInterests,
+        }),
+
+      resetUser: () =>
+        set({
+          userId: '',
+          userNickname: '',
+          userProfileImage: null,
+          userIntroduce: '',
+          userPhoneNumber: '',
+          userEmail: '',
+          userRole: '',
+          userInterests: defaultInterests,
+        }),
     }),
-}));
+    {
+      name: 'sign-in-user-storage', // localStorage key 이름
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
 
 export default useSignInUserStore;

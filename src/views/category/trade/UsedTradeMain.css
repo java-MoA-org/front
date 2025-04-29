@@ -1,98 +1,218 @@
-/* 기본 스타일 */
-.trade-page {
-  font-family: Arial, sans-serif;
-  margin: 0 auto;
-  padding: 20px;
-  max-width: 1200px;
+#trade-main-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 32px 0;
+  background-color: white;
 }
 
-.trade-title {
-  font-size: 2.5rem;
+/* 검색 바 */
+#trade-main-wrapper .trade-search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  border-radius: 40px;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+#trade-main-wrapper .trade-search-input {
+  padding: 10px;
+  border: none;
+  outline: none;
+  font-size: 15px;
+}
+
+#trade-main-wrapper .trade-search-input {
+  width: 830px;
+}
+
+#trade-main-wrapper .trade-search-button {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+/* 카테고리 및 정렬 */
+#trade-main-wrapper .order-category-container {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+#trade-main-wrapper .trade-category-icon {
+  width: 36px;
+  height: 36px;
+  background-image: url('/src/assets/images/list.png');
+  background-size: 100%;
+  cursor: pointer;
+}
+
+#trade-main-wrapper .trade-category-dropdown {
+  position: absolute;
+  top: 40px;
+  width: 150px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  list-style: none;
+  padding: 5px 0;
+  margin: 0;
+}
+
+#trade-main-wrapper .trade-category-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+#trade-main-wrapper .trade-category-dropdown li:hover {
+  background-color: #ccc;
+}
+
+.trade-item-container {
+  display: flex;
+  align-items: center;
+}
+
+#trade-main-wrapper .my-shop-button,
+#trade-main-wrapper .write-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+#trade-main-wrapper .write-icon {
+  width: 25px;
+  height: 25px;
+}
+
+#trade-main-wrapper .my-shop-icon {
+  width: 30px;
+  height: 30px;
+}
+
+#trade-main-wrapper .my-shop,
+#trade-main-wrapper .write {
   font-weight: bold;
-  text-align: center;
-  color: #333;
 }
 
-.trade-description {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #777;
+#trade-main-wrapper .trade-order-list {
+  font-size: 14px;
+  color: #394867;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#trade-main-wrapper .up-to-date-order:hover,
+#trade-main-wrapper .price-high-order:hover,
+#trade-main-wrapper .price-low-order:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* 리스트 목록 */
+#trade-main-wrapper .trade-list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 30px;
+}
+
+#trade-main-wrapper .trade-item {
+  width: 250px;
   margin-bottom: 40px;
 }
 
-/* 검색 섹션 */
-.search-container {
+#trade-main-wrapper .item-container {
+  padding: 5px 5px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ccc;
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-.search-input {
-  width: 300px;
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  margin-right: 10px;
+#trade-main-wrapper .block {
+  padding-left: 10px;
+  padding-right: 5px;
+  font-size: 10px;
+  color: #ccc;
 }
 
-.search-button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+#trade-main-wrapper .thumbnail-image {
+  height: 250px;
+  background-image: url('/src/assets/images/닌텐도.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid #EFEEEA;
+  border-radius: 15px;
 }
 
-.search-button:hover {
-  background-color: #45a049;
-}
-
-/* 정렬 섹션 */
-.sort-container {
+#trade-main-wrapper .profile-list {
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px 0px;
 }
 
-.sort-button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  margin: 0 10px;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
+#trade-main-wrapper .trade-profile-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  border: 1px solid #EFEEEA;
+  background-size: 100%;
 }
 
-.sort-button:hover {
-  background-color: #e0e0e0;
+#trade-main-wrapper .user-nickname {
+  font-size: 14px;
+  font-weight: bold;
 }
 
-/* 거래 리스트 */
-.trade-list {
+#trade-main-wrapper .item-status {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 0px;
+  border-top: 1px solid #EFEEEA;
+}
+
+#trade-main-wrapper .title {
+  font-size: 16px;
+}
+
+#trade-main-wrapper .content-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0px;
+  border-bottom: 1px solid #EFEEEA;
 }
 
-/* 글 작성 버튼 */
-.write-button {
-  display: block;
-  width: 200px;
-  padding: 10px;
-  font-size: 1.2rem;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  margin: 40px auto 0;
-  cursor: pointer;
+#trade-main-wrapper .price {
+  font-size: 16px;
+  font-weight: bold;
 }
 
-.write-button:hover {
-  background-color: #45a049;
+#trade-main-wrapper .creation-date {
+  font-size: 12px;;
+  color: #888;
+}
+
+#trade-main-wrapper .location {
+  font-size: 14px;
+  color: #888;
+  padding-top: 10px;
 }

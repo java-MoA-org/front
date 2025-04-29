@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import News from "../../components/news/news";
 
 import iphoneImg from "../../assets/images/iphone_ex.png";
-
+//
 const Home = () => {
   // function: 페이지 이동 함수 //
   const navigate = useNavigate();
@@ -50,12 +50,7 @@ const Home = () => {
             <div className="board-daily-row">
               {/* 게시판 */}
               <section className="board-list">
-                <h2
-                  className="section-title"
-                  onClick={() => navigate("/board")}
-                >
-                  게시판
-                </h2>
+                <h2 className="section-title" onClick={() => navigate("/board")}>게시판</h2>
                 {Array.from({ length: 5 }, (_, i) => (
                   <div className="post-card" key={`board-${i}`}>
                     <div className="post-title">오늘 롯데 졌다</div>

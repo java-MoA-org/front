@@ -4,10 +4,11 @@ import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react';
 import { ROOT_PATH } from '../../../constants';
 
 import UserSignInRequestDto from '../../../apis/dto/request/auth/user-sign-in.request.dto';
-import { SNS_SIGN_IN_URL, userSignInRequest } from '../../../apis';
+import { getUserInfoRequest, SNS_SIGN_IN_URL, userSignInRequest } from '../../../apis';
 import ResponseDto from '../../../apis/dto/response/response.dto';
 import UserSignInResponseDto from '../../../apis/dto/response/auth/user-sign-in.response.dto';
 import useSessionTimerStore from '../../../stores/session-timer.store';
+import useSignInUserStore from '../../../stores/sign-in-user.store';
 
 // interface: 로그인 컴포넌트 속성 //
 interface Props {
@@ -18,6 +19,7 @@ interface Props {
 export default function SignIn({ setActiveTab }: Props) {
   const navigate = useNavigate();
   const { setTimeLeft } = useSessionTimerStore();
+  const { setUserAll } = useSignInUserStore();
 
   const [userId, setUserId] = useState<string>('');
   const [userPassword, setUserPassword] = useState<string>('');
@@ -42,8 +44,7 @@ export default function SignIn({ setActiveTab }: Props) {
     setUserPassword(e.target.value);
   };
 
-  // 서버 응답 처리
-  const userSignInResponse = (responseBody: ResponseDto | UserSignInResponseDto | null) => {
+  const userSignInResponse = async (responseBody: ResponseDto | UserSignInResponseDto | null) => {
     const message = !responseBody
       ? '서버에 문제가 있습니다'
       : responseBody.code === 'DBE'
@@ -68,7 +69,12 @@ export default function SignIn({ setActiveTab }: Props) {
     localStorage.setItem('accessTokenExpiresAt', expires.getTime().toString());
     localStorage.setItem('userRole', userRole); // 관리자 여부 판단용
 
-    navigate('/');
+    const userInfo = await getUserInfoRequest(accessToken);
+    setUserAll(userInfo);
+    // const user = useSignInUserStore.getState();
+    // console.log(user);
+
+    navigate(ROOT_PATH);
   };
 
   const handleIdEnterKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -87,7 +93,6 @@ export default function SignIn({ setActiveTab }: Props) {
     navigate(ROOT_PATH);
   };
 
-  // 로그인 요청
   const onSignInClickHandler = () => {
     if (userId.trim() === '') {
       setSignInHint('아이디를 입력해주세요');
