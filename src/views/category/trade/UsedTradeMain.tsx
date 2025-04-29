@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./UsedTradeMain.css";
-import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import useSignInUserStore from "../../../stores/sign-in-user.store";
 import { Trade } from "../../../types/interfaces";
@@ -9,6 +9,8 @@ import { ACCESS_TOKEN, USED_TRADE_VIEW_ABSOLUTE_PATH, USED_TRADE_WRITE_ABSOLUTE_
 import { GetUsedTradeListResponseDto } from "../../../apis/dto/response/usedtrade";
 import ResponseDto from "../../../apis/dto/response/response.dto";
 import { getUsedTradeListRequest, searchUsedTradeRequest } from "../../../apis";
+import Pagination from "../../../components/pagination";
+import locationIcon from '../../../assets/images/place.png';
 
 // interface: 중고거래글 테이블 레코드 컴포넌트 속성 //
 interface TableItemProps {
@@ -19,10 +21,23 @@ interface TableItemProps {
 function TableItem({ trade }: TableItemProps) {
 
   // destructuring: 중고거래글 정보 추출 //
-  const { price, title, tradeSequence, creationDate } = trade;
+  const { price, title, tradeSequence, creationDate, views, likeCount, userNickname, thumbnailImage, profileImage, usedItemStatusTag, location } = trade;
 
   // hook: 작성 시간 계산 //
   const elapsedTime = useElapsedTime(creationDate);
+
+  // function: 물건 상태를 한글로 변환하는 함수 //
+  const getTagInKorean = (usedItemStatusTag: string) => {
+    switch(usedItemStatusTag) {
+      case 'NEW': return '새상품';
+      case 'LIKE_NEW': return '사용감 거의 없음';
+      case 'USED': return '사용감 있음';
+      case 'DAMAGED': return '파손/고장 있음';
+      default: return usedItemStatusTag;
+    }
+  };
+
+  const tagInKorean = getTagInKorean(usedItemStatusTag);
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -42,9 +57,24 @@ function TableItem({ trade }: TableItemProps) {
   // render: 중고거래글 테이블 레코드 컴포넌트 렌더링 //
   return (
     <div className="trade-item" onClick={onClick}>
-      <h3 className="trade-title">{stripHtmlTags(title)}</h3>
-      <p className="trade-price">가격: {price.toLocaleString()} 원</p>
-      <p className="trade-time">작성 시간: {elapsedTime}</p>
+      <div className="item-container">
+        <div className="like">{likeCount}</div>
+        <div className="views">{views}</div>
+      </div>
+      <div className="thumbnail-image">{thumbnailImage}</div>
+      <div className="trade-content-container">
+        <div className="profile-list">
+          <img src={profileImage} alt="프로필 이미지" className="trade-profile-image" />
+          <div className="user-nickname">{userNickname}</div>
+        </div>
+        <div className="item-status">{tagInKorean}</div>
+        <div className="title">{title}</div>
+        <div className="content-container">
+          <div className="price">{price.toLocaleString()}원</div>
+          <div className="creation-date">{elapsedTime}</div>
+        </div>
+        <div className="location"><img src={locationIcon} alt="location" className="icon" /> {location}</div>
+      </div>
     </div>
   );
 }
@@ -72,11 +102,19 @@ export default function UsedTradeMain() {
   // state: 현재 위치 객체 //
   const location = useLocation();
 
+  // state: 드롭다운 열기/닫기 상태
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   // variable: 페이지 번호 //
   const page = parseInt(searchParams.get('page') || '1', 10);
 
   // function: 네비게이션 함수 //
   const navigate = useNavigate();
+
+  // function: 드롭다운 토글
+  const toggleDropdown = () => {
+    setIsDropdownOpen(prev => !prev);
+  };
 
   // variable: 쿼리 파라미터 //
   const queryParams = new URLSearchParams(location.search);
@@ -154,34 +192,72 @@ export default function UsedTradeMain() {
   
   // render: 중고거래 게시판 컴포넌트 렌더링 //
   return (
-    <div className="trade-page">
-      <h1 className="trade-title">💸 중고거래</h1>
-      <p className="trade-description">여기는 중고거래 메인 페이지입니다.</p>
-      
-      <div className="search-container">
+    <div id="trade-main-wrapper">
+
+      {/* 검색 바 */}
+      <div className="trade-search-bar">
         <input
           type="text"
-          placeholder="검색어를 입력하세요"
+          placeholder="검색어를 입력해주세요."
+          className="trade-search-input"
           value={searchQuery}
           onChange={onSearchQueryChange}
-          className="search-input"
         />
-        <button onClick={onSearchClick} className="search-button">검색</button>
+        <button className="trade-search-button" onClick={onSearchClick}>검색</button>
       </div>
+      <div className="used-trade-main">
 
-      <div className="sort-container">
-        <button onClick={() => onSortClick('LATEST')} className="sort-button">최신순</button>
-        <button onClick={() => onSortClick('PRICE_ASC')} className="sort-button">가격 낮은 순</button>
-        <button onClick={() => onSortClick('PRICE_DESC')} className="sort-button">가격 높은 순</button>
+        {/* 카테고리 및 정렬 기능 */}
+        <div className="order-category-container">
+          <div className="trade-category-icon" onClick={toggleDropdown} />
+          {isDropdownOpen && (
+            <ul className="trade-category-dropdown">
+              <li>전체</li>
+              <li>기타</li>
+              <li>전자기기</li>
+              <li>의류</li>
+              <li>가구</li>
+              <li>도서</li>
+              <li>뷰티/미용</li>
+              <li>운동/스포츠</li>
+              <li>식품</li>
+            </ul>
+          )}
+          <div className="trade-order-list">
+            <div className="up-to-date-order" onClick={() => onSortClick('LATEST')}>최신순</div>
+            <div className="price-high-order" onClick={() => onSortClick('PRICE_HIGH')}>고가순</div>
+            <div className="price-low-order" onClick={() => onSortClick('PRICE_LOW')}>저가순</div>
+          </div>
+        </div>
+
+        {/* 판매글 리스트 목록 */}
+        <div className="trade-list">
+          {viewList.length === 0 ? (
+            <div className="trade-empty">판매글이 없습니다.</div>
+          ) : (
+            viewList.map((trade) => (
+              <TableItem key={trade.tradeSequence} trade={trade} />
+            ))
+          )}
+        </div>
+
+        {/* 페이지 네이션 */}
+        <div className="trade-pagination">
+          {totalSection !== 0 && (
+            <Pagination
+              currentPage={currentPage}
+              currentSection={currentSection}
+              totalSection={totalSection}
+              totalPages={totalPages}
+              pageList={pageList}
+              setCurrentPage={setCurrentPage}
+              setCurrentSection={setCurrentSection}
+              basePath="/usedtrade"
+              queryParams={{ tag, sort, searchQuery }}
+            />
+          )}
+        </div>
       </div>
-
-      <div className="trade-list">
-        {viewList.map((trade) => (
-          <TableItem key={trade.tradeSequence} trade={trade} />
-        ))}
-      </div>
-
-      <button onClick={onWriteButtonClick} className="write-button">글 작성</button>
     </div>
   );
 }

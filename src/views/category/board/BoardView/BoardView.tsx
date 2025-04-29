@@ -49,6 +49,7 @@ export default function BoardView() {
 
   // state: 로그인 사용자 아이디 상태 //
   const { userId } = useSignInUserStore();
+  console.log("username: ", userId);
 
   // userId 값 확인
   console.log("User ID:", userId);
