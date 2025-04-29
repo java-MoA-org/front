@@ -195,10 +195,6 @@
 
 /* 미디어 쿼리 - 화면 크기가 800px 이하일 때 */
 @media screen and (max-width: 800px) {
-  #board-main-wrapper .board-sidebar {
-    display: none;
-  }
-
   #board-main-wrapper .board-item {
     max-width: 100%;
     width: 100%;

@@ -182,6 +182,7 @@ export default function BoardMain() {
   // event handler: 작성하기 버튼 클릭 //
   const onWriteButtonClick = () => {
     if (!accessToken) {
+      alert("로그인이 필요합니다.");
       navigate('/auth');
       return;
     }
@@ -293,6 +294,11 @@ export default function BoardMain() {
             className="board-search-input"
             value={searchQuery}
             onChange={onSearchQueryChange}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                onSearchClick();
+              }
+            }}
           />
           <button className="board-search-button" onClick={onSearchClick}>
             검색

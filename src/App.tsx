@@ -124,8 +124,10 @@ function App() {
           <Route path={USED_TRADE_PATH}>
             <Route index element={<UsedTradeMain />} />
             <Route path={USED_TRADE_WRITE_PATH} element={<UsedTradeWrite />} />
-            <Route path={USED_TRADE_VIEW_PATH} element={<UsedTradeView />} />
-            <Route path={USED_TRADE_UPDATE_PATH} element={<UsedTradeUpdate />} />
+            <Route path={USED_TRADE_VIEW_PATH}>
+              <Route index element={<UsedTradeView />} />
+              <Route path={USED_TRADE_UPDATE_PATH} element={<UsedTradeUpdate />} />
+            </Route>
           </Route>
 
           <Route path={NOTICE_PATH}>

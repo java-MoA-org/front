@@ -10,4 +10,5 @@ export default interface Trade {
   userNickname: string;
   profileImage: string;
   price: number;
+  itemTypeTag: string;
 }
