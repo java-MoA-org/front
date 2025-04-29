@@ -463,6 +463,7 @@ export default function UserPageUpdate() {
         userInterestNull: true
       };
     }
+
     let newProfileImage: string | null = null;
     if (profileImageFile) {
       const formData = new FormData();
@@ -476,7 +477,7 @@ export default function UserPageUpdate() {
       userNickname: updateNickName,
       userIntroduce: updateIntroduce,
       userEmail: updateUserEmail,
-      profileImage: previewProfile ?? "",
+      profileImage: newProfileImage,
       userInterests: interestsToSave
     };
 
@@ -489,8 +490,8 @@ export default function UserPageUpdate() {
       useSignInUserStore.getState().setUserIntroduce(updateIntroduce);
       useSignInUserStore.getState().setUserEmail(updateUserEmail);
       useSignInUserStore.getState().setUserInterests(updateInterest);
-      useSignInUserStore.getState().setUserProfileImage(previewProfile ?? "");
-      navigate(ROOT_ABSOULTE_PATH);
+      useSignInUserStore.getState().setUserProfileImage(newProfileImage ?? "");
+      navigate(MY_USER_ABSOLUTE_PATH(updateNickName));
     } else {
       alert("회원 정보 수정에 실패했습니다.");
     }
