@@ -8,4 +8,5 @@ export default interface GetUserPageResponseDto extends ResponseDto {
   tradeBoards: Trade[];
   interests: UserInterest;
   userIntroduce: string;
+  userProfileImage: string;
 }

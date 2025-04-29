@@ -128,6 +128,8 @@ const GET_USER_UPDATE_PAGE_URL = `${USER_PAGE_MODULE_URL}/revise`;
 const PATCH_USER_UPDATE_PAGE_URL = `${USER_PAGE_MODULE_URL}/revise`;
 const POST_USER_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/verify`;
 const PATCH_USER_PAGE_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/change`;
+const FILE_UPLOAD_URL = `${USER_PAGE_MODULE_URL}/images/file/upload`;
+const multipartFormData = { headers: { 'Content-Type': 'multipart/form-data' } };
 
 // function: Authorization Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({
@@ -316,6 +318,15 @@ export const patchUserInfoRequest = async (
   } catch (error) {
     return null;
   }
+};
+
+// function: 파일 업로드 요청 함수 //
+export const fileUploadRequest = async (requestBody: FormData) => {
+  const responseBody = await axios
+    .post(FILE_UPLOAD_URL, requestBody, multipartFormData)
+    .then(responseSuccessHandler<string>)
+    .catch((error) => null); // responseDto로 반환하기에 직접 에러는 적은 것
+  return responseBody;
 };
 
 const responseSuccessHandler = <T = ResponseDto>(response: AxiosResponse<T>) => {

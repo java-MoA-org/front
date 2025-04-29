@@ -1,17 +1,18 @@
-import './style.css';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
-import { searchUserRequest } from '../../apis'; // 친구 검색 API 요청
-import moaHeaderLogo from '../../assets/images/moa_main_logo.png';
-import userImg from '../../assets/images/default-profile.png';
-import cameraIcon from '../../assets/images/camera.png';
-import sessionIcon from '../../assets/images/session.png';
+import "./style.css";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { searchUserRequest } from "../../apis"; // 친구 검색 API 요청
+import moaHeaderLogo from "../../assets/images/moa_main_logo.png";
+import userImg from "../../assets/images/default-profile.png";
+import cameraIcon from "../../assets/images/camera.png";
+import sessionIcon from "../../assets/images/session.png";
 import {
   ACCESS_TOKEN,
   REFRESH_TOKEN,
   ROOT_PATH,
   BOARD_ABSOLUTE_PATH,
   DAILY_ABSOLUTE_PATH,
+<<<<<<< HEAD
   USED_TRADE_ABSOLUTE_PATH,
   AUTH_ABSOLUTE_PATH,
 } from '../../constants';
@@ -19,6 +20,14 @@ import { useCookies } from 'react-cookie';
 import useSignInUserStore from '../../stores/sign-in-user.store';
 import { refreshAccessTokenRequest, userSignOutRequest } from '../../apis';
 import useSessionTimerStore from '../../stores/session-timer.store';
+=======
+  USED_TRADE_ABSOLUTE_PATH
+} from "../../constants";
+import { useCookies } from "react-cookie";
+import useSignInUserStore from "../../stores/sign-in-user.store";
+import { refreshAccessTokenRequest, userSignOutRequest } from "../../apis";
+import useSessionTimerStore from "../../stores/session-timer.store";
+>>>>>>> 6fd2d719db39c69ebdb9944652c1bcf73ab2b23c
 
 const Header = () => {
   const navigate = useNavigate();
@@ -29,7 +38,7 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]); // 유저 정보 포함
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
 
@@ -53,29 +62,55 @@ const Header = () => {
   const onSignOutClickHandler = () => {
     setIsLoggingOut(true);
     userSignOutRequest(accessToken);
+<<<<<<< HEAD
     logout();
+=======
+    removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
+    localStorage.clear();
+    resetUser();
+    removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
+    navigate("/");
+>>>>>>> 6fd2d719db39c69ebdb9944652c1bcf73ab2b23c
   };
 
   // 세션 연장
   const onExtendSessionClickHandler = async () => {
     try {
       if (!accessToken) {
+<<<<<<< HEAD
         alert('세션이 만료되어 로그아웃되었습니다. 다시 로그인해주세요.');
         logout();
+=======
+        removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
+        removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
+        localStorage.clear();
+        resetUser();
+        alert("세션이 만료되어 로그아웃되었습니다. 다시 로그인해주세요.");
+        navigate("/auth");
+>>>>>>> 6fd2d719db39c69ebdb9944652c1bcf73ab2b23c
         return;
       }
       const expirationTime = await refreshAccessTokenRequest();
 
       if (!expirationTime) {
         // refresh 실패 (토큰 만료 또는 인증 오류)
-        throw new Error('토큰 갱신 실패');
+        throw new Error("토큰 갱신 실패");
       }
 
       setTimeLeft(parseInt(expirationTime, 10));
     } catch (error) {
       console.error(error);
+<<<<<<< HEAD
       alert('세션이 만료되어 로그아웃되었습니다. 다시 로그인해주세요!');
       logout();
+=======
+      removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
+      removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
+      localStorage.clear();
+      resetUser();
+      alert("세션이 만료되어 로그아웃되었습니다. 다시 로그인해주세요!");
+      navigate("/");
+>>>>>>> 6fd2d719db39c69ebdb9944652c1bcf73ab2b23c
     }
   };
 
@@ -89,7 +124,7 @@ const Header = () => {
 
     const fetchUsers = async () => {
       if (!accessToken) {
-        console.warn('accessToken이 없습니다. 요청 중단');
+        console.warn("accessToken이 없습니다. 요청 중단");
         return;
       }
 
@@ -101,13 +136,13 @@ const Header = () => {
           setSearchResults(
             response.map((user: any) => ({
               userNickname: user.userNickname,
-              userProfileImage: user.userProfileImage || userImg, // 프로필 이미지가 없으면 기본 이미지
+              userProfileImage: user.userProfileImage || userImg // 프로필 이미지가 없으면 기본 이미지
             }))
           );
           setShowSearchDropdown(true);
         }
       } catch (error) {
-        console.error('친구 검색 중 에러:', error);
+        console.error("친구 검색 중 에러:", error);
       }
     };
 
@@ -136,20 +171,38 @@ const Header = () => {
 
     if (!accessToken && refreshToken) {
       // ✅ accessToken만 사라진 경우 (refreshToken은 살아있음)
-      console.log('accessToken 만료 감지: 세션 만료 처리');
+      console.log("accessToken 만료 감지: 세션 만료 처리");
       resetTime();
+<<<<<<< HEAD
       alert('세션이 만료되었습니다. 다시 로그인 해주세요.');
       logout();
+=======
+      alert("세션이 만료되었습니다. 다시 로그인 해주세요.");
+      removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
+      removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
+      localStorage.clear();
+      resetUser();
+      navigate("/auth");
+>>>>>>> 6fd2d719db39c69ebdb9944652c1bcf73ab2b23c
       return;
     }
 
     if (timeLeft <= 0) return;
 
     if (timeLeft === 0) {
-      console.log('timeLeft 0: 세션 만료 처리');
+      console.log("timeLeft 0: 세션 만료 처리");
       resetTime();
+<<<<<<< HEAD
       alert('세션이 만료되었습니다. 다시 로그인 해주세요.');
       logout();
+=======
+      alert("세션이 만료되었습니다. 다시 로그인 해주세요.");
+      removeCookie(REFRESH_TOKEN, { path: ROOT_PATH });
+      removeCookie(ACCESS_TOKEN, { path: ROOT_PATH });
+      localStorage.clear();
+      resetUser();
+      navigate("/");
+>>>>>>> 6fd2d719db39c69ebdb9944652c1bcf73ab2b23c
     }
   }, [timeLeft, accessToken, refreshToken]);
 
@@ -167,13 +220,13 @@ const Header = () => {
         setDropdownOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const formatTime = (seconds: number) => {
-    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-    const s = String(seconds % 60).padStart(2, '0');
+    const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const s = String(seconds % 60).padStart(2, "0");
     return `${m}:${s}`;
   };
 
@@ -181,17 +234,17 @@ const Header = () => {
     <div className="header-wrapper">
       {/* 상단 로고 및 유저 */}
       <div className="header-top">
-        <div className="logo" onClick={() => navigate('/')}>
+        <div className="logo" onClick={() => navigate("/")}>
           <img src={moaHeaderLogo} className="logo-img" alt="로고" />
         </div>
 
         <div className="user-info">
-          <span onClick={() => navigate('/message')}>💬</span>
+          <span onClick={() => navigate("/message")}>💬</span>
           <span>⭐</span>
 
           <div className="profile-wrapper" ref={dropdownRef}>
             <img
-              src={userProfileImage ? `http://localhost:4000/profile/file/${userProfileImage}` : userImg} // 프로필 이미지 처리
+              src={userProfileImage ? userProfileImage : userImg} // 프로필 이미지 처리
               className="profile-img"
               onClick={() => setDropdownOpen((prev) => !prev)}
               alt="프로필"
@@ -242,7 +295,7 @@ const Header = () => {
       {/* 메뉴 네비게이션 */}
       <div className="nav-container">
         <nav className="nav">
-          {['게시판', '일상', '중고거래', '공지사항'].map((menu) => (
+          {["게시판", "일상", "중고거래", "공지사항"].map((menu) => (
             <div
               className="nav-item"
               key={menu}
@@ -251,10 +304,10 @@ const Header = () => {
             >
               <button
                 onClick={() => {
-                  if (menu === '게시판') navigate(BOARD_ABSOLUTE_PATH);
-                  if (menu === '일상') navigate(DAILY_ABSOLUTE_PATH);
-                  if (menu === '중고거래') navigate(USED_TRADE_ABSOLUTE_PATH);
-                  if (menu === '공지사항') navigate('/notice');
+                  if (menu === "게시판") navigate(BOARD_ABSOLUTE_PATH);
+                  if (menu === "일상") navigate(DAILY_ABSOLUTE_PATH);
+                  if (menu === "중고거래") navigate(USED_TRADE_ABSOLUTE_PATH);
+                  if (menu === "공지사항") navigate("/notice");
                 }}
               >
                 {menu}
@@ -281,7 +334,7 @@ const Header = () => {
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && searchResults.length > 0) {
+                if (e.key === "Enter" && searchResults.length > 0) {
                   navigate(`/userpage/${searchResults[0]}`);
                   setShowSearchDropdown(false);
                 }
@@ -296,7 +349,7 @@ const Header = () => {
                     <img
                       src={result.userProfileImage} // 프로필 이미지
                       alt={result.userNickname}
-                      style={{ width: '24px', height: '24px', borderRadius: '50%' }}
+                      style={{ width: "24px", height: "24px", borderRadius: "50%" }}
                     />
                     {result.userNickname}
                   </li>

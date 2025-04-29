@@ -14,6 +14,7 @@ import {
 import ResponseDto from "../../../apis/dto/response/response.dto";
 import UserNicknameCheckRequestDto from "../../../apis/dto/request/auth/user-nickname-check.request.dto";
 import {
+  fileUploadRequest,
   getUserInfoRequest,
   passwordVerifyRequest,
   PatchPasswordRequest,
@@ -87,6 +88,7 @@ export default function UserPageUpdate() {
   const [userNicknameMessageError, setUserNicknameMessageError] = useState<boolean>(false);
 
   // state: 수정 사용자 이메일 상태 //
+
   const [updateUserEmail, setUpdateUserEmail] = useState<string>("");
   const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false);
 
@@ -105,6 +107,8 @@ export default function UserPageUpdate() {
   const [userEmailVCMessageError, setUserEmailVCMessageError] = useState(false);
 
   const [emailToken, setEmailToken] = useState("");
+
+  const isUserEmailCheckButtonActive = joinType !== "NAVER" ? true : false;
 
   const openEmailModal = () => setIsEmailModalOpen(true);
   const resetEmailModalState = () => {
@@ -197,8 +201,6 @@ export default function UserPageUpdate() {
     userInterestEconomics: false,
     userInterestNull: false
   });
-  const [isUserInterestNullSelectedManually, setIsUserInterestNullSelectedManually] =
-    useState(false);
 
   // 비밀번호
   // state: 모달 오픈 상태 //
@@ -443,12 +445,40 @@ export default function UserPageUpdate() {
   };
   // event handler: 저장 버튼 클릭 이벤트 처리 //
   const onSaveUserInfoClickHandler = async () => {
+    let interestsToSave = { ...updateInterest };
+
+    const isAllUnselected = Object.entries(interestsToSave) //! interestsToSave 객체를 [key, value] 쌍 배열로 변환한다.
+      .filter(([k]) => k !== "userInterestNull" && k !== "userId") // userId가 있어서 머가 있다고 생각이 들어 일상을 true로 안보내는 거임 //! 필터링해서 관심사 관련 key만 남긴다.
+      .every(([_, v]) => v === false); //! 남은 값들이 모두 false인지 검사한다
+
+    if (isAllUnselected) {
+      interestsToSave = {
+        userInterestTrip: false,
+        userInterestGame: false,
+        userInterestFashion: false,
+        userInterestWorkout: false,
+        userInterestFood: false,
+        userInterestMusic: false,
+        userInterestEconomics: false,
+        userInterestNull: true
+      };
+    }
+
+    let newProfileImage: string | null = null;
+    if (profileImageFile) {
+      const formData = new FormData();
+      formData.append("file", profileImageFile); // 키 'file', 값 profileImageFile
+      newProfileImage = await fileUploadRequest(formData);
+    }
+
+    newProfileImage = userProfileImage === previewProfile ? userProfileImage : newProfileImage;
+
     const requestBody: PatchUserInfoRequestDto = {
       userNickname: updateNickName,
       userIntroduce: updateIntroduce,
       userEmail: updateUserEmail,
-      profileImage: previewProfile ?? "",
-      userInterests: updateInterest
+      profileImage: newProfileImage,
+      userInterests: interestsToSave
     };
 
     const response = await patchUserInfoRequest(accessToken, requestBody);
@@ -460,8 +490,8 @@ export default function UserPageUpdate() {
       useSignInUserStore.getState().setUserIntroduce(updateIntroduce);
       useSignInUserStore.getState().setUserEmail(updateUserEmail);
       useSignInUserStore.getState().setUserInterests(updateInterest);
-      useSignInUserStore.getState().setUserProfileImage(previewProfile ?? "");
-      navigate(ROOT_ABSOULTE_PATH);
+      useSignInUserStore.getState().setUserProfileImage(newProfileImage ?? "");
+      navigate(MY_USER_ABSOLUTE_PATH(updateNickName));
     } else {
       alert("회원 정보 수정에 실패했습니다.");
     }
@@ -470,6 +500,8 @@ export default function UserPageUpdate() {
   useEffect(() => {
     getUserInfoRequest(accessToken).then(getUserInfoResponse);
   }, [accessToken]);
+  const [isUserInterestNullSelectedManually, setIsUserInterestNullSelectedManually] =
+    useState(false);
 
   const interests: { label: string; key: keyof InterestsType }[] = [
     { label: "🛩️여행", key: "userInterestTrip" },
@@ -481,6 +513,20 @@ export default function UserPageUpdate() {
     { label: "💸경제", key: "userInterestEconomics" },
     { label: "🏠일상", key: "userInterestNull" } // ✅ 선택 가능하게 포함
   ];
+
+  useEffect(() => {
+    if (!updateInterest) return;
+
+    const isAllUnselected = Object.entries(updateInterest)
+      .filter(([k]) => k !== "userInterestNull")
+      .every(([_, v]) => v === false);
+
+    if (isAllUnselected && updateInterest.userInterestNull) {
+      setIsUserInterestNullSelectedManually(false); // 🚀 자동 켜진 일상으로 간주
+    } else {
+      setIsUserInterestNullSelectedManually(true); // 🚀 직접 누른 일상으로 간주
+    }
+  }, [updateInterest]);
 
   return (
     <div id="update-userpage">
@@ -526,19 +572,9 @@ export default function UserPageUpdate() {
                     setUpdateInterest((prev) => {
                       const updated = { ...prev, [key]: !prev[key] };
 
-                      // 사용자가 직접 일상 버튼을 누른 경우
                       if (key === "userInterestNull") {
                         setIsUserInterestNullSelectedManually(updated.userInterestNull);
-                        return {
-                          userInterestTrip: false,
-                          userInterestGame: false,
-                          userInterestFashion: false,
-                          userInterestWorkout: false,
-                          userInterestFood: false,
-                          userInterestMusic: false,
-                          userInterestEconomics: false,
-                          userInterestNull: updated.userInterestNull
-                        };
+                        return updated;
                       }
 
                       // 다른 관심사를 눌렀을 때
@@ -547,7 +583,7 @@ export default function UserPageUpdate() {
                         .every(([_, v]) => v === false);
 
                       if (isAllUnselected) {
-                        setIsUserInterestNullSelectedManually(false); // 자동 일상 설정
+                        setIsUserInterestNullSelectedManually(false);
                         return {
                           userInterestTrip: false,
                           userInterestGame: false,
@@ -600,8 +636,9 @@ export default function UserPageUpdate() {
             onChange={(e) => setNewUserEmail(e.target.value)}
             buttonName={"이메일 변경"}
             onButtonClick={openEmailModal}
-            isButtonActive={true}
+            isButtonActive={isUserEmailCheckButtonActive}
             readOnly
+            hint="NAVER로 회원가입 하신 분들은 이메일을 변경할 수 없습니다"
           />
           {isEmailModalOpen && (
             <Modal title="이메일 변경" onClose={closeEmailModal}>
@@ -690,7 +727,7 @@ export default function UserPageUpdate() {
             onButtonClick={openModal}
             isButtonActive={isUserPasswordCheckButtonActive}
             readOnly
-            hint="naver 및 kakao로 회원가입 하신 분들은 비밀번호 변경할 수 없습니다"
+            hint="NAVER 및 KAKAO로 회원가입 하신 분들은 비밀번호 변경할 수 없습니다"
           />
           {isModalOpen && (
             <Modal title="비밀번호 변경" onClose={closeModal}>
