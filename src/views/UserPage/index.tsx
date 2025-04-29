@@ -13,7 +13,7 @@ import UpdateButton from "../../components/UpdateButton";
 import useSignInUserStore from "../../stores/sign-in-user.store";
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
-import { getUserInfoRequest } from "../../apis";
+import { getUserPageInfoRequest } from "../../apis";
 import GetUserInfoResponseDto from "../../apis/dto/response/user/get-user-info.response.dto";
 
 // interface: 게시판, 일상, 중고거래 레코드 컴포넌트 속성 //
@@ -44,7 +44,7 @@ export default function MyUserPage({
   //! 받아오는걸 기다린 후 비교 하는 형식
   useEffect(() => {
     if (!userNickname && accessToken) {
-      getUserInfoRequest(accessToken).then((response) => {
+      getUserPageInfoRequest(accessToken).then((response) => {
         if (response && response.code === "SU") {
           const res = response as GetUserInfoResponseDto; // 타입 좁히기
 

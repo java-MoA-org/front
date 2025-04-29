@@ -15,7 +15,7 @@ import ResponseDto from "../../../apis/dto/response/response.dto";
 import UserNicknameCheckRequestDto from "../../../apis/dto/request/auth/user-nickname-check.request.dto";
 import {
   fileUploadRequest,
-  getUserInfoRequest,
+  getUserPageInfoRequest,
   passwordVerifyRequest,
   PatchPasswordRequest,
   patchPasswordUserPageRequest,
@@ -48,7 +48,7 @@ export default function UserPageUpdate() {
   //   if (!userNickname) {
   //     // accessToken이 있고 zustand 상태가 비어있으면 fetch
   //     if (accessToken) {
-  //       getUserInfoRequest(accessToken).then((response) => {
+  //       getUserPageInfoRequest(accessToken).then((response) => {
   //         if (response && response.code === "SU") {
   //           // Zustand에 정보 저장
   //           const { userNickname } = response as GetUserInfoResponseDto;
@@ -498,7 +498,7 @@ export default function UserPageUpdate() {
   };
   // effect: 컴포넌트 로드 시 실행할 함수 //
   useEffect(() => {
-    getUserInfoRequest(accessToken).then(getUserInfoResponse);
+    getUserPageInfoRequest(accessToken).then(getUserInfoResponse);
   }, [accessToken]);
   const [isUserInterestNullSelectedManually, setIsUserInterestNullSelectedManually] =
     useState(false);
