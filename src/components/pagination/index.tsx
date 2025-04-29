@@ -4,15 +4,15 @@ import './style.css';
 
 // interface: 페이지네이션 컴포넌트 속성 정의 //
 interface Props {
-  currentPage: number; // 현재 페이지
-  currentSection: number; // 현재 섹션 (1 ~ N)
-  totalSection: number; // 전체 섹션 개수
-  totalPages: number; // 전체 페이지 수
-  pageList: number[]; // 현재 섹션에 보여줄 페이지 리스트
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>; // 페이지 변경 함수
-  setCurrentSection: React.Dispatch<React.SetStateAction<number>>; // 섹션 변경 함수
-  basePath: string; // 이동할 기본 경로 (예: /board, /daily)
-  queryParams?: Record<string, string>; // 페이지 외 쿼리 파라미터 (tag, sort 등)
+  currentPage: number;
+  currentSection: number;
+  totalSection: number;
+  totalPages: number;
+  pageList: number[];
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentSection: React.Dispatch<React.SetStateAction<number>>;
+  basePath: string;
+  queryParams?: Record<string, string>;
 }
 
 // component: 범용 페이지네이션 컴포넌트 //

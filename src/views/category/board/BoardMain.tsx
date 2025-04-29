@@ -338,7 +338,7 @@ export default function BoardMain() {
               setCurrentPage={setCurrentPage}
               setCurrentSection={setCurrentSection}
               basePath="/board"
-              queryParams={{ tag, sort }}
+              queryParams={{ tag, sort, searchQuery }}
             />
           )}
         </div>
