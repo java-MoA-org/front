@@ -103,7 +103,7 @@ export default function MyUserPage({
               </div>
               <div className="profile-image">
                 <img
-                  src={userProfileImage === null ? userImage : userProfileImage}
+                  src={!userProfileImage ? userImage : userProfileImage}
                   alt="User"
                   className="profile-img"
                 />

@@ -50,12 +50,7 @@ const Home = () => {
             <div className="board-daily-row">
               {/* 게시판 */}
               <section className="board-list">
-                <h2
-                  className="section-title"
-                  onClick={() => navigate("/board")}
-                >
-                  게시판
-                </h2>
+                <h2 className="section-title" onClick={() => navigate("/board")}>게시판</h2>
                 {Array.from({ length: 5 }, (_, i) => (
                   <div className="post-card" key={`board-${i}`}>
                     <div className="post-title">오늘 롯데 졌다</div>
