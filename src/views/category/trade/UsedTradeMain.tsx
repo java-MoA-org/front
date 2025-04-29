@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./UsedTradeMain.css";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -11,6 +11,12 @@ import ResponseDto from "../../../apis/dto/response/response.dto";
 import { getUsedTradeListRequest, searchUsedTradeRequest } from "../../../apis";
 import Pagination from "../../../components/pagination";
 import locationIcon from '../../../assets/images/place.png';
+import likeIcon from '../../../assets/images/tradeLike.png';
+import viewsIcon from '../../../assets/images/tradeViews.png';
+import searchIcon from '../../../assets/images/search.png';
+import saleIcon from '../../../assets/images/sale.png';
+import myShopIcon from '../../../assets/images/my-shop.png';
+
 
 // interface: 중고거래글 테이블 레코드 컴포넌트 속성 //
 interface TableItemProps {
@@ -21,7 +27,7 @@ interface TableItemProps {
 function TableItem({ trade }: TableItemProps) {
 
   // destructuring: 중고거래글 정보 추출 //
-  const { price, title, tradeSequence, creationDate, views, likeCount, userNickname, thumbnailImage, profileImage, usedItemStatusTag, location } = trade;
+  const { price, title, tradeSequence, creationDate, views, likeCount, userNickname, thumbnailImage, profileImage, usedItemStatusTag, location, itemTypeTag } = trade;
 
   // hook: 작성 시간 계산 //
   const elapsedTime = useElapsedTime(creationDate);
@@ -42,39 +48,34 @@ function TableItem({ trade }: TableItemProps) {
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
- // function: HTML 문자열에서 HTML 태그 제거 함수 //
-  function stripHtmlTags(html: string): string {
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = html;
-    return tempDiv.textContent || tempDiv.innerText || "";
-  }  
-
   // event handler: 레코드 클릭 이벤트 처리 //
   const onClick = () => {
     navigator(USED_TRADE_VIEW_ABSOLUTE_PATH(tradeSequence));
   };
+  console.log(USED_TRADE_VIEW_ABSOLUTE_PATH(tradeSequence));
 
   // render: 중고거래글 테이블 레코드 컴포넌트 렌더링 //
   return (
     <div className="trade-item" onClick={onClick}>
       <div className="item-container">
-        <div className="like">{likeCount}</div>
-        <div className="views">{views}</div>
+        <img src={likeIcon} alt="좋아요 이미지" className="like-icon" />
+        <span className="like-count">{likeCount}</span>
+        <div className="block">|</div>
+        <img src={viewsIcon} alt="조회수 이미지" className="view-icon" />
+        <span className="view-count">{views}</span>
       </div>
       <div className="thumbnail-image">{thumbnailImage}</div>
-      <div className="trade-content-container">
-        <div className="profile-list">
-          <img src={profileImage} alt="프로필 이미지" className="trade-profile-image" />
-          <div className="user-nickname">{userNickname}</div>
-        </div>
-        <div className="item-status">{tagInKorean}</div>
-        <div className="title">{title}</div>
-        <div className="content-container">
-          <div className="price">{price.toLocaleString()}원</div>
-          <div className="creation-date">{elapsedTime}</div>
-        </div>
-        <div className="location"><img src={locationIcon} alt="location" className="icon" /> {location}</div>
+      <div className="profile-list">
+        <img src={profileImage} alt="프로필 이미지" className="trade-profile-image" />
+        <div className="user-nickname">{userNickname}</div>
       </div>
+      <div className="item-status">{tagInKorean}</div>
+      <div className="title">{title}</div>
+      <div className="content-container">
+        <div className="price">{price.toLocaleString()}원</div>
+        <div className="creation-date">{elapsedTime}</div>
+      </div>
+      <div className="location"><img src={locationIcon} alt="location" className="icon" /> {location}</div>
     </div>
   );
 }
@@ -102,8 +103,11 @@ export default function UsedTradeMain() {
   // state: 현재 위치 객체 //
   const location = useLocation();
 
-  // state: 드롭다운 열기/닫기 상태
+  // state: 드롭다운 열기/닫기 상태 //
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // variable: 드롭다운 영역을 참조하기 위한 변수 //
+  const dropdownRef = useRef<HTMLUListElement>(null);
 
   // variable: 페이지 번호 //
   const page = parseInt(searchParams.get('page') || '1', 10);
@@ -112,7 +116,8 @@ export default function UsedTradeMain() {
   const navigate = useNavigate();
 
   // function: 드롭다운 토글
-  const toggleDropdown = () => {
+  const toggleDropdown = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
     setIsDropdownOpen(prev => !prev);
   };
 
@@ -124,6 +129,9 @@ export default function UsedTradeMain() {
 
   // variable: 태그 기준 //
   const tag = queryParams.get('tag') || 'ALL';
+
+  // state: 카테고리 선택 상태 //
+  const [selectedCategory, setSelectedCategory] = useState(tag);
 
   // variable: 액세스 토큰 //
   const accessToken = cookies[ACCESS_TOKEN];
@@ -159,10 +167,18 @@ export default function UsedTradeMain() {
   // event handler: 작성하기 버튼 클릭 //
   const onWriteButtonClick = () => {
     if (!accessToken) {
+      alert("로그인이 필요합니다.");
       navigate('/auth');
       return;
     }
     navigate(USED_TRADE_WRITE_ABSOLUTE_PATH);
+  };
+
+  // event handler: 카테고리 탭 클릭 //
+  const onCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+    setSearchParams({ tag: category, page: '1', sort });
+    window.location.reload();
   };
 
   // event handler: 정렬 기준 클릭 //
@@ -184,6 +200,18 @@ export default function UsedTradeMain() {
     }
   };
 
+  // effect: 바깥 클릭 시 드롭다운 닫기 //
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => { document.removeEventListener('mousedown', handleClickOutside); };
+  }, []);
+
   // effect: 컴포넌트 렌더링 시 게시글 목록 요청 //
   useEffect(() => {
     if(searchQuery) return;
@@ -202,8 +230,13 @@ export default function UsedTradeMain() {
           className="trade-search-input"
           value={searchQuery}
           onChange={onSearchQueryChange}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onSearchClick();
+            }
+          }}
         />
-        <button className="trade-search-button" onClick={onSearchClick}>검색</button>
+        <img src={searchIcon}  className="trade-search-button" onClick={onSearchClick} />
       </div>
       <div className="used-trade-main">
 
@@ -211,18 +244,29 @@ export default function UsedTradeMain() {
         <div className="order-category-container">
           <div className="trade-category-icon" onClick={toggleDropdown} />
           {isDropdownOpen && (
-            <ul className="trade-category-dropdown">
-              <li>전체</li>
-              <li>기타</li>
-              <li>전자기기</li>
-              <li>의류</li>
-              <li>가구</li>
-              <li>도서</li>
-              <li>뷰티/미용</li>
-              <li>운동/스포츠</li>
-              <li>식품</li>
+            <ul ref={dropdownRef} className="trade-category-dropdown">
+              <li onClick={() => onCategoryClick('ALL')}>전체</li>
+              <li onClick={() => onCategoryClick('ETC')}>기타</li>
+              <li onClick={() => onCategoryClick('ELECTRONICS')}>전자기기</li>
+              <li onClick={() => onCategoryClick('CLOTHING')}>의류</li>
+              <li onClick={() => onCategoryClick('FURNITURE')}>가구</li>
+              <li onClick={() => onCategoryClick('BOOKS')}>도서</li>
+              <li onClick={() => onCategoryClick('BEAUTY')}>뷰티/미용</li>
+              <li onClick={() => onCategoryClick('SPORTS')}>운동/스포츠</li>
+              <li onClick={() => onCategoryClick('FOOD')}>식품</li>
             </ul>
           )}
+          <div className="trade-item-container">
+            <div className="write-button" onClick={onWriteButtonClick}>
+              <img src={saleIcon} alt="작성 버튼 이미지" className="write-icon" />
+              <span className="write">판매하기</span>
+            </div>
+            <div className="block">|</div>
+            <div className="my-shop-button">
+              <img src={myShopIcon} alt="내상점 아이콘" className="my-shop-icon" />
+              <span className="my-shop">내상점</span>
+            </div>
+          </div>
           <div className="trade-order-list">
             <div className="up-to-date-order" onClick={() => onSortClick('LATEST')}>최신순</div>
             <div className="price-high-order" onClick={() => onSortClick('PRICE_HIGH')}>고가순</div>
