@@ -216,9 +216,9 @@ export const userSignInRequest = async (requestBody: UserSignInRequestDto) => {
   return responseBody;
 };
 
-export const getUserInfoReques = async () => {
+export const getUserInfoRequest = async (accessToken: string) => {
   const responseBody = await axios
-    .get(GET_USER_INFO_URL, { withCredentials: true })
+    .get(GET_USER_INFO_URL, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
     .catch(responseErrorHandler);
   return responseBody;
