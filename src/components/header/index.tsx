@@ -187,6 +187,7 @@ const Header = () => {
     const s = String(seconds % 60).padStart(2, "0");
     return `${m}:${s}`;
   };
+  console.log(searchResults);
 
   return (
     <div className="header-wrapper">
@@ -305,9 +306,14 @@ const Header = () => {
                 {searchResults.map((result, idx) => (
                   <li key={idx} onClick={() => navigate(`/userpage/${result.userNickname}`)}>
                     <img
-                      src={result.userProfileImage} // 프로필 이미지
+                      src={
+                        result.userProfileImage.startsWith("http")
+                          ? result.userProfileImage
+                          : `http://localhost:4000/api/v1/user-page/images/file/${result.userProfileImage}`
+                      }
                       alt={result.userNickname}
                       style={{ width: "24px", height: "24px", borderRadius: "50%" }}
+                      onError={(e) => (e.currentTarget.src = userImg)}
                     />
                     {result.userNickname}
                   </li>
