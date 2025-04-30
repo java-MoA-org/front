@@ -2,19 +2,64 @@ import "./Home.css";
 import ImageSlider from "../../components/ImageSlider/ImageSlider";
 import { useNavigate } from "react-router-dom";
 import News from "../../components/news/news";
-
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import iphoneImg from "../../assets/images/iphone_ex.png";
 
-const Home = () => {
-  // function: 페이지 이동 함수 //
-  const navigate = useNavigate();
+import {
+  getBoardListRequest,
+  getDailyListRequest,
+  getUsedTradeListRequest,
+} from "../../apis";
 
-  // render: 홈 전체 페이지 구성 //
+import Board from "../../types/interfaces/board.interface";
+import Daily from "../../types/interfaces/daily.interface";
+import UsedTrade from "../../types/interfaces/trade.interface";
+
+import GetBoardListResponseDto from "../../apis/dto/response/board/get-board-list.response.dto";
+import GetDailyListResponseDto from "../../apis/dto/response/daily/get-daily-list.response.dto";
+import GetUsedTradeListResponseDto from "../../apis/dto/response/usedtrade/get-used-trade-list.response.dto";
+
+const Home = () => {
+  const navigate = useNavigate();
+  const [cookies] = useCookies();
+  const accessToken = cookies["accessToken"];
+
+  const [boardList, setBoardList] = useState<Board[]>([]);
+  const [dailyList, setDailyList] = useState<Daily[]>([]);
+  const [tradeList, setTradeList] = useState<UsedTrade[]>([]);
+
+  useEffect(() => {
+    // 게시판
+    getBoardListRequest("ALL", 1, "LATEST", accessToken).then((res) => {
+      if (res && res.code === "SU") {
+        const typed = res as GetBoardListResponseDto;
+        setBoardList(typed.boardList.slice(0, 5));
+      }
+    });
+
+    // 일상
+    getDailyListRequest(1, "LATEST", accessToken).then((res) => {
+      if (res && res.code === "SU") {
+        const typed = res as GetDailyListResponseDto;
+        setDailyList(typed.dailyList.slice(0, 5));
+      }
+    });
+
+    // 중고거래
+    getUsedTradeListRequest("ALL", 1, "LATEST", accessToken).then((res) => {
+      if (res && res.code === "SU") {
+        const typed = res as GetUsedTradeListResponseDto;
+        setTradeList(typed.usedTradeList.slice(0, 5));
+      }
+    });
+  }, []);
+
   return (
     <div className="home-wrapper">
       <div className="home-container">
         <div className="content-row">
-          {/* section: 왼쪽 사이드바 - 친구 목록 */}
+          {/* 왼쪽 사이드바 */}
           <aside className="left-sidebar">
             <h2 className="section-title">친구 목록 (맞팔로우)</h2>
             <ul className="friend-list">
@@ -24,14 +69,13 @@ const Home = () => {
             </ul>
           </aside>
 
-          {/* section: 메인 콘텐츠 */}
           <main className="main-container">
-            {/* component: 상단 배너 */}
+            {/* 광고 배너 */}
             <div className="top-banner-container">
               <ImageSlider />
             </div>
 
-            {/* section: 인기 게시판 */}
+            {/* 인기 게시판 (하드코딩) */}
             <section className="hot-board-list">
               <h2 className="section-title">인기 게시물</h2>
               {Array.from({ length: 5 }, (_, i) => (
@@ -46,18 +90,20 @@ const Home = () => {
               ))}
             </section>
 
-            {/* 게시판과 일상 2열 배치 */}
             <div className="board-daily-row">
               {/* 게시판 */}
               <section className="board-list">
                 <h2 className="section-title" onClick={() => navigate("/board")}>게시판</h2>
-                {Array.from({ length: 5 }, (_, i) => (
-                  <div className="post-card" key={`board-${i}`}>
-                    <div className="post-title">오늘 롯데 졌다</div>
+                {boardList.map((item) => (
+                  <div className="post-card"
+                    key={item.boardSequence}
+                    onClick={() => navigate(`/board/${item.boardSequence}`)}
+                  >
+                    <div className="post-title">{item.title}</div>
                     <div className="post-info">
-                      <span>작성자2</span>
-                      <span>좋아요</span>
-                      <span>댓글</span>
+                      <span>익명</span>
+                      <span>좋아요 {item.likeCount}</span>
+                      <span>댓글 {item.commentCount}</span>
                     </div>
                   </div>
                 ))}
@@ -65,19 +111,17 @@ const Home = () => {
 
               {/* 일상 */}
               <section className="daily-list">
-                <h2
-                  className="section-title"
-                  onClick={() => navigate("/daily")}
-                >
-                  일상
-                </h2>
-                {Array.from({ length: 5 }, (_, i) => (
-                  <div className="post-card" key={`daily-${i}`}>
-                    <div className="post-title">오늘 LG 졌다</div>
+                <h2 className="section-title" onClick={() => navigate("/daily")}>일상</h2>
+                {dailyList.map((item) => (
+                  <div className="post-card"
+                    key={item.dailySequence}
+                    onClick={() => navigate(`/daily/${item.dailySequence}`)}
+                  >
+                    <div className="post-title">{item.title}</div>
                     <div className="post-info">
-                      <span>작성자3</span>
-                      <span>좋아요</span>
-                      <span>댓글</span>
+                      <span>{item.userNickname}</span>
+                      <span>좋아요 {item.likeCount}</span>
+                      <span>댓글 {item.commentCount}</span>
                     </div>
                   </div>
                 ))}
@@ -86,26 +130,30 @@ const Home = () => {
 
             {/* 중고거래 */}
             <section className="trade-section">
-              <h2 className="section-title" onClick={() => navigate("/trade")}>
-                중고거래
-              </h2>
+              <h2 className="section-title" onClick={() => navigate("/trade")}>중고거래</h2>
               <div className="trade-list">
-                {[...Array(5)].map((_, i) => (
-                  <div className="trade-card" key={i}>
-                    <img src={iphoneImg} alt="product" className="trade-img" />
-                    <div className="product-title">아이폰 14 Pro Max</div>
-                    <div className="product-price">1,200,000원</div>
-                    <div className="product-time">1시간 전</div>
+                {tradeList.map((item) => (
+                  <div className="post-card"
+                    key={item.tradeSequence}
+                    onClick={() => navigate(`/trade/${item.tradeSequence}`)}
+                  >
+                    <img className="trade-img" src={iphoneImg}/> {/* 임시 이미지 */}
+                    <div className="post-title">{item.title}</div>
+                    <div className="post-info">
+                      <span>{item.userNickname}</span>
+                      <span>좋아요 {item.likeCount}</span>
+                    </div>
                   </div>
                 ))}
               </div>
             </section>
           </main>
 
-          {/* section: 오른쪽 사이드바 - 뉴스 */}
+          {/* 오른쪽 사이드바 */}
           <aside className="right-sidebar">
             <News />
           </aside>
+
         </div>
       </div>
     </div>

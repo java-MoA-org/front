@@ -6,5 +6,5 @@ export type InterestsType = {
   userInterestFood: boolean;
   userInterestMusic: boolean;
   userInterestEconomics: boolean;
-  userInterestNull: boolean; // 🏠일상
+  userInterestNull: boolean; 
 };
