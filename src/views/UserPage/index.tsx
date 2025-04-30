@@ -4,7 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   ACCESS_TOKEN,
   MY_USER_BOARD_ABSOLUTE_PATH,
-  MY_USER_FOLLOW_ABSOLUTE_PATH
+  MY_USER_FOLLOW_ABSOLUTE_PATH,
+  ROOT_ABSOULTE_PATH
 } from "../../constants";
 import FollowButton from "../../components/FollowButton";
 import { Board, Daily, Trade } from "../../types/interfaces";
@@ -13,8 +14,10 @@ import UpdateButton from "../../components/UpdateButton";
 import useSignInUserStore from "../../stores/sign-in-user.store";
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
-import { getUserPageInfoRequest } from "../../apis";
+import { getFollowRequest, getUserPageInfoRequest, postFollowRequest } from "../../apis";
 import GetUserInfoResponseDto from "../../apis/dto/response/user/get-user-info.response.dto";
+import ResponseDto from "../../apis/dto/response/response.dto";
+import GetFollowResponseDto from "../../apis/dto/response/follow/get-follow.response.dto";
 
 // interface: 게시판, 일상, 중고거래 레코드 컴포넌트 속성 //
 interface MyUserPageProps {
@@ -40,23 +43,24 @@ export default function MyUserPage({
 
   const { userNickname, setUserNickname } = useSignInUserStore();
   const [isLoading, setIsLoading] = useState(true);
+  const [isFollow, setIsFollow] = useState<boolean>(false);
 
-  //! 받아오는걸 기다린 후 비교 하는 형식
+  const [follower, setFollower] = useState<number>(0);
+  const [followee, setFollowee] = useState<number>(0);
+
+  // effect: 컴포넌트 로드시 실행할 함수 //
   useEffect(() => {
-    if (!userNickname && accessToken) {
-      getUserPageInfoRequest(accessToken).then((response) => {
-        if (response && response.code === "SU") {
-          const res = response as GetUserInfoResponseDto; // 타입 좁히기
-
-          setUserNickname(res.userNickname); // 이제 안전하게 접근 가능
-        }
-        setIsLoading(false);
-      });
-    } else {
-      setIsLoading(false);
+    if (!accessToken) return;
+    if (!userNickname) {
+      navigator(ROOT_ABSOULTE_PATH);
+      return;
     }
-  }, [userNickname, accessToken]);
-
+    if (!nickname) {
+      navigator(ROOT_ABSOULTE_PATH);
+      return;
+    }
+    getFollowRequest(nickname, accessToken).then(getFollowResponse);
+  }, [nickname]);
   const activeInterests = Object.entries(interests)
     .filter(([_, value]) => value)
     .map(([key]) => key.replace("userInterest", ""));
@@ -64,17 +68,41 @@ export default function MyUserPage({
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
-  // event handler: 팔로워, 팔로잉 처리 //
-  const onFollowerClickHandler = () => {
+  // function: get follow response 처리 함수 //
+  const getFollowResponse = (responseBody: GetFollowResponseDto | ResponseDto | null) => {
+    const message = !responseBody
+      ? "서버에 문제가 있습니다."
+      : responseBody.code === "DBE"
+      ? "서버에 문제가 있습니다."
+      : responseBody.code === "AF"
+      ? "인증에 실패했습니다."
+      : responseBody.code === "NEU"
+      ? "존재하지 않는 유저입니다."
+      : "";
+    const isSuccess = responseBody !== null && responseBody.code === "SU";
+    if (!isSuccess) {
+      alert(message);
+      navigator(ROOT_ABSOULTE_PATH);
+      return;
+    }
+    const { followers, followees } = responseBody as GetFollowResponseDto;
+    const followersCount = followers.length;
+    const followeesCount = followees.length;
+    setFollowee(followersCount);
+    setFollower(followeesCount);
+  };
+
+  // event handler: 팔로워, 팔로잉 페이지 처리 //
+  const onFollowerPageClickHandler = () => {
     if (!nickname) return;
     navigator(`${MY_USER_FOLLOW_ABSOLUTE_PATH(nickname)}?type=follower`);
   };
-  const onFolloweeClickHandler = () => {
+  const onFolloweePageClickHandler = () => {
     if (!nickname) return;
     navigator(`${MY_USER_FOLLOW_ABSOLUTE_PATH(nickname)}?type=followee`);
   };
 
-  // event handler: 팔로워, 팔로잉 처리 //
+  // event handler: 게시판 클릭 처리 //
   const onUserDailyClickHandler = () => {
     if (!nickname) return;
     navigator(`${MY_USER_BOARD_ABSOLUTE_PATH(nickname)}?type=daily`);
@@ -109,13 +137,13 @@ export default function MyUserPage({
                 />
               </div>
               <div className="follower-followee-container">
-                <div className="follower" onClick={onFollowerClickHandler}>
+                <div className="follower" onClick={onFollowerPageClickHandler}>
                   <div className="follower-text">팔로워</div>
-                  <div className="number">0</div>
+                  <div className="number">{follower}</div>
                 </div>
-                <div className="followee" onClick={onFolloweeClickHandler}>
+                <div className="followee" onClick={onFolloweePageClickHandler}>
                   <div className="followee-text">팔로잉</div>
-                  <div className="number">0</div>
+                  <div className="number">{followee}</div>
                 </div>
               </div>
               <div className="self-introdction-container">{userIntroduce}</div>
