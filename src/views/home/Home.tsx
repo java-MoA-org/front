@@ -135,7 +135,7 @@ const Home = () => {
                 {tradeList.map((item) => (
                   <div className="post-card"
                     key={item.tradeSequence}
-                    onClick={() => navigate(`/trade/${item.tradeSequence}`)}
+                    onClick={() => navigate(`/usedtrade/${item.tradeSequence}`)}
                   >
                     <img className="trade-img" src={iphoneImg}/> {/* 임시 이미지 */}
                     <div className="post-title">{item.title}</div>
