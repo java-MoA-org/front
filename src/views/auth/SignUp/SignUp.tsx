@@ -5,6 +5,7 @@ import SignUpInputBox from '../../../components/SignInInputBox/SignUpInputBox';
 import ResponseDto from '../../../apis/dto/response/response.dto';
 import IdCheckRequestDto from '../../../apis/dto/request/auth/user-id-check.request.dto';
 import {
+  getUserInfoRequest,
   userEmailCheckRequest,
   UserEmailVerifyRequest,
   userIdCheckRequest,
@@ -29,6 +30,8 @@ import { Cookies, useCookies } from 'react-cookie';
 import UserSignInRequestDto from '../../../apis/dto/request/auth/user-sign-in.request.dto';
 import UserSignInResponseDto from '../../../apis/dto/response/auth/user-sign-in.response.dto';
 import PhoneNumberVerifyResponseDto from '../../../apis/dto/response/auth/phone-number-verify-response.dto';
+import useSessionTimerStore from '../../../stores/session-timer.store';
+import useSignInUserStore from '../../../stores/sign-in-user.store';
 
 interface Props {
   setActiveTab: Dispatch<SetStateAction<'signin' | 'signup' | 'findid' | 'findpassword'>>;
@@ -114,6 +117,9 @@ export default function SignUp({ setActiveTab }: Props) {
   const [userIntroduce, setUserIntroduce] = useState('');
 
   const [signUpPossible, setSignUpPossible] = useState<boolean>(false);
+
+  const { timeLeft, setTimeLeft } = useSessionTimerStore();
+  const { setUserAll } = useSignInUserStore();
 
   const interests: { label: string; key: keyof InterestsType }[] = [
     { label: '🛩️여행', key: 'userInterestTrip' },
@@ -352,15 +358,15 @@ export default function SignUp({ setActiveTab }: Props) {
     setUserPhoneNumberVCValid(!isSuccess);
   };
 
-  const userSignInResponse = (responseBody: ResponseDto | UserSignInResponseDto | null) => {
+  const userSignInResponse = async (responseBody: ResponseDto | UserSignInResponseDto | null) => {
     const { accessToken, expiration, userRole } = responseBody as UserSignInResponseDto;
-    localStorage.setItem('userRole', userRole); // ✅ "ADMIN" 또는 "USER"
-    const expires = new Date(Date.now() + expiration * 1000);
+    setTimeLeft(expiration);
 
-    // 토큰 + 권한 저장
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('accessTokenExpiresAt', expires.getTime().toString());
+    // 권한 저장
     localStorage.setItem('userRole', userRole); // 관리자 여부 판단용
+
+    const userInfo = await getUserInfoRequest(accessToken);
+    setUserAll(userInfo);
   };
 
   const userSignUpResponse = (responseBody: ResponseDto | null) => {
@@ -385,6 +391,7 @@ export default function SignUp({ setActiveTab }: Props) {
       return;
     }
     const requestBody: UserSignInRequestDto = { userId, userPassword };
+    setTimeLeft(60 * 30);
     userSignInRequest(requestBody).then(userSignInResponse);
     ['joinType', 'profileImage', 'userId', 'userNickname', 'userPassword', 'userEmail', 'userPhoneNumber'].forEach(
       deleteCookie

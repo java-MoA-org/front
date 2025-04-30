@@ -60,13 +60,9 @@ export default function SignIn({ setActiveTab }: Props) {
     }
 
     const { accessToken, expiration, userRole } = responseBody as UserSignInResponseDto;
-    localStorage.setItem('userRole', userRole); // ✅ "ADMIN" 또는 "USER"
-    const expires = new Date(Date.now() + expiration * 1000);
     setTimeLeft(expiration);
 
     // 토큰 + 권한 저장
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('accessTokenExpiresAt', expires.getTime().toString());
     localStorage.setItem('userRole', userRole); // 관리자 여부 판단용
 
     const userInfo = await getUserInfoRequest(accessToken);
