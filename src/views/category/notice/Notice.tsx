@@ -12,7 +12,7 @@ import { NoticeItem } from "../../../types/interfaces/notice.interface";
 const Notice = () => {
   // state: 탭 상태
   const [activeTab, setActiveTab] = useState<"설명" | "공지사항">(
-    () => (localStorage.getItem("noticeTab") as "설명" | "공지사항") || "설명",
+    () => (localStorage.getItem("noticeTab") as "설명" | "공지사항") || "설명"
   );
 
   // state: 공지사항 목록 및 기타
@@ -64,7 +64,9 @@ const Notice = () => {
             설명
           </h2>
           <h2
-            className={`section-title ${activeTab === "공지사항" ? "active" : ""}`}
+            className={`section-title ${
+              activeTab === "공지사항" ? "active" : ""
+            }`}
             onClick={() => handleTabClick("공지사항")}
           >
             공지사항
@@ -86,11 +88,15 @@ const Notice = () => {
         {/* render: 설명 탭 */}
         {activeTab === "설명" && (
           <div className="notice-content post-card">
-            <p>이곳은 사이트 이용 방법이나 주요 안내사항을 알려주는 공간입니다.</p>
+            <p>이곳은 MOA 사이트를 처음 이용하는 분들을 위한 안내 공간입니다. 아래 내용을 참고하여 사이트를 보다 편리하고 안전하게 이용해보세요.</p>
             <ul>
-              <li>회원가입은 이메일 또는 SNS 계정으로 가능합니다.</li>
-              <li>게시판은 익명으로 운영되며 자유롭게 의견을 나눌 수 있습니다.</li>
-              <li>중고거래는 반드시 유저 정보를 확인 후 이용해주세요.</li>
+              <li>회원가입은 이메일 또는 SNS 계정을 통해 간단하게 진행할 수 있으며, 가입 후 다양한 기능을 이용할 수 있습니다.</li>
+              <li>게시판과 일상 게시글은 모두 익명으로 운영되며, 자유롭게 의견을 나누고 소통할 수 있는 공간입니다. 단, 비방이나 욕설 등 타인을 불쾌하게 하는 표현은 삼가주세요.</li>
+              <li>중고거래는 사용자 간의 자율적인 거래로 이루어지며, 거래 전에는 반드시 상대방의 프로필을 확인하고 신뢰할 수 있는지 판단한 후이용하시길 권장드립니다.</li>
+              <li>게시글 작성, 댓글, 좋아요 등 커뮤니티 활동은 로그인 후 이용 가능합니다. 로그인하지 않은 경우 일부 기능이 제한될 수 있습니다.</li>
+              <li>사이트 이용 중 문의사항이나 문제가 발생할 경우, 고객센터 또는 공지사항 게시판을 통해 확인하거나 문의해 주세요.</li>
+              <li>모든 이용자는 사이트 운영 정책에 따라 행동해야 하며, 커뮤니티 내 질서를 유지하기 위해 관리자에 의해 게시물이 삭제되거나 이용이 제한될 수 있습니다.
+              </li>
             </ul>
           </div>
         )}
@@ -98,7 +104,6 @@ const Notice = () => {
         {/* render: 검색바 (추후 구현) */}
         {activeTab === "공지사항" && (
           <div className="notice-search-bar">
-            
             <input
               type="text"
               placeholder="검색어를 입력해주세요."
@@ -120,7 +125,7 @@ const Notice = () => {
                   key={item.notificationSequence}
                   onClick={() =>
                     navigate(
-                      NOTICE_VIEW_ABSOLUTE_PATH(item.notificationSequence),
+                      NOTICE_VIEW_ABSOLUTE_PATH(item.notificationSequence)
                     )
                   }
                 >
