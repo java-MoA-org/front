@@ -30,7 +30,6 @@ const Home = () => {
   const [tradeList, setTradeList] = useState<UsedTrade[]>([]);
 
   useEffect(() => {
-    // 게시판
     getBoardListRequest("ALL", 1, "LATEST", accessToken).then((res) => {
       if (res && res.code === "SU") {
         const typed = res as GetBoardListResponseDto;
@@ -38,7 +37,6 @@ const Home = () => {
       }
     });
 
-    // 일상
     getDailyListRequest(1, "LATEST", accessToken).then((res) => {
       if (res && res.code === "SU") {
         const typed = res as GetDailyListResponseDto;
@@ -46,7 +44,6 @@ const Home = () => {
       }
     });
 
-    // 중고거래
     getUsedTradeListRequest("ALL", 1, "LATEST", accessToken).then((res) => {
       if (res && res.code === "SU") {
         const typed = res as GetUsedTradeListResponseDto;
@@ -59,7 +56,6 @@ const Home = () => {
     <div className="home-wrapper">
       <div className="home-container">
         <div className="content-row">
-          {/* 왼쪽 사이드바 */}
           <aside className="left-sidebar">
             <h2 className="section-title">친구 목록 (맞팔로우)</h2>
             <ul className="friend-list">
@@ -70,12 +66,10 @@ const Home = () => {
           </aside>
 
           <main className="main-container">
-            {/* 광고 배너 */}
             <div className="top-banner-container">
               <ImageSlider />
             </div>
 
-            {/* 인기 게시판 (하드코딩) */}
             <section className="hot-board-list">
               <h2 className="section-title">인기 게시물</h2>
               {Array.from({ length: 5 }, (_, i) => (
@@ -91,7 +85,6 @@ const Home = () => {
             </section>
 
             <div className="board-daily-row">
-              {/* 게시판 */}
               <section className="board-list">
                 <h2 className="section-title" onClick={() => navigate("/board")}>게시판</h2>
                 {boardList.map((item) => (
@@ -109,7 +102,6 @@ const Home = () => {
                 ))}
               </section>
 
-              {/* 일상 */}
               <section className="daily-list">
                 <h2 className="section-title" onClick={() => navigate("/daily")}>일상</h2>
                 {dailyList.map((item) => (
@@ -128,18 +120,17 @@ const Home = () => {
               </section>
             </div>
 
-            {/* 중고거래 */}
             <section className="trade-section">
               <h2 className="section-title" onClick={() => navigate("/trade")}>중고거래</h2>
               <div className="trade-list">
                 {tradeList.map((item) => (
-                  <div className="post-card"
+                  <div className="trade-card"
                     key={item.tradeSequence}
                     onClick={() => navigate(`/usedtrade/${item.tradeSequence}`)}
                   >
-                    <img className="trade-img" src={iphoneImg}/> {/* 임시 이미지 */}
-                    <div className="post-title">{item.title}</div>
-                    <div className="post-info">
+                    <img className="trade-img" src={iphoneImg} />
+                    <div className="product-title">{item.title}</div>
+                    <div className="product-info">
                       <span>{item.userNickname}</span>
                       <span>좋아요 {item.likeCount}</span>
                     </div>
@@ -149,11 +140,9 @@ const Home = () => {
             </section>
           </main>
 
-          {/* 오른쪽 사이드바 */}
           <aside className="right-sidebar">
             <News />
           </aside>
-
         </div>
       </div>
     </div>
