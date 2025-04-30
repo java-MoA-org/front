@@ -66,14 +66,25 @@ function App() {
     setUserInterests,
   } = useSignInUserStore();
   const [cookies] = useCookies([ACCESS_TOKEN]);
+  // const [cookies] = useCookies();
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const match = document.cookie.includes('accessToken');
+      console.log('[⏱ 쿠키 감시]', match ? '✅ 있음' : '❌ 없음');
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const accessToken = cookies[ACCESS_TOKEN];
+    console.log('accessToken : ' + accessToken);
+    console.table(cookies);
+
     if (!accessToken) return;
 
     const fetchUserInfo = async () => {
       const response = await getUserInfoRequest(accessToken);
-      console.log(response);
       // const response = await getUserPageInfoRequest(accessToken);
       if (!response || response.code !== 'SU') return;
 
