@@ -132,6 +132,9 @@ const PATCH_USER_PAGE_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/ch
 const FILE_UPLOAD_URL = `${USER_PAGE_MODULE_URL}/images/file/upload`;
 const multipartFormData = { headers: { 'Content-Type': 'multipart/form-data' } };
 
+const POST_FOLLOW_URL = (nickname: string) => `${API_DOMAIN}/api/v1/follow/${nickname}`;
+const GET_FOLLOW_URL = (nickname: string) => `${API_DOMAIN}/api/v1/follow/number/${nickname}`;
+
 const ALERT_MODULE_URL = `${API_DOMAIN}/api/v1/alert`;
 const POST_COMMENT_ALERT_URL = `${ALERT_MODULE_URL}/comment`;
 
@@ -265,7 +268,6 @@ export const refreshAccessTokenRequest = async () => {
   const { accessToken, expiration } = response.data;
 
   if (accessToken) {
-    localStorage.setItem('accessToken', accessToken);
     return expiration;
   }
 
@@ -281,6 +283,16 @@ export const getUserPageInfoRequest = async (accessToken: string) => {
   return responseBody;
 };
 
+// function: get follow API 요청 함수 //
+export const getFollowRequest = async (nickname: string, accessToken: string) => {
+  const url = GET_FOLLOW_URL(nickname);
+  const responseBody = await axios
+    .get(url, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
 // function: user page API 요청 함수 //
 export const getUserPageRequest = async (nickname: string) => {
   const url = GET_USER_PAGE_URL(nickname);
@@ -288,6 +300,16 @@ export const getUserPageRequest = async (nickname: string) => {
     // .get(url, bearerAuthorization(accessToken))
     .get(url)
     .then(responseSuccessHandler<GetUserPageResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: post follow API 요청 함수 //
+export const postFollowRequest = async (nickname: string, accessToken: string) => {
+  const url = POST_FOLLOW_URL(nickname);
+  const responseBody = await axios
+    .post(url, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
     .catch(responseErrorHandler);
   return responseBody;
 };
