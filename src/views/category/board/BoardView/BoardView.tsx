@@ -314,16 +314,16 @@ export default function BoardView() {
         <div className="back-button" onClick={() => navigator(BOARD_ABSOLUTE_PATH)}>
           글 목록
         </div>
-        {/* {userId === writerId && */}
-        <div className="button-group">
-          <div className="patch-button" onClick={onUpdateClickHandler}>
-            수정하기
+        {userId === writerId && (
+          <div className="button-group">
+            <div className="patch-button" onClick={onUpdateClickHandler}>
+              수정하기
+            </div>
+            <div className="delete-button" onClick={onDeleteClickHandler}>
+              삭제하기
+            </div>
           </div>
-          <div className="delete-button" onClick={onDeleteClickHandler}>
-            삭제하기
-          </div>
-        </div>
-        {/* } */}
+        )}
       </div>
 
       <div className="bulletin-info-container">

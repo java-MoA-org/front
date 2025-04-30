@@ -183,6 +183,7 @@ export default function BoardWrite() {
               setContent={onContentChangeHandler}
               onImageListChange={onImageListChangeHandler}
               onImageUpload={onImageUpload}
+              type="board"
             />
           </div>
           <div className="button-box">

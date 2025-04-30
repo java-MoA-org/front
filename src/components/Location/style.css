@@ -1,0 +1,78 @@
+#modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* Ensure modal is on top */
+}
+
+#modal-overlay .modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+#modal-overlay .modal-content h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+#modal-overlay .modal-content label {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  display: block;
+  text-align: left;
+  color: #333;
+}
+
+#modal-overlay .modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #333;
+  box-sizing: border-box;
+}
+
+#modal-overlay .modal-content input:focus {
+  border-color: #4e90b8;
+  outline: none;
+}
+
+#modal-overlay .modal-content button {
+  background-color: #4e90b8;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 5px;
+  transition: background-color 0.3s ease;
+}
+
+#modal-overlay .modal-content button:hover {
+  background-color: #387895;
+}
+
+#modal-overlay .modal-content button:last-child {
+  background-color: #ccc;
+  color: #333;
+}
+
+#modal-overlay .modal-content button:last-child:hover {
+  background-color: #aaa;
+}

@@ -52,7 +52,6 @@ function TableItem({ trade }: TableItemProps) {
   const onClick = () => {
     navigator(USED_TRADE_VIEW_ABSOLUTE_PATH(tradeSequence));
   };
-  console.log(USED_TRADE_VIEW_ABSOLUTE_PATH(tradeSequence));
 
   // render: 중고거래글 테이블 레코드 컴포넌트 렌더링 //
   return (
@@ -64,7 +63,9 @@ function TableItem({ trade }: TableItemProps) {
         <img src={viewsIcon} alt="조회수 이미지" className="view-icon" />
         <span className="view-count">{views}</span>
       </div>
-      <div className="thumbnail-image">{thumbnailImage}</div>
+      <div className="thumbnail-image">
+        {/* <img src={thumbnailImage} alt="썸네일 이미지" className="thumbnail-img" /> */}
+      </div>
       <div className="profile-list">
         <img src={profileImage} alt="프로필 이미지" className="trade-profile-image" />
         <div className="user-nickname">{userNickname}</div>
@@ -224,8 +225,7 @@ export default function UsedTradeMain() {
 
       {/* 검색 바 */}
       <div className="trade-search-bar">
-        <input
-          type="text"
+        <input type="text"
           placeholder="검색어를 입력해주세요."
           className="trade-search-input"
           value={searchQuery}
@@ -236,7 +236,7 @@ export default function UsedTradeMain() {
             }
           }}
         />
-        <img src={searchIcon}  className="trade-search-button" onClick={onSearchClick} />
+        <img src={searchIcon} alt="search" className="trade-search-button" onClick={onSearchClick} />
       </div>
       <div className="used-trade-main">
 

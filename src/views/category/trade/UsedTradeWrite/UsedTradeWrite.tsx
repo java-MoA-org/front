@@ -8,6 +8,10 @@ import ResponseDto from "../../../../apis/dto/response/response.dto";
 import { PostUsedTradeRequestDto } from "../../../../apis/dto/request/usedtrade";
 import { postUsedTradeRequest } from "../../../../apis";
 import { UsedItemStatusTag } from "../../../../types/enums/UsedItemStatusTag";
+import LocationModal from "../../../../components/Location";
+import TextEditor from "../../../../components/TextEditor";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 
 // component: 중고거래 게시판 판매글 작성 컴포넌트 //
 export default function UsedTradeWrite() {
@@ -25,29 +29,32 @@ export default function UsedTradeWrite() {
   const [detailLocation, setDetailLocation] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  // variable: 카테고리 목록 //
+  const categorys = [
+    '기타', '전자기기', '의류', '가구',
+    '도서', '뷰티/미용', '운동/스포츠', '식품'
+  ];
+
+  // variable: 아이템 상태 표시 목록 //
+  const itemsStatusTag = [
+    '새상품', '사용감 거의 없음', '사용감 있음', '파손/고장 있음'
+  ];
+
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
 
-  // variable: 아이템 타입 태그 컨텐츠 클래스 //
-  const freeContentClass =
-  itemTypeTag === "기타" ? "content active" : "content pointer";
-  const gameContentClass =
-  itemTypeTag === "전자기기" ? "content active" : "content pointer";
-  const travelContentClass =
-  itemTypeTag === "의류" ? "content active" : "content pointer";
-  const workoutContentClass =
-  itemTypeTag === "가구" ? "content active" : "content pointer";
-  const musicContentClass =
-  itemTypeTag === "도서" ? "content active" : "content pointer";
-  const economyContentClass =
-  itemTypeTag === "뷰티/미용" ? "content active" : "content pointer";
-  const fashionContentClass =
-  itemTypeTag === "운동/스포츠" ? "content active" : "content pointer";
-  const foodContentClass =
-  itemTypeTag === "식품" ? "content active" : "content pointer";
-
   // variable: 중고거래글 작성 가능 여부 //
-  const isActive = title !== "" && content !== "";
+  const isActive = title.trim() !== "" 
+  && content.trim() !== "" 
+  && price > 0 
+  && location.trim() !== "" 
+  && detailLocation.trim() !== "" 
+  && itemTypeTag !== undefined
+  && usedItemStatusTag !== undefined
+  && imageList !== undefined;
+
   // variable: 중고거래글 작성 버튼 클래스 //
   const writeButtonClass = isActive ? "button middle primary" : "button middle disable";
 
@@ -105,10 +112,40 @@ export default function UsedTradeWrite() {
     setPrice(priceValue);
   };
 
-  // 이미지 업로드 이후 content에 삽입
+  // 거래 위치와 상세 주소 저장 함수
+  const onSaveLocation = (location: string, detailLocation: string) => {
+    setLocation(location);
+    setDetailLocation(detailLocation);
+  };
+
+  // 거래 위치 입력 모달 열기
+  const openLocationModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // 거래 위치 입력 모달 닫기
+  const closeLocationModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // event Handler: 이미지 업로드 이후 content에 삽입된 이미지 태그 처리 //
   const onImageUpload = (imageUrl: string) => {
     const imageTag = `<img src="${imageUrl}" alt="업로드 이미지" />`;
     setContent(prev => prev + imageTag);
+  };
+
+  // event Handler: 이미지 업로드  //
+  const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const imageUrl = reader.result as string;
+        setImageList(prevImages => [...prevImages, imageUrl]);
+        onImageUpload(imageUrl);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // event handler: 이미지 목록 변경 이벤트 처리 //
@@ -135,76 +172,95 @@ export default function UsedTradeWrite() {
 
   // render: 중고거래 게시판 판매글 작성 컴포넌트 렌더링 //
   return (
-    <div className="used-trade-write">
-      <h1>판매글 작성</h1>
+    <div id="trade-write-wrapper">
+      <div className="trade-write-main">
 
-      <div className="input-container">
-        <label>제목</label>
-        <input
-          type="text"
-          value={title}
-          onChange={onTitleChangeHandler}
-          placeholder="글 제목을 입력하세요"
-        />
-      </div>
-
-      <div className="input-container">
-        <label>내용</label>
-        <textarea
-          value={content}
-          onChange={(e) => onContentChangeHandler(e.target.value)}
-          placeholder="상품에 대한 설명을 입력하세요"
-        />
-      </div>
-
-      <div className="input-container">
-        <label>가격</label>
-        <input
-          type="number"
-          value={price}
-          onChange={onPriceChangeHandler}
-          placeholder="가격을 입력하세요"
-        />
-      </div>
-
-      <div className="input-container">
-        <label>지역</label>
-        <input
-          type="text"
-          value={location}
-          placeholder="지역을 입력하세요"
-        />
-      </div>
-
-      <div className="input-container">
-        <label>상세 위치</label>
-        <input
-          type="text"
-          value={detailLocation}
-          placeholder="상세 위치를 입력하세요"
-        />
-      </div>
-
-      <div className="input-container">
-        <label>카테고리</label>
-        <div className="category-options">
+        <div className="item-images-container">
+          <div className="item-images">상품이미지</div>
+          <input 
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            id="file-input"
+            onChange={handleImageUpload}
+          />
+          <div className="image-preview-slider" onClick={() => document.getElementById("file-input")?.click()} style={{ width: "300px", height: "300px", marginTop: "10px" }}>
+            <Swiper spaceBetween={0} slidesPerView={1} >
+              {imageList.map((image, index) => (
+                <SwiperSlide key={index}>
+                  <img
+                    src={image}
+                    alt={`업로드 이미지 ${index}`}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
         </div>
-      </div>
 
-      <div className="input-container">
-        <label>상품 상태</label>
-        <div className="status-options">
+        <div className="item-name-container">
+          <div className="item-name">상품명</div>
+          <input className="item-name-box" type="text" placeholder="상품명을 입력해 주세요." value={title} onChange={onTitleChangeHandler} />
         </div>
-      </div>
+      
+        <div className="item-category-container">
+          <div className="item-category">카테고리</div>
+          <div className="item-category-box">
+            {categorys.map((label, i) => {
+              const tag = label as ItemTypeTag;
+              const isChecked = itemTypeTag === tag;
+              return (
+                <label key={i} className={`checkbox-item ${isChecked ? 'active' : ''}`}>
+                  <input type="checkbox" checked={isChecked} onChange={() => onItemTypeTagChangeHandler(tag)}/>
+                  {label}
+                </label>
+              );
+            })}
+          </div>
+        </div>
 
-      <div className="button-container">
-        <button
-          className={writeButtonClass}
-          onClick={onWriteButtonClickHandler}
-          disabled={!isActive}
-        >
-          게시글 작성
-        </button>
+        <div className="item-status-container">
+          <div className="item-status">상품상태</div>
+          <div className="item-status-box">
+            {itemsStatusTag.map((label, i) => {
+              const tag = label as UsedItemStatusTag;
+              const isChecked = usedItemStatusTag === tag;
+              return (
+                <label key={i} className={`checkbox-item ${isChecked ? 'active' : ''}`}>
+                  <input type="checkbox" checked={isChecked} onChange={() => onUsedItemStatusTag(tag)}/>
+                  {label}
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="item-content-container">
+          <div className="item-content">설명</div>
+          <textarea className="item-content-box" placeholder="브랜드, 모델명, 구매 시기, 하자 유무 등 상품 설명을 최대한 자세히 적어주세요." value={content} onChange={(e) => onContentChangeHandler(e.target.value)} />
+        </div>
+
+        <div className="transaction-location-container">
+          <div className="transaction-location">거래위치</div>
+          <div className="transaction-location-box">
+            <input type="text" placeholder="거래위치를 입력해주세요." 
+              value={
+                location.trim() !== "" || detailLocation.trim() !== "" ? `${location} ${detailLocation}` : ""
+              }
+              readOnly onClick={openLocationModal} />
+          </div>
+          <LocationModal isOpen={isModalOpen} onClose={closeLocationModal} onSave={onSaveLocation} />
+        </div>
+
+        <div className="price-container">
+          <div className="price">가격</div>
+          <div className="price-box">
+            <input type="number" placeholder="가격을 입력하세요"value={price} onChange={onPriceChangeHandler} />
+          </div>
+        </div>
+        <div className="button-container">
+          <div className={writeButtonClass} onClick={onWriteButtonClickHandler}>작성하기</div>
+      </div>
       </div>
     </div>
   );

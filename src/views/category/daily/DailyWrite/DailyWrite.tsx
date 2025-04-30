@@ -108,6 +108,7 @@ export default function DailyWrite() {
               setContent={onContentChangeHandler}
               onImageListChange={onImageListChangeHandler}
               onImageUpload={onImageUpload}
+              type="daily"
             />
           </div>
           <div className="button-box">
