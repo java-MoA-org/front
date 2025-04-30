@@ -60,10 +60,11 @@ interface Props {
   setContent: (content: string) => void;
   onImageListChange?: (imageList: string[]) => void;
   onImageUpload?: (imageUrl: string) => void;
+  type?: 'board' | 'usedtrade' | 'daily' | 'profile';
 }
 
 // component: tiptap Text Editor 컴포넌트 //
-export default function TextEditor({ content, setContent, onImageListChange, onImageUpload }: Props) {
+export default function TextEditor({ content, setContent, onImageListChange, onImageUpload, type }: Props) {
   const [isUploading, setIsUploading] = useState(false);
   const [imageList, setImageList] = useState<string[]>([]);
 
@@ -86,7 +87,6 @@ export default function TextEditor({ content, setContent, onImageListChange, onI
     }
   }, [editor, content, initialized]);
 
-  // 이미지 업로드 처리 함수 //
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -103,7 +103,7 @@ export default function TextEditor({ content, setContent, onImageListChange, onI
 
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('type', 'board');  // 타입을 'board'로 설정 (필요시 다른 타입으로 수정)
+      formData.append('type', type || 'board');
 
       try {
         const response = await axios.post('http://localhost:4000/api/v1/images/upload', formData, {
@@ -111,17 +111,15 @@ export default function TextEditor({ content, setContent, onImageListChange, onI
         });
 
         if (editor) {
-          const imageUrl = response.data.data;  // 서버에서 받은 이미지 URL
+          const imageUrl = response.data.data;
           editor.chain().focus().setImage({ src: imageUrl }).run();
 
-          // 이미지 목록 상태 업데이트 및 콜백 호출 //
           setImageList((prevList) => {
             const updatedList = [...prevList, imageUrl];
             onImageListChange?.(updatedList);
             return updatedList;
           });
 
-          // ✅ 외부 콜백 함수도 호출 (예: BoardWrite 쪽에서 삽입된 이미지 처리용)
           onImageUpload?.(imageUrl);
         }
       } catch (error) {

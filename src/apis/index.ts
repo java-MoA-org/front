@@ -35,6 +35,7 @@ import PatchPasswordRequestDto from './dto/request/auth/patch-password.request.d
 import PasswordVerifyRequestDto from './dto/request/userInfo/post-verify-pawword.request.dto';
 import PatchPasswordUserPageRequestDto from './dto/request/userInfo/patch-password-userpage.request.dto';
 import PatchUserInfoRequestDto from './dto/request/userInfo/patch-user-info.request.dto';
+import PostCommentAlertRequestDto from './dto/request/alert/post-comment-alert.request.dto';
 
 export { searchUserRequest } from './dto/request/usersearch/search-user.request';
 
@@ -131,11 +132,18 @@ const PATCH_USER_PAGE_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/ch
 const FILE_UPLOAD_URL = `${USER_PAGE_MODULE_URL}/images/file/upload`;
 const multipartFormData = { headers: { 'Content-Type': 'multipart/form-data' } };
 
+const POST_FOLLOW_URL = (nickname: string) => `${API_DOMAIN}/api/v1/follow/${nickname}`;
+const GET_FOLLOW_URL = (nickname: string) => `${API_DOMAIN}/api/v1/follow/number/${nickname}`;
+
+const ALERT_MODULE_URL = `${API_DOMAIN}/api/v1/alert`;
+const POST_COMMENT_ALERT_URL = `${ALERT_MODULE_URL}/comment`;
+
 // function: Authorization Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({
   headers: { Authorization: `Bearer ${accessToken}` },
 });
 
+// function: User Id 중복 확인 요청 함수 //
 export const userIdCheckRequest = async (requestBody: UserIdCheckRequestDto) => {
   const responseBody = await axios
     .post(ID_CHECK_URL, requestBody)
@@ -144,6 +152,7 @@ export const userIdCheckRequest = async (requestBody: UserIdCheckRequestDto) => 
   return responseBody;
 };
 
+// function: User Nickname 중복 확인 요청 함수 //
 export const userNicknameCheckRequest = async (requestBody: UserNicknameCheckRequestDto) => {
   const responseBody = await axios
     .post(NICKNAME_CHECK_URL, requestBody)
@@ -152,6 +161,7 @@ export const userNicknameCheckRequest = async (requestBody: UserNicknameCheckReq
   return responseBody;
 };
 
+// function: User Email 중복확인 및 인증번호 요청 함수 //
 export const userEmailCheckRequest = async (requestBody: UserEmailCheckRequestDto) => {
   const responseBody = await axios
     .post(EMAIL_CHECK_URL, requestBody)
@@ -159,7 +169,7 @@ export const userEmailCheckRequest = async (requestBody: UserEmailCheckRequestDt
     .catch(responseErrorHandler);
   return responseBody;
 };
-
+// function: User Email 인증번호 확인 요청 함수 //
 export const UserEmailVerifyRequest = async (requestBody: UserEmailVerifyRequestDto) => {
   const responseBody = await axios
     .post(EMAIL_VERIFY_URL, requestBody)
@@ -168,6 +178,7 @@ export const UserEmailVerifyRequest = async (requestBody: UserEmailVerifyRequest
   return responseBody;
 };
 
+// function: User Email Id 찾기 인증번호 요청 함수 //
 export const userEmailCheckFindIdRequest = async (requestBody: UserEmailCheckRequestDto) => {
   const responseBody = await axios
     .post(FIND_ID_EMAIL_CHECK_URL, requestBody)
@@ -176,6 +187,7 @@ export const userEmailCheckFindIdRequest = async (requestBody: UserEmailCheckReq
   return responseBody;
 };
 
+// function: User Email Id 찾기 요청 함수 //
 export const UserEmailFindIdVerifyRequest = async (requestBody: UserEmailVerifyRequestDto) => {
   const responseBody = await axios
     .post(FIND_ID_EMAIL_CHECK_VERIFY_URL, requestBody)
@@ -184,6 +196,7 @@ export const UserEmailFindIdVerifyRequest = async (requestBody: UserEmailVerifyR
   return responseBody;
 };
 
+// function: User 전화번호 중복 확인 및 인증번호 요청 함수 //
 export const userPhoneNumberCheckRequest = async (requestBody: UserPhoneNumberCheckRequestDto) => {
   const responseBody = await axios
     .post(PHONE_NUMBER_CHECK_URL, requestBody)
@@ -192,6 +205,7 @@ export const userPhoneNumberCheckRequest = async (requestBody: UserPhoneNumberCh
   return responseBody;
 };
 
+// function: User 전화번호 인증번호 확인 요청 함수 //
 export const UserPhoneNumberVerifyRequest = async (requestBody: UserPhoneNumberVerifyRequestDto) => {
   const responseBody = await axios
     .post(PHONE_NUMBER_VERIFY_URL, requestBody)
@@ -200,6 +214,7 @@ export const UserPhoneNumberVerifyRequest = async (requestBody: UserPhoneNumberV
   return responseBody;
 };
 
+// function: User 회원가입 요청 함수 //
 export const userSignUpRequest = async (requestBody: UserSignUpRequestDto) => {
   const responseBody = await axios
     .post(SIGN_UP_URL, requestBody)
@@ -208,6 +223,7 @@ export const userSignUpRequest = async (requestBody: UserSignUpRequestDto) => {
   return responseBody;
 };
 
+// function: User 로그인 요청 함수 //
 export const userSignInRequest = async (requestBody: UserSignInRequestDto) => {
   const responseBody = await axios
     .post(SIGN_IN_URL, requestBody, { withCredentials: true })
@@ -216,6 +232,7 @@ export const userSignInRequest = async (requestBody: UserSignInRequestDto) => {
   return responseBody;
 };
 
+// function: User Information 요청 함수 //
 export const getUserInfoRequest = async (accessToken: string) => {
   const responseBody = await axios
     .get(GET_USER_INFO_URL, bearerAuthorization(accessToken))
@@ -224,10 +241,12 @@ export const getUserInfoRequest = async (accessToken: string) => {
   return responseBody;
 };
 
+// function: 로그아웃 요청 함수 //
 export const userSignOutRequest = async (accessToken: string) => {
   await axios.post(SIGN_OUT_URL, bearerAuthorization(accessToken));
 };
 
+// function: User Password 수정 요청 함수 //
 export const PatchPasswordRequest = async (requestBody: PatchPasswordRequestDto) => {
   const responseBody = await axios
     .patch(PATCH_PASSWORD_URL(requestBody.userId), requestBody)
@@ -236,19 +255,19 @@ export const PatchPasswordRequest = async (requestBody: PatchPasswordRequestDto)
   return responseBody;
 };
 
+// function: profile Image Upload 요청 함수 //
 export const userProfileImageUpload = async (requestBody: FormData) => {
   const url = await axios.post(PROFILE_IMAGE_UPLOAD_URL, requestBody, {
     withCredentials: true,
   });
   return url;
 };
-
+// function: Access Token 새로고침 요청 함수 //
 export const refreshAccessTokenRequest = async () => {
   const response = await axios.post(REFRESH_TOKEN_URL, {}, { withCredentials: true });
   const { accessToken, expiration } = response.data;
 
   if (accessToken) {
-    localStorage.setItem('accessToken', accessToken);
     return expiration;
   }
 
@@ -264,6 +283,16 @@ export const getUserPageInfoRequest = async (accessToken: string) => {
   return responseBody;
 };
 
+// function: get follow API 요청 함수 //
+export const getFollowRequest = async (nickname: string, accessToken: string) => {
+  const url = GET_FOLLOW_URL(nickname);
+  const responseBody = await axios
+    .get(url, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
 // function: user page API 요청 함수 //
 export const getUserPageRequest = async (nickname: string) => {
   const url = GET_USER_PAGE_URL(nickname);
@@ -271,6 +300,16 @@ export const getUserPageRequest = async (nickname: string) => {
     // .get(url, bearerAuthorization(accessToken))
     .get(url)
     .then(responseSuccessHandler<GetUserPageResponseDto>)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: post follow API 요청 함수 //
+export const postFollowRequest = async (nickname: string, accessToken: string) => {
+  const url = POST_FOLLOW_URL(nickname);
+  const responseBody = await axios
+    .post(url, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
     .catch(responseErrorHandler);
   return responseBody;
 };
@@ -662,6 +701,15 @@ export const patchNoticeRequest = async (
 export const deleteNoticeRequest = async (noticeId: number | string, accessToken: string) => {
   const responseBody = await axios
     .delete(DELETE_NOTICE_URL(noticeId), bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: post comment alert API 요청 함수 //
+export const postCommentAlertRequest = async (commentData: PostCommentAlertRequestDto, accessToken: string) => {
+  const responseBody = await axios
+    .post(POST_COMMENT_ALERT_URL, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
     .catch(responseErrorHandler);
   return responseBody;
