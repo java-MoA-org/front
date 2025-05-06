@@ -93,7 +93,18 @@
 .profile-container .self-interest-container {
   display: flex;
   gap: 12px;
-  font-size: 20px;
+  align-items: center;
+}
+
+.profile-container .self-interest-container .interest {
+  font-size: 20px; /* ⬅️ 관심사 | 크기 */
+  font-weight: 500;
+}
+
+.profile-container .self-interest-container .interest-map {
+  font-size: 17px; /* ⬅️ 아이콘 + 텍스트 크기 */
+  font-weight: 400;
+  align-items: center;
 }
 
 #my-user-page .board-container {

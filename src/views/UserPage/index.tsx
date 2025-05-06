@@ -42,8 +42,6 @@ export default function MyUserPage({
   const accessToken = cookies[ACCESS_TOKEN];
 
   const { userNickname, setUserNickname } = useSignInUserStore();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isFollow, setIsFollow] = useState<boolean>(false);
 
   const [follower, setFollower] = useState<number>(0);
   const [followee, setFollowee] = useState<number>(0);
@@ -61,6 +59,7 @@ export default function MyUserPage({
     }
     getFollowRequest(nickname, accessToken).then(getFollowResponse);
   }, [nickname]);
+
   const activeInterests = Object.entries(interests)
     .filter(([_, value]) => value)
     .map(([key]) => key.replace("userInterest", ""));
@@ -116,6 +115,17 @@ export default function MyUserPage({
     navigator(`${MY_USER_BOARD_ABSOLUTE_PATH(nickname)}?type=board`);
   };
 
+  const interestMap: { label: string; key: keyof UserInterest }[] = [
+    { label: "🛩️여행", key: "userInterestTrip" },
+    { label: "🎮게임", key: "userInterestGame" },
+    { label: "👚패션", key: "userInterestFashion" },
+    { label: "🏀운동", key: "userInterestWorkout" },
+    { label: "🍗맛집", key: "userInterestFood" },
+    { label: "🎵음악", key: "userInterestMusic" },
+    { label: "💸경제", key: "userInterestEconomics" },
+    { label: "🏠일상", key: "userInterestNull" }
+  ];
+
   // render: 공통 레이아웃 컴포넌트 렌더링 //
   return (
     <div id="my-user-page">
@@ -149,11 +159,14 @@ export default function MyUserPage({
               <div className="self-introdction-container">{userIntroduce}</div>
               <div className="self-interest-container">
                 <div className="interest">관심사 |</div>
-                {activeInterests.map((interest, index) => (
-                  <div className="interest" key={index}>
-                    {interest}
-                  </div>
-                ))}
+                {interestMap
+                  .filter(({ key }) => interests[key])
+                  .map(({ label }, index) => (
+                    <div className="interest-map" key={index}>
+                      <div className="emoji">{label.slice(0, 2)}</div>
+                      <div className="text">{label.slice(2)}</div>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>

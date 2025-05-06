@@ -83,7 +83,8 @@ export default function UserPageUpdate() {
   // state: 수정 사용자 닉네임 상태 //
   const [updateNickName, setUpdateNickName] = useState<string>("");
   const [userNicknameChecked, setUserNicknameChecked] = useState(false);
-  const isUserNicknameCheckButtonActive = /^[가-힣a-zA-Z0-9]{2,8}$/.test(updateNickName);
+  const isUserNicknameCheckButtonActive =
+    /^[가-힣a-zA-Z0-9]{2,8}$/.test(updateNickName) && updateNickName !== userNickname;
   const [userNicknameMessage, setUserNicknameMessage] = useState<string>("");
   const [userNicknameMessageError, setUserNicknameMessageError] = useState<boolean>(false);
 
@@ -110,6 +111,10 @@ export default function UserPageUpdate() {
 
   const isUserEmailCheckButtonActive = joinType !== "NAVER" ? true : false;
 
+  // variable: 저장 버튼 활성화 변수 //
+  const isSaveButtonActive =
+    (!isUserNicknameCheckButtonActive || userNicknameChecked) && !!updateNickName;
+
   const openEmailModal = () => setIsEmailModalOpen(true);
   const resetEmailModalState = () => {
     setNewUserEmail("");
@@ -131,7 +136,6 @@ export default function UserPageUpdate() {
   };
 
   const onCheckUserEmailClickHandler = async () => {
-    console.log("📨 인증 요청 시작");
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const isValid = emailRegex.test(newUserEmail);
 
@@ -140,14 +144,12 @@ export default function UserPageUpdate() {
       setUserEmailMessageError(true);
       return;
     }
-    console.log("✅ 이메일 형식 통과, 요청 전송");
 
     const requestBody: UserEmailCheckRequestDto = {
       userEmail: newUserEmail
     };
 
     const response = await userEmailCheckRequest(requestBody);
-    console.log("📦 응답:", response);
     if (!response || response.code !== "SU") {
       setUserEmailMessage("이메일 전송 실패 또는 이미 사용 중입니다.");
       setUserEmailMessageError(true);
@@ -709,7 +711,10 @@ export default function UserPageUpdate() {
           )}
 
           <div className="button-container">
-            <div className="user-update-save-button" onClick={onSaveUserInfoClickHandler}>
+            <div
+              className={`user-update-save-button ${!isSaveButtonActive ? "disabled" : ""}`}
+              onClick={isSaveButtonActive ? onSaveUserInfoClickHandler : undefined}
+            >
               저장
             </div>
             <div className="user-update-cancel-button" onClick={onClickCancelHandler}>

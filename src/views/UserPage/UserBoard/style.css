@@ -96,3 +96,22 @@
 #my-user-board .board-container .board-content .board-date-time {
   width: 20%;
 }
+
+#my-user-board .board-container .pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+#my-user-board .board-container .pagination button {
+  padding: 8px 16px;
+  border: 1px solid #aaa;
+  background-color: white;
+  cursor: pointer;
+}
+
+#my-user-board .board-container .pagination button.active {
+  font-weight: bold;
+  background-color: #eee;
+}
