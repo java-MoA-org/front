@@ -48,6 +48,17 @@ export default function MyUserPage({
 
   // effect: 컴포넌트 로드시 실행할 함수 //
   useEffect(() => {
+    getFollow();
+  }, [nickname]);
+
+  const activeInterests = Object.entries(interests)
+    .filter(([_, value]) => value)
+    .map(([key]) => key.replace("userInterest", ""));
+
+  // function: 네비게이터 함수 //
+  const navigator = useNavigate();
+
+  const getFollow = () => {
     if (!accessToken) return;
     if (!userNickname) {
       navigator(ROOT_ABSOULTE_PATH);
@@ -58,14 +69,7 @@ export default function MyUserPage({
       return;
     }
     getFollowRequest(nickname, accessToken).then(getFollowResponse);
-  }, [nickname]);
-
-  const activeInterests = Object.entries(interests)
-    .filter(([_, value]) => value)
-    .map(([key]) => key.replace("userInterest", ""));
-
-  // function: 네비게이터 함수 //
-  const navigator = useNavigate();
+  };
 
   // function: get follow response 처리 함수 //
   const getFollowResponse = (responseBody: GetFollowResponseDto | ResponseDto | null) => {
@@ -136,7 +140,7 @@ export default function MyUserPage({
             <div className="profile-container">
               <div className="profile-line">
                 <div>프로필</div>
-                <FollowButton />
+                <FollowButton getFollow={getFollow} />
                 {nickname === userNickname && <UpdateButton nickname={nickname!} />}
               </div>
               <div className="profile-image">
