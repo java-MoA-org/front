@@ -30,17 +30,14 @@ const usePagination = <T>() => {
     const totalCount = totalList.length;
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex =
-      currentPage * ITEMS_PER_PAGE > totalCount
-        ? totalCount
-        : currentPage * ITEMS_PER_PAGE;
+      currentPage * ITEMS_PER_PAGE > totalCount ? totalCount : currentPage * ITEMS_PER_PAGE;
     const viewList: T[] = totalList.slice(startIndex, endIndex);
     setViewList(viewList);
   };
 
   // function: 페이지 리스트 변경 함수 //
   const initPageList = (totalPage: number) => {
-    const startPage =
-      PAGES_PER_SECTION * currentSection - (PAGES_PER_SECTION - 1);
+    const startPage = PAGES_PER_SECTION * currentSection - (PAGES_PER_SECTION - 1);
     const endPage =
       PAGES_PER_SECTION * currentSection > totalPage
         ? totalPage
@@ -75,7 +72,7 @@ const usePagination = <T>() => {
     totalSection,
     setTotalList,
     viewList,
-    pageList,
+    pageList
   };
 };
 

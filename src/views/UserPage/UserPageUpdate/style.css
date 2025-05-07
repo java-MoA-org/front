@@ -70,6 +70,14 @@
   border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
+#update-userpage .user-update-save-button.disabled {
+  background-color: rgba(69, 69, 69, 1); /* 연한 회색 */
+  color: rgba(153, 153, 153, 1);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 #update-userpage .user-update-cancel-button {
   display: flex;
   justify-content: center;
