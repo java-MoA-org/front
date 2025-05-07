@@ -42,8 +42,6 @@ export default function Pagination({
   // event handler: 특정 페이지 클릭 시 //
   const onPageClickHandler = (page: number) => {
     setCurrentPage(page);
-    // navigate(buildQuery(page));
-    // window.location.reload();
   };
 
   // event handler: 이전 섹션 버튼 클릭 시 //
@@ -53,8 +51,6 @@ export default function Pagination({
     const newPage = (newSection - 1) * 10 + 1;
     setCurrentSection(newSection);
     setCurrentPage(newPage);
-    // navigate(buildQuery(newPage));
-    // window.location.reload();
   };
 
   // event handler: 다음 섹션 버튼 클릭 시 //
@@ -64,8 +60,6 @@ export default function Pagination({
     const newPage = (newSection - 1) * 10 + 1;
     setCurrentSection(newSection);
     setCurrentPage(newPage);
-    // navigate(buildQuery(newPage));
-    // window.location.reload();
   };
 
   // render: 페이지네이션 UI 렌더링 //
