@@ -55,10 +55,6 @@ export default function BoardView() {
 
   // state: 로그인 사용자 아이디 상태 //
   const { userId } = useSignInUserStore();
-  console.log('username: ', userId);
-
-  // userId 값 확인
-  console.log('User ID:', userId);
 
   // state: 게시글 내용 상태 //
   const [writerId, setWriterId] = useState<string>('');
@@ -102,15 +98,11 @@ export default function BoardView() {
 
   // function: get board response 처리 함수 //
   const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null) => {
-    const message = !responseBody
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'DBE'
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'AF'
-      ? '인증에 실패했습니다.'
-      : responseBody.code === 'NB'
-      ? '존재하지 않는 게시글입니다.'
-      : '';
+    const message = 
+      !responseBody ? '서버에 문제가 있습니다.' : 
+      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 
+      responseBody.code === 'AF' ? '인증에 실패했습니다.' : 
+      responseBody.code === 'NB' ? '존재하지 않는 게시글입니다.' : '';
 
     const isSuccess = responseBody !== null && responseBody.code === 'SU';
 
@@ -120,10 +112,8 @@ export default function BoardView() {
       return;
     }
 
-    const { title, content, creationDate, views, tag, likeCount, writerId, imageUrls } =
-      responseBody as GetBoardResponseDto;
+    const { title, content, creationDate, views, tag, likeCount, writerId, imageUrls } = responseBody as GetBoardResponseDto;
 
-    console.log('Writer ID:', writerId);
     setTitle(title);
     setContent(content);
     setWriterId(writerId);
@@ -131,7 +121,6 @@ export default function BoardView() {
     setViews(views);
     setBoardTag(tag);
     setLikeCount(likeCount);
-    console.log(images);
     const uniqueImages = Array.from(new Set(imageUrls));
     setImages(uniqueImages);
   };
@@ -204,27 +193,21 @@ export default function BoardView() {
 
   // function: put likes response 처리 함수 //
   const putLikeResponse = (responseBody: ResponseDto | null) => {
-    const message = !responseBody
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'DBE'
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'AF'
-      ? '인증에 실패했습니다.'
-      : '';
-
-    const isSuccess = responseBody !== null && responseBody.code === 'SU';
-    if (!isSuccess) {
-      alert(message);
-      return;
-    }
-
     if (responseBody && responseBody.data) {
-      setLikeCount(responseBody.data.likeCount);
-      setLiked(responseBody.data.liked);
-
-      if (!boardSequence || !accessToken) return;
+      const { likeCount, liked } = responseBody.data;
+  
+      if (likeCount !== undefined) {
+        setLikeCount(likeCount);
+      } 
+      
+      if (liked !== undefined) {
+        setLiked(liked);
+      }
     }
+
+    if (!boardSequence || !accessToken) return;
   };
+  
 
   // function: post comment response 처리 함수 //
   const postCommentResponse = (responseBody: ResponseDto | null) => {
@@ -284,7 +267,12 @@ export default function BoardView() {
   // event handler: 좋아요 버튼 클릭 이벤트 처리 //
   const onLikeClickHandler = () => {
     if (!boardSequence || !accessToken) return;
+    const newLikedStatus = !liked;
+    setLiked(newLikedStatus);
+    localStorage.setItem(`liked_${boardSequence}`, JSON.stringify(newLikedStatus));
+    
     putBoardLikeRequest(boardSequence, accessToken).then(putLikeResponse);
+  
   };
 
   // event handler: 댓글 작성 클릭 이벤트 처리 //
