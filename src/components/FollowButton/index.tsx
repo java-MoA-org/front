@@ -8,7 +8,11 @@ import { ACCESS_TOKEN, ROOT_ABSOULTE_PATH } from "../../constants";
 import useSignInUserStore from "../../stores/sign-in-user.store";
 import GetFollowResponseDto from "../../apis/dto/response/follow/get-follow.response.dto";
 
-export default function FollowButton() {
+interface Prop {
+  getFollow: () => void;
+}
+
+export default function FollowButton({ getFollow }: Prop) {
   const { nickname } = useParams(); // ✅ URL에서 :nickname 추출
   const [cookies] = useCookies([ACCESS_TOKEN]);
   const accessToken = cookies[ACCESS_TOKEN];
@@ -31,6 +35,7 @@ export default function FollowButton() {
     if (!nickname) return;
 
     if (isSuccess) {
+      getFollow();
       getFollowRequest(nickname, accessToken).then(getFollowResponse);
     }
   };

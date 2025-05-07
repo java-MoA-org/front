@@ -56,8 +56,8 @@ const usePagination = <T>() => {
 
   // effect: 현재 페이지가 변경되면 실행할 함수 //
   useEffect(() => {
-    if (currentPage) initViewList(totalList);
-  }, [currentPage]);
+    if (currentPage && totalList.length) initViewList(totalList);
+  }, [currentPage, totalList]);
 
   // effect: 현재 섹션이 변경되면 실행할 함수 //
   useEffect(() => {

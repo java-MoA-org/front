@@ -3,14 +3,35 @@ import userImage from "../../../../assets/images/ex-user1.png";
 import FollowButton from "../../../../components/FollowButton";
 import GetFollowResponseDto from "../../../../apis/dto/response/follow/get-follow.response.dto";
 import ResponseDto from "../../../../apis/dto/response/response.dto";
+import { getFollowRequest } from "../../../../apis";
+import useSignInUserStore from "../../../../stores/sign-in-user.store";
+import { useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { ACCESS_TOKEN } from "../../../../constants";
 
 interface Props {
   setActiveTab: Dispatch<SetStateAction<"followee" | "follower">>;
 }
 
 export default function UserPageFollowee({ setActiveTab }: Props) {
+  const { nickname } = useParams(); // ✅ URL에서 :nickname 추출
+  const [cookies] = useCookies();
+  const accessToken = cookies[ACCESS_TOKEN];
   // state: follow 상태 관리 //
   const [follows, setFollows] = useState<string[]>([]);
+
+  const { userNickname } = useSignInUserStore();
+
+  const getFollow = () => {
+    if (!accessToken) return;
+    if (!userNickname) {
+      return;
+    }
+    if (!nickname) {
+      return;
+    }
+    getFollowRequest(nickname, accessToken).then(getFollowResponse);
+  };
 
   // function: get follow response 처리 함수 //
   const getFollowResponse = (responseBody: GetFollowResponseDto | ResponseDto | null) => {
@@ -28,7 +49,7 @@ export default function UserPageFollowee({ setActiveTab }: Props) {
       alert(message);
       return;
     }
-    const { followees } = responseBody as GetFollowResponseDto;
+    const { followers, followees } = responseBody as GetFollowResponseDto;
     setFollows(followees);
   };
 
@@ -49,7 +70,7 @@ export default function UserPageFollowee({ setActiveTab }: Props) {
               김우진입니다안녕하세요
             </div>
           </div>
-          <FollowButton />
+          <FollowButton getFollow={getFollow} />
         </div>
       </div>
     </div>
