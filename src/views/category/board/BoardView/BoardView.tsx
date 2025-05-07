@@ -245,10 +245,6 @@ export default function BoardView() {
     setComment('');
     if (!boardSequence || !accessToken) return;
     getBoardCommentRequest(boardSequence, accessToken).then(getBoardCommentResponse);
-
-    // 알림 생성성
-    const requestBody: PostCommentAlertRequestDto = { comment, boardType: 'board', sequence: boardSequence };
-    console.log(requestBody);
   };
 
   // event handler: 댓글 변경 이벤트 처리 //
@@ -295,6 +291,10 @@ export default function BoardView() {
       boardComment: comment,
     };
     postBoardCommentRequest(requestBody, boardSequence, accessToken).then(postCommentResponse);
+    // 알림 생성
+    const requestBody2: PostCommentAlertRequestDto = { comment, boardType: 'board', sequence: boardSequence };
+    console.log(requestBody2);
+    postCommentAlertRequest(requestBody2, accessToken);
   };
 
   // effect: 컴포넌트 로드시 실행할 함수 //

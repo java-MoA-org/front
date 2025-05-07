@@ -709,7 +709,7 @@ export const deleteNoticeRequest = async (noticeId: number | string, accessToken
 // function: post comment alert API 요청 함수 //
 export const postCommentAlertRequest = async (commentData: PostCommentAlertRequestDto, accessToken: string) => {
   const responseBody = await axios
-    .post(POST_COMMENT_ALERT_URL, bearerAuthorization(accessToken))
+    .post(POST_COMMENT_ALERT_URL, commentData, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
     .catch(responseErrorHandler);
   return responseBody;
