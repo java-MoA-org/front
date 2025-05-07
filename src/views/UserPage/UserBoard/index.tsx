@@ -6,6 +6,7 @@ import { MY_USER_PATH } from "../../../constants";
 import { getUserPageRequest } from "../../../apis";
 import ResponseDto from "../../../apis/dto/response/response.dto";
 import GetUserPageResponseDto from "../../../apis/dto/response/userpage/get-user-page.response.dto";
+import { usePagination } from "../../../hooks";
 
 export default function UserBoard() {
   const [searchParams] = useSearchParams();
@@ -18,21 +19,23 @@ export default function UserBoard() {
   const [dailys, setDailys] = useState<Daily[]>([]);
   const [trades, setTrades] = useState<Trade[]>([]);
 
+  const boardPagination = usePagination<Board>();
+  const dailyPagination = usePagination<Daily>();
+  const tradePagination = usePagination<Trade>();
+
   const [activeTab, setActiveTab] = useState<"board" | "daily" | "used">(
-    typeParam === "board" ? "board" : typeParam === "daily" ? "daily" : "used",
+    typeParam === "board" ? "board" : typeParam === "daily" ? "daily" : "used"
   );
 
   // function: get user page response 처리 함수 //
-  const getUserBoardResponse = (
-    responseBody: GetUserPageResponseDto | ResponseDto | null,
-  ) => {
+  const getUserBoardResponse = (responseBody: GetUserPageResponseDto | ResponseDto | null) => {
     const message = !responseBody
       ? "서버에 문제가 있습니다."
       : responseBody.code === "DBE"
-        ? "서버에 문제가 있습니다."
-        : responseBody.code === "AF"
-          ? "인증에 실패했습니다."
-          : "";
+      ? "서버에 문제가 있습니다."
+      : responseBody.code === "AF"
+      ? "인증에 실패했습니다."
+      : "";
 
     const isSuccess = responseBody !== null && responseBody.code === "SU";
     if (!isSuccess) {
@@ -40,8 +43,7 @@ export default function UserBoard() {
       return;
     }
 
-    const { boards, dailyBoards, tradeBoards } =
-      responseBody as GetUserPageResponseDto;
+    const { boards, dailyBoards, tradeBoards } = responseBody as GetUserPageResponseDto;
     setBoards(boards);
     setDailys(dailyBoards);
     setTrades(tradeBoards);
@@ -61,14 +63,22 @@ export default function UserBoard() {
 
   // effect: 컴포넌트 로드시 실행할 함수 //
   useEffect(() => {
-    if (
-      typeParam === "board" ||
-      typeParam === "daily" ||
-      typeParam === "used"
-    ) {
+    if (typeParam === "board" || typeParam === "daily" || typeParam === "used") {
       setActiveTab(typeParam);
     }
   }, [typeParam]);
+
+  useEffect(() => {
+    boardPagination.setTotalList([...boards].reverse());
+  }, [boards]);
+
+  useEffect(() => {
+    dailyPagination.setTotalList([...dailys].reverse());
+  }, [dailys]);
+
+  useEffect(() => {
+    tradePagination.setTotalList([...trades].reverse());
+  }, [trades]);
 
   // variable: board,daily,user 변수 //
   const boardClass = activeTab === "board" ? "board active" : "board";
@@ -100,7 +110,7 @@ export default function UserBoard() {
           (boards.length === 0 ? (
             <div className="no-content">아직 작성한 글이 없습니다.</div>
           ) : (
-            [...boards].map(
+            boardPagination.viewList.map(
               ({ boardSequence, title, views, likeCount, creationDate }) => (
                 <div className="board-content" key={boardSequence}>
                   <div className="board-numbers content">{boardSequence}</div>
@@ -109,14 +119,14 @@ export default function UserBoard() {
                   <div className="board-likes content">{likeCount}</div>
                   <div className="board-date-time content">{creationDate}</div>
                 </div>
-              ),
+              )
             )
           ))}
         {activeTab === "daily" &&
           (dailys.length === 0 ? (
             <div className="no-content">아직 작성한 글이 없습니다.</div>
           ) : (
-            [...dailys].map(
+            dailyPagination.viewList.map(
               ({ dailySequence, title, views, likeCount, creationDate }) => (
                 <div className="board-content" key={dailySequence}>
                   <div className="board-numbers content">{dailySequence}</div>
@@ -125,7 +135,7 @@ export default function UserBoard() {
                   <div className="board-likes content">{likeCount}</div>
                   <div className="board-date-time content">{creationDate}</div>
                 </div>
-              ),
+              )
             )
           ))}
 
@@ -133,7 +143,7 @@ export default function UserBoard() {
           (trades.length === 0 ? (
             <div className="no-content">아직 작성한 글이 없습니다.</div>
           ) : (
-            [...trades].map(
+            tradePagination.viewList.map(
               ({ tradeSequence, title, views, likeCount, creationDate }) => (
                 <div className="board-content" key={tradeSequence}>
                   <div className="board-numbers content">{tradeSequence}</div>
@@ -142,9 +152,38 @@ export default function UserBoard() {
                   <div className="board-likes content">{likeCount}</div>
                   <div className="board-date-time content">{creationDate}</div>
                 </div>
-              ),
+              )
             )
           ))}
+        <div className="pagination">
+          {(activeTab === "board"
+            ? boardPagination.pageList
+            : activeTab === "daily"
+            ? dailyPagination.pageList
+            : tradePagination.pageList
+          ).map((page) => (
+            <button
+              key={page}
+              className={
+                page ===
+                (activeTab === "board"
+                  ? boardPagination.currentPage
+                  : activeTab === "daily"
+                  ? dailyPagination.currentPage
+                  : tradePagination.currentPage)
+                  ? "active"
+                  : ""
+              }
+              onClick={() => {
+                if (activeTab === "board") boardPagination.setCurrentPage(page);
+                else if (activeTab === "daily") dailyPagination.setCurrentPage(page);
+                else tradePagination.setCurrentPage(page);
+              }}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
