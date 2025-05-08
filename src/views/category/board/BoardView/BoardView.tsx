@@ -13,6 +13,7 @@ import {
   getBoardRequest,
   postBoardCommentRequest,
   postCommentAlertRequest,
+  postLikeAlertRequest,
   putBoardLikeRequest,
 } from '../../../../apis';
 import { PostBoardCommentRequestDto } from '../../../../apis/dto/request/board';
@@ -21,6 +22,7 @@ import likeIcon from '../../../../assets/images/like.png';
 import commentIcon from '../../../../assets/images/comment.png';
 import viewsIcon from '../../../../assets/images/views.png';
 import PostCommentAlertRequestDto from '../../../../apis/dto/request/alert/post-comment-alert.request.dto';
+import PostLikeAlertRequestDto from '../../../../apis/dto/request/alert/post-like-alert.request.dto';
 
 // interface: 댓글 컴포넌트 속성 //
 interface CommentItemProps {
@@ -281,6 +283,11 @@ export default function BoardView() {
   const onLikeClickHandler = () => {
     if (!boardSequence || !accessToken) return;
     putBoardLikeRequest(boardSequence, accessToken).then(putLikeResponse);
+
+    // 알림 생성
+    const requestBody: PostLikeAlertRequestDto = { boardType: 'board', sequence: boardSequence };
+    console.log('like:', requestBody);
+    postLikeAlertRequest(requestBody, accessToken);
   };
 
   // event handler: 댓글 작성 클릭 이벤트 처리 //

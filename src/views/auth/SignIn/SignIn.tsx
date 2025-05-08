@@ -20,7 +20,6 @@ export default function SignIn({ setActiveTab }: Props) {
   const navigate = useNavigate();
   const { setTimeLeft } = useSessionTimerStore();
   const { setUserAll } = useSignInUserStore();
-
   const [userId, setUserId] = useState<string>('');
   const [userPassword, setUserPassword] = useState<string>('');
   const [signInHint, setSignInHint] = useState<string>('');

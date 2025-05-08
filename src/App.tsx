@@ -51,8 +51,10 @@ import UserPageUpdate from './views/UserPage/UserPageUpdate';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import useSignInUserStore from './stores/sign-in-user.store';
 import { useEffect } from 'react';
-import { getUserInfoRequest, getUserPageInfoRequest } from './apis';
+import { GetUserAlertRequest, getUserInfoRequest, getUserPageInfoRequest } from './apis';
 import GetUserInfoResponseDto from './apis/dto/response/user/get-user-info.response.dto';
+import GetUserAlertResponseDto from './apis/dto/response/alert/get-user-alert.response.dto';
+import useNotificationStore from './stores/alert-read.store';
 
 function App() {
   const {
@@ -65,6 +67,8 @@ function App() {
     setUserRole,
     setUserInterests,
   } = useSignInUserStore();
+
+  const { setAlerts } = useNotificationStore();
   const [cookies] = useCookies([ACCESS_TOKEN]);
   // const [cookies] = useCookies();
   useEffect(() => {
@@ -100,7 +104,16 @@ function App() {
       setUserInterests(userInfo.userInterests);
     };
 
+    const fetchUserAlert = async () => {
+      const response = await GetUserAlertRequest(accessToken);
+      if (!response || response.code !== 'SU') return;
+
+      const { alerts } = response as GetUserAlertResponseDto;
+      setAlerts(alerts);
+    };
+
     fetchUserInfo();
+    fetchUserAlert();
   }, [cookies]);
 
   return (

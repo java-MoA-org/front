@@ -12,11 +12,13 @@ import {
   getDailyRequest,
   postCommentAlertRequest,
   postDailyCommentRequest,
+  postLikeAlertRequest,
   putDailyLikeRequest,
 } from '../../../../apis';
 import { PostDailyCommentRequestDto } from '../../../../apis/dto/request/daily';
 import Comment from '../../../../types/interfaces/comment.interface';
 import PostCommentAlertRequestDto from '../../../../apis/dto/request/alert/post-comment-alert.request.dto';
+import PostLikeAlertRequestDto from '../../../../apis/dto/request/alert/post-like-alert.request.dto';
 
 // interface: 댓글 컴포넌트 속성 //
 interface CommentItemProps {
@@ -249,6 +251,9 @@ export default function DailyView() {
   const onLikeClickHandler = () => {
     if (!dailySequence || !accessToken) return;
     putDailyLikeRequest(dailySequence, accessToken).then(putLikeResponse);
+    const requestBody: PostLikeAlertRequestDto = { boardType: 'daily', sequence: dailySequence };
+    console.log('like:', requestBody);
+    postLikeAlertRequest(requestBody, accessToken);
   };
 
   // event handler: 댓글 작성 클릭 이벤트 처리 //
