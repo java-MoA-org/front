@@ -145,7 +145,6 @@ export default function DailyMain() {
   // event handler: 정렬 기준 클릭 //
   const onSortClick = (newSort: string) => {
     setSearchParams({ page: '1', sort: newSort });
-    window.location.reload();
   };
 
   // event handler: 검색어 입력 변경 //
@@ -161,11 +160,11 @@ export default function DailyMain() {
     }
   };
 
-  // effect: 컴포넌트렌더링 시 일상 게시글 목록 요청 //
+  // effect: 컴포넌트 로드시 일상 게시글 목록 요청 //
   useEffect(() => {
     if(searchQuery) return;
     getDailyListRequest(page, sort, accessToken).then(getDailyListResponse);
-  }, [page, sort, accessToken]);
+  }, []);
 
   // component: 일상 게시판 컴포넌트 렌더링 //
   return (

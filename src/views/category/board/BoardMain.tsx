@@ -13,7 +13,6 @@ import likeIcon from '../../../assets/images/likeClick.png';
 import commentIcon from '../../../assets/images/comment.png';
 import viewsIcon from '../../../assets/images/views.png';
 import imageIcon from '../../../assets/images/image.png';
-import useSignInUserStore from '../../../stores/sign-in-user.store';
 
 // interface: 게시판 테이블 레코드 컴포넌트 속성 //
 interface TableItemProps {
@@ -193,13 +192,11 @@ export default function BoardMain() {
   const onCategoryClick = (category: string) => {
     setSelectedCategory(category);
     setSearchParams({ tag: category, page: '1', sort });
-    window.location.reload();
   };
 
   // event handler: 정렬 기준 클릭 //
   const onSortClick = (newSort: string) => {
     setSearchParams({ tag, page: '1', sort: newSort });
-    window.location.reload();
   };
 
   // event handler: 검색어 입력 변경 //
@@ -215,11 +212,11 @@ export default function BoardMain() {
     }
   };
 
-  // effect: 컴포넌트 렌더링 시 게시글 목록 요청 //
+  // effect: 컴포넌트 로드시 게시글 목록 요청 //
   useEffect(() => {
     if (searchQuery) return;
     getBoardListRequest(tag, page, sort, accessToken).then(getBoardListResponse);
-  }, [tag, page, sort, accessToken]);
+  }, []);
 
   // render: 게시판 컴포넌트 렌더링 //
   return (
