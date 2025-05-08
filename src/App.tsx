@@ -53,6 +53,7 @@ import useSignInUserStore from './stores/sign-in-user.store';
 import { useEffect } from 'react';
 import { GetUserAlertRequest, getUserInfoRequest, getUserPageInfoRequest } from './apis';
 import GetUserInfoResponseDto from './apis/dto/response/user/get-user-info.response.dto';
+import ScrollToTop from './components/ScrollToTop';
 import GetUserAlertResponseDto from './apis/dto/response/alert/get-user-alert.response.dto';
 import useNotificationStore from './stores/alert-read.store';
 
@@ -121,6 +122,7 @@ function App() {
       {' '}
       {/* CookiesProvider로 애플리케이션 감싸기 */}
       <BrowserRouter>
+        <ScrollToTop />
         <Marquee />
         <Header />
         <Routes>
@@ -163,7 +165,7 @@ function App() {
 
           <Route path={MY_USER_PATH}>
             <Route path=":nickname" element={<UserPageContainer />} />
-            <Route path=":nickname/follow" element={<UserPageFollow />} />
+            <Route path=":nickname/follow-list" element={<UserPageFollow />} />
             <Route path=":nickname/user-board" element={<UserBoard />} />
             <Route path="user-update" element={<UserPageUpdate />} />
           </Route>

@@ -17,7 +17,7 @@ export default interface GetUsedTradeResponseDto extends ResponseDto {
   location: string;
   detailLocation: string;
   transactionStatus: TransactionStatus;
-  images: string[];
+  imageUrls: string[];
   likeCount: number;
   hasChatRoom: boolean;
 }

@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 15px;
 }
 
 .pagination-box .pagination-button {
@@ -36,7 +36,7 @@
 
 .pagination-box .pagination .page {
   color: #394867;
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 400;
   line-height: 20px;
   cursor: pointer;

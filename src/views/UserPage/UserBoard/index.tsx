@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import "./style.css";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Board, Daily, Trade } from "../../../types/interfaces";
-import { MY_USER_PATH } from "../../../constants";
+import {
+  BOARD_VIEW_ABSOLUTE_PATH,
+  DAILY_VIEW_ABSOLUTE_PATH,
+  MY_USER_PATH,
+  USED_TRADE_VIEW_ABSOLUTE_PATH
+} from "../../../constants";
 import { getUserPageRequest } from "../../../apis";
 import ResponseDto from "../../../apis/dto/response/response.dto";
 import GetUserPageResponseDto from "../../../apis/dto/response/userpage/get-user-page.response.dto";
@@ -88,19 +93,26 @@ export default function UserBoard() {
     setCurrentSection(1);
   }, [activeTab, boards, dailys, trades, setTotalList, setCurrentPage, setCurrentSection]);
 
-  useEffect(() => {
-    // console.log("activeTab:", activeTab);
-    // console.log("boards:", boards.length, boards);
-    // console.log("dailys:", dailys.length, dailys);
-    // console.log("trades:", trades.length, trades);
-    // console.log("viewList after setTotalList:", viewList);
-    // ... setTotalList, setCurrentPage, setCurrentSection
-  }, [activeTab, boards, dailys, trades]);
-
   // variable: board,daily,user 변수 //
   const boardClass = activeTab === "board" ? "board active" : "board";
   const dailyClass = activeTab === "daily" ? "daily active" : "daily";
   const usedClass = activeTab === "used" ? "used active" : "used";
+
+  // event handler: 게시판 클릭 핸들러 //
+  const onBoardClickHandler = (boardSequence: number) => {
+    if (!boardSequence) return;
+    navigator(BOARD_VIEW_ABSOLUTE_PATH(boardSequence));
+  };
+  // event handler: 일상 클릭 핸들러 //
+  const onDailyClickHandler = (dailySequence: number) => {
+    if (!dailySequence) return;
+    navigator(DAILY_VIEW_ABSOLUTE_PATH(dailySequence));
+  };
+  // event handler: 중고거래 클릭 핸들러 //
+  const onTradeClickHandler = (tradeSequence: number) => {
+    if (!tradeSequence) return;
+    navigator(USED_TRADE_VIEW_ABSOLUTE_PATH(tradeSequence));
+  };
 
   return (
     <div id="my-user-board">
@@ -129,7 +141,11 @@ export default function UserBoard() {
           ) : (
             (viewList as Board[]).map(
               ({ boardSequence, title, views, likeCount, creationDate }) => (
-                <div className="board-content" key={boardSequence}>
+                <div
+                  className="board-content"
+                  key={boardSequence}
+                  onClick={() => onBoardClickHandler(boardSequence)}
+                >
                   <div className="board-numbers content">{boardSequence}</div>
                   <div className="board-titles content">{title}</div>
                   <div className="board-views content">{views}</div>
@@ -145,7 +161,11 @@ export default function UserBoard() {
           ) : (
             (viewList as Daily[]).map(
               ({ dailySequence, title, views, likeCount, creationDate }) => (
-                <div className="board-content" key={dailySequence}>
+                <div
+                  className="board-content"
+                  key={dailySequence}
+                  onClick={() => onDailyClickHandler(dailySequence)}
+                >
                   <div className="board-numbers content">{dailySequence}</div>
                   <div className="board-titles content">{title}</div>
                   <div className="board-views content">{views}</div>
@@ -162,7 +182,11 @@ export default function UserBoard() {
           ) : (
             (viewList as Trade[]).map(
               ({ tradeSequence, title, views, likeCount, creationDate }) => (
-                <div className="board-content" key={tradeSequence}>
+                <div
+                  className="board-content"
+                  key={tradeSequence}
+                  onClick={() => onTradeClickHandler(tradeSequence)}
+                >
                   <div className="board-numbers content">{tradeSequence}</div>
                   <div className="board-titles content">{title}</div>
                   <div className="board-views content">{views}</div>

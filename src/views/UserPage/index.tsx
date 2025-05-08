@@ -58,6 +58,7 @@ export default function MyUserPage({
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
+  // function: get follow response 처리 함수 //
   const getFollow = () => {
     if (!accessToken) return;
     if (!userNickname) {
@@ -140,7 +141,7 @@ export default function MyUserPage({
             <div className="profile-container">
               <div className="profile-line">
                 <div>프로필</div>
-                <FollowButton getFollow={getFollow} />
+                {nickname !== userNickname && <FollowButton getFollow={getFollow} />}
                 {nickname === userNickname && <UpdateButton nickname={nickname!} />}
               </div>
               <div className="profile-image">

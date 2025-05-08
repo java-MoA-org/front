@@ -398,21 +398,15 @@ export default function UserPageUpdate() {
     );
   }
 
-  // function: patch userinfo response 처리 함수 //
-  const patchUserInfoResponse = (responseBody: ResponseDto | null) => {
-    const message = !responseBody
-      ? "서버에 문제가 있습니다"
-      : responseBody.code === "DBE"
-      ? "서버에 문제가 있습니다"
-      : responseBody.code === "AF"
-      ? "인증에 실패했습니다"
-      : "";
-  };
-
   // event handler: 프로필 사진 클릭 이벤트 처리 //
   const onProfileClickHandler = () => {
     if (!fileRef.current) return;
     fileRef.current.click();
+  };
+  // event handler: 기본 프로플 클릭 이벤트 처리 //
+  const onProfileDefaultClickHandler = () => {
+    setPreviewProfile(DefaultProfile); // 미리보기 이미지 변경
+    setProfileImageFile(null);
   };
 
   // event handler: 파일 인풋 변경 이벤트 처리 //
@@ -543,8 +537,13 @@ export default function UserPageUpdate() {
               onChange={onFileChangeHandler}
             />
           </div>
-          <div className="image-update-button" onClick={onProfileClickHandler}>
-            프로필 이미지 변경
+          <div className="image-update-conainer">
+            <div className="image-update-button" onClick={onProfileClickHandler}>
+              프로필 이미지 변경
+            </div>
+            <div className="image-default-button" onClick={onProfileDefaultClickHandler}>
+              기본 이미지로 변경
+            </div>
           </div>
         </div>
 

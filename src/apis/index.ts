@@ -135,6 +135,8 @@ const multipartFormData = { headers: { 'Content-Type': 'multipart/form-data' } }
 
 const POST_FOLLOW_URL = (nickname: string) => `${API_DOMAIN}/api/v1/follow/${nickname}`;
 const GET_FOLLOW_URL = (nickname: string) => `${API_DOMAIN}/api/v1/follow/number/${nickname}`;
+const GET_FOLLOW_INFO_URL = (nickname: string) =>
+  `${API_DOMAIN}/api/v1/follow/number/info/${nickname}`;
 
 const ALERT_MODULE_URL = `${API_DOMAIN}/api/v1/alert`;
 const POST_COMMENT_ALERT_URL = `${ALERT_MODULE_URL}/comment`;
@@ -302,6 +304,16 @@ export const getUserPageInfoRequest = async (accessToken: string) => {
 // function: get follow API 요청 함수 //
 export const getFollowRequest = async (nickname: string, accessToken: string) => {
   const url = GET_FOLLOW_URL(nickname);
+  const responseBody = await axios
+    .get(url, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: get user follow info API 요청 함수 //
+export const getFollowInfoRequest = async (nickname: string, accessToken: string) => {
+  const url = GET_FOLLOW_INFO_URL(nickname);
   const responseBody = await axios
     .get(url, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
