@@ -190,6 +190,8 @@ export default function BoardMain() {
 
   // event handler: 카테고리 탭 클릭 //
   const onCategoryClick = (category: string) => {
+    setSearchQuery('');
+    setCurrentPage(1);
     setSelectedCategory(category);
     setSearchParams({ tag: category, page: '1', sort });
   };
@@ -215,8 +217,8 @@ export default function BoardMain() {
   // effect: 컴포넌트 로드시 게시글 목록 요청 //
   useEffect(() => {
     if (searchQuery) return;
-    getBoardListRequest(tag, page, sort, accessToken).then(getBoardListResponse);
-  }, []);
+    getBoardListRequest(tag, currentPage, sort, accessToken).then(getBoardListResponse);
+  }, [tag, currentPage, sort, searchQuery]);
 
   // render: 게시판 컴포넌트 렌더링 //
   return (
