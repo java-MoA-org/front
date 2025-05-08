@@ -22,7 +22,8 @@ export default function UsedTradeWrite() {
   // state: 중고거래글 작성 내용 상태 //
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [imageList, setImageList] = useState<string[]>([]);
+  const [imageList, setImageList] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [itemTypeTag, setItemTypeTag] = useState<ItemTypeTag>(ItemTypeTag.ETC);
   const [usedItemStatusTag, setUsedItemStatusTag] = useState<UsedItemStatusTag>(UsedItemStatusTag.NEW);
   const [location, setLocation] = useState<string>('');
@@ -135,22 +136,40 @@ export default function UsedTradeWrite() {
   };
 
   // event Handler: 이미지 업로드  //
-  const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const imageUrl = reader.result as string;
-        setImageList(prevImages => [...prevImages, imageUrl]);
-        onImageUpload(imageUrl);
+  const onImageInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.target;
+    if (!files || !files.length) return;
+  
+    const selectedFiles = Array.from(files);
+    setImageList(selectedFiles);
+  
+    const fileReader = new FileReader();
+    const imageUrls: string[] = [];
+  
+    selectedFiles.forEach((file, index) => {
+      fileReader.onloadend = () => {
+        imageUrls.push(fileReader.result as string);
+        if (index === selectedFiles.length - 1) {
+          setImageUrls(imageUrls);
+        }
       };
-      reader.readAsDataURL(file);
-    }
+      fileReader.readAsDataURL(file);
+    });
   };
 
-  // event handler: 이미지 목록 변경 이벤트 처리 //
-  const onImageListChangeHandler = (imageList: string[]) => {
-    setImageList(imageList);
+  const handleImageDelete = (index: number) => {
+    const updatedFileList = [...imageList];
+    updatedFileList.splice(index, 1);
+    setImageList(updatedFileList);
+
+    const updatedImageUrls = [...imageUrls];
+    updatedImageUrls.splice(index, 1);
+    setImageUrls(updatedImageUrls);
+  };
+
+  // 이미지 업로드 버튼
+  const handleFileInputClick = () => {
+    document.getElementById('file-input')?.click();
   };
 
   // event handler: 게시판 글 작성 버튼 클릭 이벤트 처리 //
@@ -177,21 +196,26 @@ export default function UsedTradeWrite() {
 
         <div className="item-images-container">
           <div className="item-images">상품이미지</div>
-          <input 
+          <input
             type="file"
-            accept="image/*"
+            accept="image/png, image/jpeg"
             style={{ display: "none" }}
             id="file-input"
-            onChange={handleImageUpload}
+            onChange={onImageInputChangeHandler}
+            multiple
           />
-          <div className="image-preview-slider" onClick={() => document.getElementById("file-input")?.click()} style={{ width: "300px", height: "300px", marginTop: "10px" }}>
-            <Swiper spaceBetween={0} slidesPerView={1} >
-              {imageList.map((image, index) => (
+          <div className="image-preview-slider" onClick={handleFileInputClick} style={{ width: "300px", height: "300px", marginTop: "10px" }}>
+            <Swiper spaceBetween={0} slidesPerView={1}>
+              {imageUrls.map((imageUrl, index) => (
                 <SwiperSlide key={index}>
-                  <img
-                    src={image}
-                    alt={`업로드 이미지 ${index}`}
-                  />
+                  <div>
+                    <img
+                      src={imageUrl}
+                      alt={`업로드 이미지 ${index}`}
+                      style={{ width: "100%", height: "auto" }}
+                    />
+                    <button onClick={() => handleImageDelete(index)}>삭제</button>
+                  </div>
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -260,7 +284,7 @@ export default function UsedTradeWrite() {
         </div>
         <div className="button-container">
           <div className={writeButtonClass} onClick={onWriteButtonClickHandler}>작성하기</div>
-      </div>
+        </div>
       </div>
     </div>
   );
