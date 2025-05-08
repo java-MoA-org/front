@@ -17,14 +17,15 @@ export default function AlertDropdown({ accessToken, dropdownRef }: AlertDropdow
   const navigate = useNavigate();
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    console.log('scroll');
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     if (scrollTop + clientHeight >= scrollHeight - 10) {
       setVisibleAlerts((prev) => Math.min(prev + ALERTS_PER_PAGE, alerts.length));
     }
   };
 
-  const handleMouseEnter = async (id: number, isRead: boolean) => {
-    if (!isRead) {
+  const handleMouseEnter = async (id: number, read: boolean) => {
+    if (!read) {
       await patchReadAlertRequest(id, accessToken);
       markAsRead(id);
     }
@@ -50,25 +51,27 @@ export default function AlertDropdown({ accessToken, dropdownRef }: AlertDropdow
   };
 
   return (
-    <div className="alert-dropdown" ref={dropdownRef} onScroll={handleScroll}>
-      {alerts.slice(0, visibleAlerts).map(({ id, type, content, creationDate, link, read }) => (
-        <div
-          key={id}
-          className={`alert-item ${read ? 'read' : 'unread'}`}
-          onMouseEnter={() => handleMouseEnter(id, read)}
-        >
-          <div className="alert-main" onClick={() => handleClick(link)}>
-            <div className="alert-title">
-              "{type}"<br />
-              {content}
+    <div className="alert-dropdown" ref={dropdownRef}>
+      <div className="alert-list" onScroll={handleScroll}>
+        {alerts.slice(0, visibleAlerts).map(({ id, type, content, creationDate, link, read }) => (
+          <div
+            key={id}
+            className={`alert-item ${read ? 'read' : 'unread'}`}
+            onMouseEnter={() => handleMouseEnter(id, read)}
+          >
+            <div className="alert-main" onClick={() => handleClick(link)}>
+              <div className="alert-title">
+                "{type}"<br />
+                {content}
+              </div>
+              <div className="alert-date">{new Date(creationDate).toLocaleString()}</div>
             </div>
-            <div className="alert-date">{new Date(creationDate).toLocaleString()}</div>
+            <button className="alert-delete" onClick={() => handleDelete(id)}>
+              x
+            </button>
           </div>
-          <button className="alert-delete" onClick={() => handleDelete(id)}>
-            x
-          </button>
-        </div>
-      ))}
+        ))}
+      </div>
 
       <div className="alert-controls">
         <button onClick={handleReadAll}>모두 읽음</button>

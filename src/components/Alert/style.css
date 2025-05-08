@@ -3,11 +3,17 @@
   right: 60px;
   top: 50px;
   width: 300px;
-  max-height: 400px;
-  overflow-y: auto;
+  height: 300px;
   background-color: white;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+.alert-list {
+  flex: 1; /* 남은 영역 모두 차지 */
+  overflow-y: auto;
 }
 
 .alert-main {
@@ -48,11 +54,11 @@
 }
 
 .alert-controls {
-  display: flex;
-  justify-content: space-between;
   padding: 8px 10px;
   background-color: #f9f9f9;
   border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
 }
 
 .alert-date {

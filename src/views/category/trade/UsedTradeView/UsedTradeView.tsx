@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
 import './UsedTradeView.css';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -13,17 +12,6 @@ import {
   postLikeAlertRequest,
   putUsedTradeLikeRequest,
 } from '../../../../apis';
-import PostLikeAlertRequestDto from '../../../../apis/dto/request/alert/post-like-alert.request.dto';
-=======
-import React, { useEffect, useState } from "react";
-import "./UsedTradeView.css";
-import { useNavigate, useParams } from "react-router-dom";
-import { useCookies } from "react-cookie";
-import useSignInUserStore from "../../../../stores/sign-in-user.store";
-import { ACCESS_TOKEN, USED_TRADE_ABSOLUTE_PATH, USED_TRADE_UPDATE_ABSOLUTE_PATH } from "../../../../constants";
-import { GetUsedTradeResponseDto } from "../../../../apis/dto/response/usedtrade";
-import ResponseDto from "../../../../apis/dto/response/response.dto";
-import { deleteUsedTradeRequest, getUsedTradeRequest, putUsedTradeLikeRequest } from "../../../../apis";
 import likeIcon from '../../../../assets/images/trade-like.png';
 import likeClickIcon from '../../../../assets/images/trade-like-click.png';
 import likeCountIcon from '../../../../assets/images/tradeLike.png';
@@ -31,8 +19,8 @@ import viewsIcon from '../../../../assets/images/tradeViews.png';
 import timeIcon from '../../../../assets/images/time.png';
 import locationIcon from '../../../../assets/images/place.png';
 
-import { useElapsedTime } from "../../../../hooks";
->>>>>>> db8070381df47b76274d40d947b59c215e03eeb9
+import { useElapsedTime } from '../../../../hooks';
+import PostLikeAlertRequestDto from '../../../../apis/dto/request/alert/post-like-alert.request.dto';
 
 // component: 중고거래 판매글 상세보기 컴포넌트 //
 export default function UsedTradeView() {
@@ -81,7 +69,6 @@ export default function UsedTradeView() {
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
-<<<<<<< HEAD
   // function: get board response 처리 함수 //
   const getUsedTradeResponse = (responseBody: GetUsedTradeResponseDto | ResponseDto | null) => {
     const message = !responseBody
@@ -93,16 +80,6 @@ export default function UsedTradeView() {
       : responseBody.code === 'NU'
       ? '존재하지 않는 판매글입니다.'
       : '';
-=======
-  // function: get used trade response 처리 함수 //
-  const getUsedTradeResponse = (responseBody: GetUsedTradeResponseDto | ResponseDto | null,) => {
-  
-    const message =
-      !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'AF' ? '인증에 실패했습니다.' :
-      responseBody.code === 'NU' ? '존재하지 않는 판매글입니다.' : '';
->>>>>>> db8070381df47b76274d40d947b59c215e03eeb9
 
     const isSuccess = responseBody !== null && responseBody.code === 'SU';
 
@@ -112,10 +89,22 @@ export default function UsedTradeView() {
       return;
     }
 
-<<<<<<< HEAD
-    const {} = responseBody as GetUsedTradeResponseDto;
-=======
-    const { title, content, creationDate, views, itemTypeTag, likeCount, writerNickname, imageUrls, price, location, detailLocation, profileImage, transactionStatus, usedItemStatusTag } = responseBody as GetUsedTradeResponseDto;
+    const {
+      title,
+      content,
+      creationDate,
+      views,
+      itemTypeTag,
+      likeCount,
+      writerNickname,
+      imageUrls,
+      price,
+      location,
+      detailLocation,
+      profileImage,
+      transactionStatus,
+      usedItemStatusTag,
+    } = responseBody as GetUsedTradeResponseDto;
 
     setTitle(title);
     setContent(content);
@@ -129,19 +118,22 @@ export default function UsedTradeView() {
     setLocation(location);
     setDetailLocation(detailLocation);
     setPrice(price);
-    setUsedItemStatusTag(usedItemStatusTag)
-
->>>>>>> db8070381df47b76274d40d947b59c215e03eeb9
+    setUsedItemStatusTag(usedItemStatusTag);
   };
 
   // function: 물건 상태를 한글로 변환하는 함수 //
   const getItemStatusTagInKorean = (usedItemStatusTag: string) => {
-    switch(usedItemStatusTag) {
-      case 'NEW': return '새상품';
-      case 'LIKE_NEW': return '사용감 거의 없음';
-      case 'USED': return '사용감 있음';
-      case 'DAMAGED': return '파손/고장 있음';
-      default: return usedItemStatusTag;
+    switch (usedItemStatusTag) {
+      case 'NEW':
+        return '새상품';
+      case 'LIKE_NEW':
+        return '사용감 거의 없음';
+      case 'USED':
+        return '사용감 있음';
+      case 'DAMAGED':
+        return '파손/고장 있음';
+      default:
+        return usedItemStatusTag;
     }
   };
 
@@ -149,16 +141,25 @@ export default function UsedTradeView() {
 
   // function: 물건 타입을 한글로 변환하는 함수 //
   const getItemTypeTagInKorean = (itemTypeTag: string) => {
-    switch(itemTypeTag) {
-      case 'ELECTRONICS': return '전자기기';
-      case 'CLOTHING': return '의류';
-      case 'FURNITURE': return '가구';
-      case 'BOOKS': return '도서';
-      case 'BEAUTY': return '뷰티/미용';
-      case 'SPORTS': return '운동/스포츠';
-      case 'FOOD': return '식품';
-      case 'ETC': return '기타';
-      default: return itemTypeTag;
+    switch (itemTypeTag) {
+      case 'ELECTRONICS':
+        return '전자기기';
+      case 'CLOTHING':
+        return '의류';
+      case 'FURNITURE':
+        return '가구';
+      case 'BOOKS':
+        return '도서';
+      case 'BEAUTY':
+        return '뷰티/미용';
+      case 'SPORTS':
+        return '운동/스포츠';
+      case 'FOOD':
+        return '식품';
+      case 'ETC':
+        return '기타';
+      default:
+        return itemTypeTag;
     }
   };
 
@@ -279,11 +280,7 @@ export default function UsedTradeView() {
             </div>
             <div className="object-content">{content}</div>
             <div className={likedClass} onClick={onLikeClickHandler}>
-              <img
-                src={isLiked ? likeClickIcon : likeIcon}
-                alt="Like"
-                style={{ width: '25px', height: '25px' }}
-              />
+              <img src={isLiked ? likeClickIcon : likeIcon} alt="Like" style={{ width: '25px', height: '25px' }} />
               <span>{likeCount}</span>
             </div>
           </div>
@@ -298,7 +295,9 @@ export default function UsedTradeView() {
               <img src={locationIcon} alt="위치 아이콘" className="icon" />
               <span>직거래지역</span>
             </div>
-            <div className="trade-location">{location} {detailLocation}</div>
+            <div className="trade-location">
+              {location} {detailLocation}
+            </div>
           </div>
         </div>
       </div>

@@ -26,6 +26,7 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  z-index: 600;
 }
 
 /* 로고 */
@@ -268,4 +269,24 @@
 }
 .search-dropdown li:hover {
   background-color: #f6f6f6;
+}
+
+.alert-container {
+  z-index: 5000;
+}
+
+.alert-image {
+  width: 24px;
+  height: 24px;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+}
+
+.alert-image.read {
+  background-image: url('/src/assets/images/alert_read.png');
+}
+
+.alert-image.unread {
+  background-image: url('/src/assets/images/alert_unread.png');
 }

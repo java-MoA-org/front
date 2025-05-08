@@ -19,11 +19,13 @@ import {
 import useSignInUserStore from '../../stores/sign-in-user.store';
 import useSessionTimerStore from '../../stores/session-timer.store';
 import AlertDropdown from '../Alert';
+import useNotificationStore from '../../stores/alert-read.store';
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { alerts, isRead, setIsRead } = useNotificationStore();
   const { timeLeft, setTimeLeft, decreaseTimeLeft, resetTime } = useSessionTimerStore();
   const { userNickname, userEmail, userProfileImage, resetUser } = useSignInUserStore();
   const [cookies, , removeCookie] = useCookies();
@@ -38,6 +40,10 @@ const Header = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  useEffect(() => {
+    setIsRead();
+  }, [alerts]);
 
   useEffect(() => {
     console.log('alertOpen 상태:', alertOpen);
@@ -149,14 +155,13 @@ const Header = () => {
             <>
               <span onClick={() => navigate('/message')}>💬</span>
               <div className="alert-container">
-                <span
+                <div
                   onClick={() => {
                     setAlertOpen(true);
                     setDropdownOpen(false);
                   }}
-                >
-                  ⭐
-                </span>
+                  className={`alert-image ${isRead ? 'read' : 'unread'}`}
+                />
                 {alertOpen && <AlertDropdown accessToken={accessToken} dropdownRef={alertRef} />}
               </div>
 
