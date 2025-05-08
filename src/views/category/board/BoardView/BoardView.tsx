@@ -13,6 +13,7 @@ import {
   getBoardRequest,
   postBoardCommentRequest,
   postCommentAlertRequest,
+  postLikeAlertRequest,
   putBoardLikeRequest,
 } from '../../../../apis';
 import { PostBoardCommentRequestDto } from '../../../../apis/dto/request/board';
@@ -21,6 +22,7 @@ import likeIcon from '../../../../assets/images/like.png';
 import commentIcon from '../../../../assets/images/comment.png';
 import viewsIcon from '../../../../assets/images/views.png';
 import PostCommentAlertRequestDto from '../../../../apis/dto/request/alert/post-comment-alert.request.dto';
+import PostLikeAlertRequestDto from '../../../../apis/dto/request/alert/post-like-alert.request.dto';
 
 // interface: 댓글 컴포넌트 속성 //
 interface CommentItemProps {
@@ -98,11 +100,15 @@ export default function BoardView() {
 
   // function: get board response 처리 함수 //
   const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null) => {
-    const message = 
-      !responseBody ? '서버에 문제가 있습니다.' : 
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 
-      responseBody.code === 'AF' ? '인증에 실패했습니다.' : 
-      responseBody.code === 'NB' ? '존재하지 않는 게시글입니다.' : '';
+    const message = !responseBody
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'AF'
+      ? '인증에 실패했습니다.'
+      : responseBody.code === 'NB'
+      ? '존재하지 않는 게시글입니다.'
+      : '';
 
     const isSuccess = responseBody !== null && responseBody.code === 'SU';
 
@@ -112,7 +118,8 @@ export default function BoardView() {
       return;
     }
 
-    const { title, content, creationDate, views, tag, likeCount, writerId, imageUrls } = responseBody as GetBoardResponseDto;
+    const { title, content, creationDate, views, tag, likeCount, writerId, imageUrls } =
+      responseBody as GetBoardResponseDto;
 
     setTitle(title);
     setContent(content);
@@ -195,11 +202,11 @@ export default function BoardView() {
   const putLikeResponse = (responseBody: ResponseDto | null) => {
     if (responseBody && responseBody.data) {
       const { likeCount, liked } = responseBody.data;
-  
+
       if (likeCount !== undefined) {
         setLikeCount(likeCount);
-      } 
-      
+      }
+
       if (liked !== undefined) {
         setLiked(liked);
       }
@@ -207,7 +214,6 @@ export default function BoardView() {
 
     if (!boardSequence || !accessToken) return;
   };
-  
 
   // function: post comment response 처리 함수 //
   const postCommentResponse = (responseBody: ResponseDto | null) => {
@@ -228,10 +234,6 @@ export default function BoardView() {
     setComment('');
     if (!boardSequence || !accessToken) return;
     getBoardCommentRequest(boardSequence, accessToken).then(getBoardCommentResponse);
-
-    // 알림 생성성
-    const requestBody: PostCommentAlertRequestDto = { comment, boardType: 'board', sequence: boardSequence };
-    console.log(requestBody);
   };
 
   // event handler: 댓글 변경 이벤트 처리 //
@@ -270,9 +272,13 @@ export default function BoardView() {
     const newLikedStatus = !liked;
     setLiked(newLikedStatus);
     localStorage.setItem(`liked_${boardSequence}`, JSON.stringify(newLikedStatus));
-    
+
     putBoardLikeRequest(boardSequence, accessToken).then(putLikeResponse);
-  
+
+    // 알림 생성
+    const requestBody: PostLikeAlertRequestDto = { boardType: 'board', sequence: boardSequence };
+    console.log('like:', requestBody);
+    postLikeAlertRequest(requestBody, accessToken);
   };
 
   // event handler: 댓글 작성 클릭 이벤트 처리 //
@@ -283,6 +289,10 @@ export default function BoardView() {
       boardComment: comment,
     };
     postBoardCommentRequest(requestBody, boardSequence, accessToken).then(postCommentResponse);
+    // 알림 생성
+    const requestBody2: PostCommentAlertRequestDto = { comment, boardType: 'board', sequence: boardSequence };
+    console.log(requestBody2);
+    postCommentAlertRequest(requestBody2, accessToken);
   };
 
   // effect: 컴포넌트 로드시 실행할 함수 //

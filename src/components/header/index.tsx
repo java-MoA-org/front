@@ -2,11 +2,7 @@ import './style.css';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useCookies } from 'react-cookie';
-import {
-  searchUserRequest,
-  refreshAccessTokenRequest,
-  userSignOutRequest,
-} from '../../apis';
+import { searchUserRequest, refreshAccessTokenRequest, userSignOutRequest } from '../../apis';
 import moaHeaderLogo from '../../assets/images/moa_main_logo.png';
 import defaultProfile from '../../assets/images/default-profile.png';
 import cameraIcon from '../../assets/images/camera.png';
@@ -22,11 +18,14 @@ import {
 } from '../../constants';
 import useSignInUserStore from '../../stores/sign-in-user.store';
 import useSessionTimerStore from '../../stores/session-timer.store';
+import AlertDropdown from '../Alert';
+import useNotificationStore from '../../stores/alert-read.store';
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { alerts, isRead, setIsRead } = useNotificationStore();
   const { timeLeft, setTimeLeft, decreaseTimeLeft, resetTime } = useSessionTimerStore();
   const { userNickname, userEmail, userProfileImage, resetUser } = useSignInUserStore();
   const [cookies, , removeCookie] = useCookies();
@@ -36,12 +35,22 @@ const Header = () => {
 
   const [cookieReady, setCookieReady] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  useEffect(() => {
+    setIsRead();
+  }, [alerts]);
+
+  useEffect(() => {
+    console.log('alertOpen 상태:', alertOpen);
+  }, [alertOpen]);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const alertRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (accessToken !== undefined && refreshToken !== undefined) {
@@ -72,10 +81,13 @@ const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdownOpen(false);
-      }
+      const isClickOutsideProfile = dropdownRef.current && !dropdownRef.current.contains(e.target as Node);
+      const isClickOutsideAlert = alertRef.current && !alertRef.current.contains(e.target as Node);
+
+      if (isClickOutsideProfile) setDropdownOpen(false);
+      if (isClickOutsideAlert) setAlertOpen(false);
     };
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -134,17 +146,33 @@ const Header = () => {
   return (
     <div className="header-wrapper">
       <div className="header-top">
-        <div className="logo" onClick={() => navigate('/')}> <img src={moaHeaderLogo} className="logo-img" alt="로고" /> </div>
+        <div className="logo" onClick={() => navigate('/')}>
+          {' '}
+          <img src={moaHeaderLogo} className="logo-img" alt="로고" />{' '}
+        </div>
         <div className="user-info">
           {accessToken ? (
             <>
               <span onClick={() => navigate('/message')}>💬</span>
-              <span>⭐</span>
+              <div className="alert-container">
+                <div
+                  onClick={() => {
+                    setAlertOpen(true);
+                    setDropdownOpen(false);
+                  }}
+                  className={`alert-image ${isRead ? 'read' : 'unread'}`}
+                />
+                {alertOpen && <AlertDropdown accessToken={accessToken} dropdownRef={alertRef} />}
+              </div>
+
               <div className="profile-wrapper">
                 <img
                   src={getValidProfileImage(userProfileImage)}
                   className="profile-img"
-                  onClick={() => setDropdownOpen((prev) => !prev)}
+                  onClick={() => {
+                    setDropdownOpen(true);
+                    setAlertOpen(false);
+                  }}
                   alt="프로필"
                   onError={(e) => (e.currentTarget.src = defaultProfile)}
                 />
@@ -159,20 +187,21 @@ const Header = () => {
       {dropdownOpen && (
         <div className="user-dropdown" ref={dropdownRef}>
           <div className="profile-img-container">
-            <img className="dropdown-profile-img"
+            <img
+              className="dropdown-profile-img"
               src={getValidProfileImage(userProfileImage)}
               onClick={() => navigate(`/userpage/${userNickname}`)}
               alt="드롭다운 프로필"
             />
-            <img className="camera-icon"
+            <img
+              className="camera-icon"
               src={cameraIcon}
               onClick={() => navigate(`/userpage/${userNickname}`)}
               alt="카메라 변경 아이콘"
             />
           </div>
           <div className="dropdown-info">
-            <strong>{userNickname}</strong>님
-            <p className="dropdown-email">{userEmail}</p>
+            <strong>{userNickname}</strong>님<p className="dropdown-email">{userEmail}</p>
             <button onClick={() => navigate(`/userpage/${userNickname}`)}>마이페이지</button>
             <button onClick={onSignOutClickHandler}>로그아웃</button>
           </div>
@@ -182,10 +211,11 @@ const Header = () => {
       <div className="nav-container">
         <nav className="nav">
           {[
-            ['게시판', BOARD_ABSOLUTE_PATH], 
-            ['일상', DAILY_ABSOLUTE_PATH], 
-            ['중고거래', USED_TRADE_ABSOLUTE_PATH], 
-            ['공지사항', '/notice']].map(([label, path]) => (
+            ['게시판', BOARD_ABSOLUTE_PATH],
+            ['일상', DAILY_ABSOLUTE_PATH],
+            ['중고거래', USED_TRADE_ABSOLUTE_PATH],
+            ['공지사항', '/notice'],
+          ].map(([label, path]) => (
             <div className="nav-item" key={label}>
               <button onClick={() => navigate(path)}>{label}</button>
             </div>
@@ -196,11 +226,20 @@ const Header = () => {
             <div className="session-container">
               <img className="session-icon" src={sessionIcon} alt="세션" />
               <span className="session-time">세션 남은시간 : {formatTime(timeLeft)}</span>
-              <button className="session-button" onClick={() => setTimeLeft(1800)}>연장</button>
+              <button
+                className="session-button"
+                onClick={() => {
+                  onExtendSessionClickHandler();
+                  console.log('refresh clicked');
+                }}
+              >
+                연장
+              </button>
             </div>
           )}
           <div className="search-box">
-            <input className="friend-search"
+            <input
+              className="friend-search"
               placeholder="친구(닉네임) 검색"
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}

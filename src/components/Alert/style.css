@@ -1,0 +1,80 @@
+.alert-dropdown {
+  position: absolute;
+  right: 60px;
+  top: 50px;
+  width: 300px;
+  height: 300px;
+  background-color: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+.alert-list {
+  flex: 1; /* 남은 영역 모두 차지 */
+  overflow-y: auto;
+}
+
+.alert-main {
+  flex: 1;
+  overflow: hidden;
+}
+.alert-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 16px;
+}
+.alert-delete {
+  align-self: flex-end; /* 하단 정렬 */
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.alert-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px;
+  border-bottom: 1px solid #eaeaea;
+  cursor: pointer;
+  gap: 8px;
+}
+
+.alert-item.unread {
+  background-color: #eef6ff;
+}
+
+.alert-item.read {
+  background-color: #f9f9f9;
+}
+
+.alert-controls {
+  padding: 8px 10px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+}
+
+.alert-date {
+  font-size: 12px;
+  color: gray;
+}
+
+.alert-actions {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+}
+
+.alert-actions button {
+  flex: 1;
+  margin: 0 4px;
+  padding: 6px;
+  font-size: 13px;
+}
