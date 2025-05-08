@@ -33,14 +33,11 @@ export default function UserPageFollowee({ setActiveTab }: Props) {
   };
 
   useEffect(() => {
-    // accessToken이나 nickname이 없으면 요청을 못 보내니까 early return
+    console.log(accessToken, nickname);
     if (!accessToken || !nickname) return;
 
-    // 실제로 요청을 보냅니다
     getFollowInfoRequest(nickname, accessToken)
-      .then((data) => {
-        setProfiles(data.followees);
-      })
+      .then(getFollowInfoResponse)
       .catch((err) => {
         console.error("팔로우 정보 요청 실패", err);
       });
@@ -109,7 +106,11 @@ export default function UserPageFollowee({ setActiveTab }: Props) {
                 <div className="nickname">{p.userNickname}</div>
                 <div className="profile-introduce">{p.userIntroduce}</div>
               </div>
-              <FollowButton getFollow={getFollow} />
+              <FollowButton
+                getFollow={getFollow}
+                targetUserNickname={p.userNickname}
+                isFollowed={p.isFollowed}
+              />
             </div>
           ))
         )}

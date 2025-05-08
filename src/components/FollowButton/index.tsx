@@ -10,12 +10,34 @@ import GetFollowResponseDto from "../../apis/dto/response/follow/get-follow.resp
 
 interface Prop {
   getFollow: () => void;
+  targetUserNickname?: string; // 팔로우할 대상 ID (선택)
+  isFollowed?: boolean; // 외부에서 넘길 수도 있고
 }
 
-export default function FollowButton({ getFollow }: Prop) {
+export default function FollowButton({ getFollow, targetUserNickname, isFollowed }: Prop) {
   const { nickname } = useParams(); // ✅ URL에서 :nickname 추출
   const [cookies] = useCookies([ACCESS_TOKEN]);
   const accessToken = cookies[ACCESS_TOKEN];
+  // state: 공감한 사용자 리스트 상태 //
+  const [follows, setFollows] = useState<string[]>([]);
+
+  // state: 로그인 사용자 아이디 상태 //
+  const { userId } = useSignInUserStore();
+
+  const [internalFollow, setInternalFollow] = useState<boolean | null>(null);
+
+  const targetNickname = targetUserNickname ?? nickname; // 대상 ID 결정
+
+  // function: fetch follow 상태 //
+  const fetchFollowState = async () => {
+    if (!accessToken || !targetNickname) return;
+    const response = await getFollowRequest(targetNickname, accessToken);
+    if (response && response.code === "SU") {
+      const followees = (response as GetFollowResponseDto).followees;
+      setFollows(followees);
+      setInternalFollow(followees.includes(userId));
+    }
+  };
 
   // function: put follow response 처리 함수 //
   const postFollowResponse = (responseBody: ResponseDto | null) => {
@@ -67,26 +89,36 @@ export default function FollowButton({ getFollow }: Prop) {
     getFollowRequest(nickname, accessToken).then(getFollowResponse);
   }, [nickname, getFollowRequest]);
 
+  useEffect(() => {
+    if (isFollowed !== undefined) {
+      // props로 받은 경우엔 내부에서 따로 체크할 필요 없음
+      setInternalFollow(isFollowed);
+    } else {
+      fetchFollowState(); // 직접 가져와야 하는 경우
+    }
+  }, [targetNickname, isFollowed]);
+
   // event handler: 팔로우, 팔로잉 버튼 클릭 처리 //
   const onFollowButtonClickHandler = () => {
     if (!nickname || !accessToken) return;
     postFollowRequest(nickname, accessToken).then(postFollowResponse);
   };
 
-  // state: 공감한 사용자 리스트 상태 //
-  const [follows, setFollows] = useState<string[]>([]);
+  const onFollowClick = () => {
+    if (!targetNickname || !accessToken) return;
+    postFollowRequest(targetNickname, accessToken).then(() => {
+      getFollow(); // 상위 상태 갱신
+      if (isFollowed === undefined) fetchFollowState(); // 외부값이 없을 경우만 갱신
+    });
+  };
 
-  // state: 로그인 사용자 아이디 상태 //
-  const { userId } = useSignInUserStore();
-
-  // variable: 팔로우 여부 //
-  const isFollow = follows.includes(userId);
+  const isNowFollowed = isFollowed ?? internalFollow ?? false;
   // variable: 팔로우 클래스 //
-  const followClass = isFollow ? "do following" : "do follow";
+  const followClass = isNowFollowed ? "do following" : "do follow";
 
   return (
-    <div className={followClass} onClick={onFollowButtonClickHandler}>
-      {isFollow ? "팔로잉" : "팔로우"}
+    <div className={followClass} onClick={onFollowClick}>
+      {isNowFollowed ? "팔로잉" : "팔로우"}
     </div>
   );
 }
