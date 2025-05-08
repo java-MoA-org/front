@@ -5,9 +5,9 @@ import GetFollowResponseDto from "../../../../apis/dto/response/follow/get-follo
 import ResponseDto from "../../../../apis/dto/response/response.dto";
 import { getFollowInfoRequest, getFollowRequest } from "../../../../apis";
 import useSignInUserStore from "../../../../stores/sign-in-user.store";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { ACCESS_TOKEN } from "../../../../constants";
+import { ACCESS_TOKEN, MY_USER_ABSOLUTE_PATH } from "../../../../constants";
 import GetUserInfoResponseDto from "../../../../apis/dto/response/user/get-user-info.response.dto";
 import GetUserFollowInfoResponseDto from "../../../../apis/dto/response/user/get-user-follow-info.response.dto";
 import userFollowInfoDto from "../../../../types/interfaces/user-follow-info.interface";
@@ -23,6 +23,7 @@ export default function UserPageFollowee({ setActiveTab }: Props) {
   const [cookies] = useCookies();
   const accessToken = cookies[ACCESS_TOKEN];
   const [profiles, setProfiles] = useState<userFollowInfoDto[]>([]);
+  const navigator = useNavigate();
 
   const getFollow = () => {
     if (!accessToken) return;
@@ -87,6 +88,12 @@ export default function UserPageFollowee({ setActiveTab }: Props) {
     setProfiles(followees);
   };
 
+  // event handler: 사용자 마이페이지 클릭 핸들러 //
+  const onUserClickHandler = (nickname: string) => {
+    if (!nickname) return;
+    navigator(`${MY_USER_ABSOLUTE_PATH(nickname)}`);
+  };
+
   return (
     <div id="my-user-followee">
       <div className="followee-container">
@@ -100,9 +107,10 @@ export default function UserPageFollowee({ setActiveTab }: Props) {
                   src={p.profileImage || userImage}
                   alt={p.userNickname}
                   className="profile-image"
+                  onClick={() => onUserClickHandler(p.userNickname)}
                 />
               </div>
-              <div className="followee-list">
+              <div className="followee-list" onClick={() => onUserClickHandler(p.userNickname)}>
                 <div className="nickname">{p.userNickname}</div>
                 <div className="profile-introduce">{p.userIntroduce}</div>
               </div>

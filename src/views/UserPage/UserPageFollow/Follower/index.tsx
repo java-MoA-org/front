@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import userImage from "../../../../assets/images/ex-user1.png";
 import FollowButton from "../../../../components/FollowButton";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { ACCESS_TOKEN } from "../../../../constants";
+import { ACCESS_TOKEN, MY_USER_ABSOLUTE_PATH } from "../../../../constants";
 import useSignInUserStore from "../../../../stores/sign-in-user.store";
 import { getFollowInfoRequest, getFollowRequest } from "../../../../apis";
 import GetFollowResponseDto from "../../../../apis/dto/response/follow/get-follow.response.dto";
@@ -20,6 +20,7 @@ export default function UserPageFollower({ setActiveTab }: Props) {
   const [cookies] = useCookies();
   const accessToken = cookies[ACCESS_TOKEN];
   const [profiles, setProfiles] = useState<userFollowInfoDto[]>([]);
+  const navigator = useNavigate();
 
   // state: follow 상태 관리 //
   const [follows, setFollows] = useState<string[]>([]);
@@ -84,6 +85,12 @@ export default function UserPageFollower({ setActiveTab }: Props) {
     const { followers } = responseBody as GetUserFollowInfoResponseDto;
     setProfiles(followers);
   };
+
+  // event handler: 사용자 마이페이지 클릭 핸들러 //
+  const onUserClickHandler = (nickname: string) => {
+    if (!nickname) return;
+    navigator(`${MY_USER_ABSOLUTE_PATH(nickname)}`);
+  };
   return (
     <div id="my-user-follower">
       <div className="follower-container">
@@ -97,9 +104,10 @@ export default function UserPageFollower({ setActiveTab }: Props) {
                   src={p.profileImage || userImage}
                   alt={p.userNickname}
                   className="profile-image"
+                  onClick={() => onUserClickHandler(p.userNickname)}
                 />
               </div>
-              <div className="follower-list">
+              <div className="follower-list" onClick={() => onUserClickHandler(p.userNickname)}>
                 <div className="nickname">{p.userNickname}</div>
                 <div className="profile-introduce">{p.userIntroduce}</div>
               </div>

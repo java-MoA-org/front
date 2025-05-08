@@ -100,6 +100,10 @@
   height: 100px;
 }
 
+.profile-image-container .profile-image:hover {
+  cursor: pointer;
+}
+
 #my-user-followee .followee-container .followee-part,
 #my-user-follower .follower-container .follower-part {
   display: flex;
@@ -116,6 +120,10 @@
   width: 60%;
   min-width: 900px;
   gap: 10px;
+}
+#my-user-followee .followee-container .followee-part .followee-list :hover,
+#my-user-follower .follower-container .follower-part .follower-list :hover {
+  cursor: pointer;
 }
 
 #my-user-followee .followee-container .followee-part .followee-list .nickname,
