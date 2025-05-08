@@ -53,6 +53,7 @@ import useSignInUserStore from "./stores/sign-in-user.store";
 import { useEffect } from "react";
 import { getUserInfoRequest, getUserPageInfoRequest } from "./apis";
 import GetUserInfoResponseDto from "./apis/dto/response/user/get-user-info.response.dto";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const {
@@ -108,6 +109,7 @@ function App() {
       {" "}
       {/* CookiesProvider로 애플리케이션 감싸기 */}
       <BrowserRouter>
+        <ScrollToTop />
         <Marquee />
         <Header />
         <Routes>
