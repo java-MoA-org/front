@@ -88,15 +88,6 @@ export default function UserBoard() {
     setCurrentSection(1);
   }, [activeTab, boards, dailys, trades, setTotalList, setCurrentPage, setCurrentSection]);
 
-  useEffect(() => {
-    // console.log("activeTab:", activeTab);
-    // console.log("boards:", boards.length, boards);
-    // console.log("dailys:", dailys.length, dailys);
-    // console.log("trades:", trades.length, trades);
-    // console.log("viewList after setTotalList:", viewList);
-    // ... setTotalList, setCurrentPage, setCurrentSection
-  }, [activeTab, boards, dailys, trades]);
-
   // variable: board,daily,user 변수 //
   const boardClass = activeTab === "board" ? "board active" : "board";
   const dailyClass = activeTab === "daily" ? "daily active" : "daily";

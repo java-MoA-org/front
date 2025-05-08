@@ -20,13 +20,9 @@ export default function UserPageFollower({ setActiveTab }: Props) {
 
   // state: follow 상태 관리 //
   const [follows, setFollows] = useState<string[]>([]);
-  const { userNickname } = useSignInUserStore();
 
   const getFollow = () => {
     if (!accessToken) return;
-    if (!userNickname) {
-      return;
-    }
     if (!nickname) {
       return;
     }
