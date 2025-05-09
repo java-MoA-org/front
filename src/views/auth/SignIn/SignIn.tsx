@@ -69,7 +69,7 @@ export default function SignIn({ setActiveTab }: Props) {
     // const user = useSignInUserStore.getState();
     // console.log(user);
 
-    await new Promise((res) => setTimeout(res, 100));
+    await new Promise((res) => setTimeout(res, 500));
 
     navigate(ROOT_PATH);
   };
