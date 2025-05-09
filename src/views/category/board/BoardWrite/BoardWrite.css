@@ -51,13 +51,13 @@
 }
 
 #write-wrapper .content:hover {
-  background-color: #007bbd;
+  background-color: #1976d2;
 }
 
 #write-wrapper .content.active {
   color: #ffffff;
-  background-color: #007bbd;
-  border: 1px solid #007bbd;
+  background-color: #1976d2;
+  border: 1px solid #1976d2;
 }
 
 #write-wrapper .input-column-box {
@@ -99,7 +99,7 @@
 }
 
 #write-wrapper .button.middle.primary:hover {
-  background-color: #007bbd;
+  background-color: #1976d2;
 }
 
 #write-wrapper .button.middle.disable {

@@ -3,12 +3,13 @@ import './UsedTradeView.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import useSignInUserStore from '../../../../stores/sign-in-user.store';
-import { ACCESS_TOKEN, USED_TRADE_ABSOLUTE_PATH, USED_TRADE_UPDATE_ABSOLUTE_PATH } from '../../../../constants';
+import { ACCESS_TOKEN, MY_USER_ABSOLUTE_PATH, USED_TRADE_ABSOLUTE_PATH, USED_TRADE_UPDATE_ABSOLUTE_PATH } from '../../../../constants';
 import { GetUsedTradeResponseDto } from '../../../../apis/dto/response/usedtrade';
 import ResponseDto from '../../../../apis/dto/response/response.dto';
 import {
   deleteUsedTradeRequest,
   getUsedTradeRequest,
+  patchTransactionStatusRequest,
   postLikeAlertRequest,
   putUsedTradeLikeRequest,
 } from '../../../../apis';
@@ -18,9 +19,11 @@ import likeCountIcon from '../../../../assets/images/tradeLike.png';
 import viewsIcon from '../../../../assets/images/tradeViews.png';
 import timeIcon from '../../../../assets/images/time.png';
 import locationIcon from '../../../../assets/images/place.png';
+import messageIcon from '../../../../assets/images/chat.png';
 
 import { useElapsedTime } from '../../../../hooks';
 import PostLikeAlertRequestDto from '../../../../apis/dto/request/alert/post-like-alert.request.dto';
+import TransactionStatusModal from '../../../../components/TransactionStatus';
 
 // component: 중고거래 판매글 상세보기 컴포넌트 //
 export default function UsedTradeView() {
@@ -31,10 +34,9 @@ export default function UsedTradeView() {
   const [cookies] = useCookies();
 
   // state: 로그인 사용자 아이디 상태 //
-  const { userId } = useSignInUserStore();
+  const { userNickname } = useSignInUserStore();
 
   // state: 중고거래 판매글 내용 상태
-  const [writerId, setWriterId] = useState<string>('');
   const [writerNickname, setWriterNickname] = useState<string>('');
   const [writeDate, setWriteDate] = useState<string>('');
   const [title, setTitle] = useState<string>('');
@@ -49,6 +51,9 @@ export default function UsedTradeView() {
   const [profileImage, setProfileImage] = useState<string>('');
   const [usedItemStatusTag, setUsedItemStatusTag] = useState<string>('');
 
+  // state: 모달창 여부 //
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   // state: 좋아요 여부 //
   const [liked, setLiked] = useState<boolean>(false);
 
@@ -60,6 +65,25 @@ export default function UsedTradeView() {
   // state: 이미지 목록 상태 //
   const [images, setImages] = useState<string[]>([]);
 
+  const onSaveTransactionStatus = (status: '판매중' | '판매완료' | '예약중') => {
+    const updatedStatus: "ON_SALE" | "SOLD_OUT" | "RESERVED" =
+    status === '판매중' ? 'ON_SALE' :
+    status === '판매완료' ? 'SOLD_OUT' : 'RESERVED';
+  
+    if (!tradeSequence || !accessToken) return;
+  
+    patchTransactionStatusRequest(tradeSequence, accessToken + `&status=${updatedStatus}`)
+      .then((response) => {
+        if (!response || response.code !== 'SU') {
+          alert('거래 상태 변경에 실패했습니다.');
+          return;
+        }
+  
+        setTransactionStatus(updatedStatus);
+        alert('거래 상태가 변경되었습니다.');
+      });
+  };
+
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
 
@@ -68,6 +92,16 @@ export default function UsedTradeView() {
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
+
+  // function: 거래상태 선택 모달 열기 //
+  const openLocationModal = () => {
+    setIsModalOpen(true);
+  };
+  
+  // function: 거래상태 선택 모달 닫기 //
+  const closeLocationModal = () => {
+    setIsModalOpen(false);
+  };
 
   // function: get board response 처리 함수 //
   const getUsedTradeResponse = (responseBody: GetUsedTradeResponseDto | ResponseDto | null) => {
@@ -90,20 +124,13 @@ export default function UsedTradeView() {
     }
 
     const {
-      title,
-      content,
-      creationDate,
-      views,
-      itemTypeTag,
-      likeCount,
-      writerNickname,
-      imageUrls,
-      price,
-      location,
-      detailLocation,
-      profileImage,
-      transactionStatus,
-      usedItemStatusTag,
+      title, content,
+      creationDate, views,
+      itemTypeTag, likeCount,
+      writerNickname, imageUrls,
+      price, location,
+      detailLocation, profileImage,
+      transactionStatus, usedItemStatusTag,
     } = responseBody as GetUsedTradeResponseDto;
 
     setTitle(title);
@@ -120,50 +147,6 @@ export default function UsedTradeView() {
     setPrice(price);
     setUsedItemStatusTag(usedItemStatusTag);
   };
-
-  // function: 물건 상태를 한글로 변환하는 함수 //
-  const getItemStatusTagInKorean = (usedItemStatusTag: string) => {
-    switch (usedItemStatusTag) {
-      case 'NEW':
-        return '새상품';
-      case 'LIKE_NEW':
-        return '사용감 거의 없음';
-      case 'USED':
-        return '사용감 있음';
-      case 'DAMAGED':
-        return '파손/고장 있음';
-      default:
-        return usedItemStatusTag;
-    }
-  };
-
-  const itemStatusTagInKorean = getItemStatusTagInKorean(usedItemStatusTag);
-
-  // function: 물건 타입을 한글로 변환하는 함수 //
-  const getItemTypeTagInKorean = (itemTypeTag: string) => {
-    switch (itemTypeTag) {
-      case 'ELECTRONICS':
-        return '전자기기';
-      case 'CLOTHING':
-        return '의류';
-      case 'FURNITURE':
-        return '가구';
-      case 'BOOKS':
-        return '도서';
-      case 'BEAUTY':
-        return '뷰티/미용';
-      case 'SPORTS':
-        return '운동/스포츠';
-      case 'FOOD':
-        return '식품';
-      case 'ETC':
-        return '기타';
-      default:
-        return itemTypeTag;
-    }
-  };
-
-  const itemTypeTagInKorean = getItemTypeTagInKorean(itemTypeTag);
 
   // function: delete used trade response 처리 함수 //
   const deleteUsedTradeResponse = (responseBody: ResponseDto | null) => {
@@ -238,6 +221,11 @@ export default function UsedTradeView() {
     postLikeAlertRequest(requestBody, accessToken);
   };
 
+  // event handler: 프로필이미지 클릭 이벤트 처리 //
+  const onProfileImageClickHandler = () => {
+    navigator(MY_USER_ABSOLUTE_PATH(writerNickname));
+  }
+
   // effect: 컴포넌트 로드시 실행할 함수 //
   useEffect(() => {
     if (!tradeSequence) {
@@ -251,6 +239,30 @@ export default function UsedTradeView() {
   return (
     <div id="trade-view-wrapper">
       <div className="trade-view-main">
+        {userNickname === writerNickname && (
+          <div className="button-group">
+            <div className='sale-button' onClick={openLocationModal}>
+              거래 상태
+              <TransactionStatusModal
+                isOpen={isModalOpen}
+                onClose={closeLocationModal}
+                onSelect={(status) => {
+                  onSaveTransactionStatus(status);
+                  closeLocationModal();
+                }}
+                selectedStatus={  transactionStatus === 'ON_SALE' ? '판매중' : 
+                                  transactionStatus === 'SOLD_OUT' ? '판매완료' : '예약중'
+                }
+              />
+            </div>
+            <div className="patch-button" onClick={onUpdateClickHandler}>
+              수정
+            </div>
+            <div className="delete-button" onClick={onDeleteClickHandler}>
+              삭제
+            </div>
+          </div>
+        )}
         <div className="object-container">
           <div className="object-images">
             <img src={profileImage} alt="프로필 이미지" className="trade-object-images" />
@@ -259,7 +271,7 @@ export default function UsedTradeView() {
             <div className="object-status-container">
               <div className="object-title">{title}</div>
               <div className="object-info">
-                <div className="item-type">{itemTypeTagInKorean}</div>
+                <div className="item-type">{itemTypeTag}</div>
                 <div className="info-container">
                   <div className="like-count">
                     <img src={likeCountIcon} alt="Like" className="icon" /> {likeCount}
@@ -276,18 +288,24 @@ export default function UsedTradeView() {
             </div>
             <div className="item-status">
               상품상태
-              <div className="item-status-tag">{itemStatusTagInKorean}</div>
+              <div className="item-status-tag">{usedItemStatusTag}</div>
             </div>
             <div className="object-content">{content}</div>
-            <div className={likedClass} onClick={onLikeClickHandler}>
-              <img src={isLiked ? likeClickIcon : likeIcon} alt="Like" style={{ width: '25px', height: '25px' }} />
-              <span>{likeCount}</span>
+            <div className='click-box'>
+              <div className={likedClass} onClick={onLikeClickHandler}>
+                <img src={isLiked ? likeClickIcon : likeIcon} alt="Like" style={{ width: '25px', height: '25px' }} />
+                <span>{likeCount}</span>
+              </div>
+              <div className='icon-message'>
+                <img src={messageIcon} alt="Message" style={{ width: '25px', height: '25px' }} />
+                <span>메시지</span>
+              </div>
             </div>
           </div>
         </div>
         <div className="user-info-container">
           <div className="user">
-            <img src={profileImage} alt="프로필 이미지" className="trade-profile-image" />
+            <img src={profileImage} alt="프로필 이미지" className="trade-profile-image" onClick={onProfileImageClickHandler} />
             <div className="writer-name">{writerNickname}</div>
           </div>
           <div className="location-box">

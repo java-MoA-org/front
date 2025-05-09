@@ -25,4 +25,5 @@ export interface UsedTradeSummaryResponseDto {
   profileImage: string;
   price: number;
   itemTypeTag: string;
+  transactionStatus: string;
 }

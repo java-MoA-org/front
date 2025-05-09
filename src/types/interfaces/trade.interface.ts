@@ -11,4 +11,5 @@ export default interface Trade {
   profileImage: string;
   price: number;
   itemTypeTag: string;
+  transactionStatus: string;
 }

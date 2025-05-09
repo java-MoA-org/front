@@ -27,11 +27,11 @@
 }
 
 #board-main-wrapper .category-tab:hover {
-  background-color: #007bbd;
+  background-color: #1976d2;
 }
 
 #board-main-wrapper .category-tab.active {
-  background-color: #007bbd;
+  background-color: #1976d2;
 }
 
 /* 검색 바 */
@@ -69,7 +69,7 @@
 
 #board-main-wrapper .board-search-button:hover {
   cursor: pointer;
-  background-color: #007bbd;
+  background-color: #1976d2;
 }
 
 /* 작성 버튼 + 정렬 */
@@ -92,7 +92,7 @@
 }
 
 #board-main-wrapper .board-write-button:hover {
-  background-color: #007bbd;
+  background-color: #1976d2;
   cursor: pointer;
 }
 
