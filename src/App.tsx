@@ -43,6 +43,8 @@ import {
   ACCESS_TOKEN,
 } from './constants';
 import MyUserPage from './views/UserPage';
+import MessageRoom from './components/message/MessageRoom';
+import MessageList from './components/message/MessageList';
 import UserPageFollow from './views/UserPage/UserPageFollow';
 import UserBoard from './views/UserPage/UserBoard';
 import Footer from './components/footer';
@@ -170,7 +172,10 @@ function App() {
             <Route path="user-update" element={<UserPageUpdate />} />
           </Route>
 
-          <Route path="/user-update" element={<UserPageUpdate />} />
+          
+          <Route path="/message/:userId" element={<MessageList />} />
+          <Route path="/message/:userId/:partnerId" element={<MessageRoom />} />
+          
         </Routes>
         <Footer />
       </BrowserRouter>

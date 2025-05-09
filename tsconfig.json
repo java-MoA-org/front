@@ -4,6 +4,8 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["sockjs-client"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,

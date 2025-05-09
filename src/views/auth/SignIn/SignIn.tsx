@@ -1,4 +1,5 @@
 import './SignIn.css';
+import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react';
 import { ROOT_PATH } from '../../../constants';
@@ -23,6 +24,7 @@ export default function SignIn({ setActiveTab }: Props) {
   const [userId, setUserId] = useState<string>('');
   const [userPassword, setUserPassword] = useState<string>('');
   const [signInHint, setSignInHint] = useState<string>('');
+  const [_, setCookie] = useCookies(['accessToken']);
 
   const passwordInputRef = useRef<HTMLInputElement>(null);
 
@@ -63,6 +65,9 @@ export default function SignIn({ setActiveTab }: Props) {
 
     // 토큰 + 권한 저장
     localStorage.setItem('userRole', userRole); // 관리자 여부 판단용
+
+    // Set accessToken cookie
+    setCookie('accessToken', accessToken, { path: '/' });
 
     const userInfo = await getUserInfoRequest(accessToken);
     setUserAll(userInfo);

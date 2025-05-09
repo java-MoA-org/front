@@ -27,7 +27,7 @@ const Header = () => {
 
   const { alerts, isRead, setIsRead } = useNotificationStore();
   const { timeLeft, setTimeLeft, decreaseTimeLeft, resetTime } = useSessionTimerStore();
-  const { userNickname, userEmail, userProfileImage, resetUser } = useSignInUserStore();
+  const { userNickname, userEmail, userProfileImage, resetUser, userId } = useSignInUserStore();
   const [cookies, , removeCookie] = useCookies();
 
   const accessToken = cookies[ACCESS_TOKEN];
@@ -153,7 +153,9 @@ const Header = () => {
         <div className="user-info">
           {accessToken ? (
             <>
-              <span onClick={() => navigate('/message')}>💬</span>
+              
+                <span onClick={() => navigate(`/message/${userId}`)}>💬</span>
+              
               <div className="alert-container">
                 <div
                   onClick={() => {
