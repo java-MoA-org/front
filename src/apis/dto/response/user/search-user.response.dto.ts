@@ -1,5 +1,6 @@
 // 친구 검색 결과 단일 항목 타입
 export interface SearchUserItem {
+  userId: any;
   userNickname: string;
   userProfileImage: string | null;
 }

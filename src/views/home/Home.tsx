@@ -27,13 +27,13 @@ const Home = () => {
   const [cookies] = useCookies();
   const accessToken = cookies["accessToken"];
 
-  // state: 게시판, 일상, 중고거래, 인기 게시물 리스트 //
+  // state: 익명 게시판, 일상, 중고거래, 인기 게시물 리스트 //
   const [boardList, setBoardList] = useState<Board[]>([]);
   const [dailyList, setDailyList] = useState<Daily[]>([]);
   const [tradeList, setTradeList] = useState<UsedTrade[]>([]);
   const [hotPosts, setHotPosts] = useState<(Board | Daily)[]>([]);
 
-  // effect: 게시판 가져오기 //
+  // effect: 익명 게시판 가져오기 //
   useEffect(() => {
     getBoardListRequest("ALL", 1, "", accessToken).then((res) => {
       if (res && res.code === "SU" && "boardList" in res) {
@@ -57,7 +57,7 @@ const Home = () => {
     });
   }, []);
 
-  // effect: (게시판 + 일상) 인기 게시물 정렬 //
+  // effect: (익명 게시판 + 일상) 인기 게시물 정렬 //
   useEffect(() => {
     if (boardList.length > 0 && dailyList.length > 0) {
       mergeAndSortPosts(boardList, dailyList);
@@ -87,7 +87,6 @@ const Home = () => {
     <div className="home-wrapper">
       <div className="home-container">
         <div className="content-row">
-          {/* 왼쪽 사이드바: 친구 목록 */}
           <aside className="left-sidebar">
             <h2 className="section-title">친구 목록 (맞팔로우)</h2>
             <ul className="friend-list">
@@ -97,9 +96,7 @@ const Home = () => {
             </ul>
           </aside>
 
-          {/* 메인 콘텐츠 */}
           <main className="main-container">
-            {/* 상단 배너 */}
             <div className="top-banner-container">
               <ImageSlider />
             </div>
@@ -108,7 +105,8 @@ const Home = () => {
             <section className="hot-board-list">
               <h2 className="section-title">인기 게시물</h2>
               {hotPosts.map((item, i) => (
-                <div className="post-card"
+                <div
+                  className="post-card"
                   key={`hot-${i}`}
                   onClick={() =>
                     "boardSequence" in item
@@ -116,6 +114,12 @@ const Home = () => {
                       : navigate(`/daily/${item.dailySequence}`)
                   }
                 >
+                  {/* 카테고리 표시 */}
+                  <div className="post-category">
+                    {"boardSequence" in item ? "[익명 게시판]" : "[일상]"}
+                  </div>
+
+                  {/* 제목 */}
                   <div className="post-title">
                     <span className="hot-label">HOT</span>
                     {item.title}
@@ -123,8 +127,11 @@ const Home = () => {
                       [{"commentCount" in item ? item.commentCount : 0}]
                     </span>
                   </div>
+
+                  {/* 유저 정보 */}
                   <div className="post-info">
-                    <img className="profile-thumb"
+                    <img
+                      className="profile-thumb"
                       src={
                         "profileImage" in item && item.profileImage && item.profileImage !== "default-profile"
                           ? item.profileImage
@@ -146,18 +153,20 @@ const Home = () => {
                       {"userNickname" in item ? item.userNickname : "익명"}
                     </strong>
                     <span>좋아요 {item.likeCount}</span>
-                    <span>조회수 {"views" in item ? (item as Daily).views : 0}</span>
+                    <span>
+                      조회수 {"views" in item ? (item as Daily).views : 0}
+                    </span>
                   </div>
                 </div>
               ))}
             </section>
 
-            {/* 게시판 + 일상 게시글 */}
+            {/* 익명 게시판 + 일상 */}
             <div className="board-daily-row">
-              {/* 게시판 */}
+              {/* 익명 게시판 */}
               <section className="board-list">
                 <h2 className="section-title" onClick={() => navigate("/board")}>
-                  게시판
+                  익명 게시판
                 </h2>
                 {boardList.map((item: Board) => (
                   <div
@@ -184,7 +193,8 @@ const Home = () => {
                   일상
                 </h2>
                 {dailyList.map((item: Daily) => (
-                  <div className="post-card"
+                  <div
+                    className="post-card"
                     key={item.dailySequence}
                     onClick={() => navigate(`/daily/${item.dailySequence}`)}
                   >
@@ -229,7 +239,8 @@ const Home = () => {
               </h2>
               <div className="trade-list">
                 {tradeList.map((item: UsedTrade) => (
-                  <div className="trade-card"
+                  <div
+                    className="trade-card"
                     key={item.tradeSequence}
                     onClick={() => navigate(`/usedtrade/${item.tradeSequence}`)}
                   >
@@ -245,11 +256,9 @@ const Home = () => {
             </section>
           </main>
 
-          {/* 오른쪽 사이드바: 뉴스 컴포넌트 */}
           <aside className="right-sidebar">
             <News />
           </aside>
-          
         </div>
       </div>
     </div>

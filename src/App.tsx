@@ -19,6 +19,8 @@ import Notice from './views/category/notice/Notice';
 import NoticeWrite from './views/category/notice/NoticeWrite/NoticeWrite';
 import NoticeView from './views/category/notice/NoticeView/NoticeView';
 import NoticeUpdate from './views/category/notice/NoticeUpdate/NoticeUpdate';
+import MessageRoom from './components/message/MessageRoom';
+
 import {
   MY_USER_BOARD_PATH,
   MY_USER_FOLLOW_ABSOLUTE_PATH,
@@ -42,17 +44,20 @@ import {
   NOTICE_UPDATE_PATH,
   ACCESS_TOKEN,
 } from './constants';
+
 import MyUserPage from './views/UserPage';
 import UserPageFollow from './views/UserPage/UserPageFollow';
 import UserBoard from './views/UserPage/UserBoard';
 import Footer from './components/footer';
 import UserPageContainer from './views/UserPage/UserPageContainer';
 import UserPageUpdate from './views/UserPage/UserPageUpdate';
+
 import { CookiesProvider, useCookies } from 'react-cookie';
 import useSignInUserStore from './stores/sign-in-user.store';
 import { useEffect } from 'react';
-import { getUserInfoRequest, getUserPageInfoRequest } from './apis';
+import { getUserInfoRequest } from './apis';
 import GetUserInfoResponseDto from './apis/dto/response/user/get-user-info.response.dto';
+import MessageList from './components/message/MessageList';
 
 function App() {
   const {
@@ -65,14 +70,14 @@ function App() {
     setUserRole,
     setUserInterests,
   } = useSignInUserStore();
+
   const [cookies] = useCookies([ACCESS_TOKEN]);
-  // const [cookies] = useCookies();
+
   useEffect(() => {
     const interval = setInterval(() => {
       const match = document.cookie.includes('accessToken');
       console.log('[⏱ 쿠키 감시]', match ? '✅ 있음' : '❌ 없음');
     }, 1000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -85,7 +90,6 @@ function App() {
 
     const fetchUserInfo = async () => {
       const response = await getUserInfoRequest(accessToken);
-      // const response = await getUserPageInfoRequest(accessToken);
       if (!response || response.code !== 'SU') return;
 
       const userInfo = response as GetUserInfoResponseDto;
@@ -105,8 +109,6 @@ function App() {
 
   return (
     <CookiesProvider>
-      {' '}
-      {/* CookiesProvider로 애플리케이션 감싸기 */}
       <BrowserRouter>
         <Marquee />
         <Header />
@@ -154,6 +156,10 @@ function App() {
             <Route path=":nickname/user-board" element={<UserBoard />} />
             <Route path="user-update" element={<UserPageUpdate />} />
           </Route>
+
+          {/* 메시지 라우팅 */}
+          <Route path="/message/:senderId" element={<MessageList />} />
+          <Route path="/message/:senderId/:partnerId" element={<MessageRoom />} />
 
           <Route path="/user-update" element={<UserPageUpdate />} />
         </Routes>
