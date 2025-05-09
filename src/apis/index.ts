@@ -725,7 +725,7 @@ export const patchNoticeRequest = async (
   return responseBody;
 };
 
-// function: delete notice API 요청 함수
+// function: delete notice API 요청 함수 //
 export const deleteNoticeRequest = async (noticeId: number | string, accessToken: string) => {
   const responseBody = await axios
     .delete(DELETE_NOTICE_URL(noticeId), bearerAuthorization(accessToken))
@@ -787,3 +787,35 @@ export const deleteAlertAllRequest = async (accesstoken: string) => {
     .catch(responseErrorHandler);
   return responseBody;
 };
+
+// function: userId를 기반으로 유저 정보 조회 API 요청 함수 //
+export const getUserInfoByIdRequest = async (userId: string, accessToken: string) => {
+  return await axios.get(`/api/v1/user/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`, 
+    },
+  }).then(res => res.data);
+};
+
+// function: userId를 기반으로 프로필 이미지 URL만 조회하는 API 요청 함수 //
+export const getUserProfileImageByIdRequest = async (userId: string, accessToken: string) => {
+  const url = `/api/v1/user/${userId}/profile-image`;
+  const response = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
+  return response.data; // string
+};
+
+// function: userId를 기반으로 닉네임만 조회하는 API 요청 함수 //
+export const getUserNicknameByIdRequest = async (userId: string, accessToken: string) => {
+  const url = `/api/v1/user/${userId}/nickname`;
+  const response = await axios.get(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
+  return response.data; // string
+};
+
