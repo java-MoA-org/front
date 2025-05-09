@@ -63,14 +63,10 @@ export default function SignIn({ setActiveTab }: Props) {
 
     // 토큰 + 권한 저장
     localStorage.setItem('userRole', userRole); // 관리자 여부 판단용
-
     const userInfo = await getUserInfoRequest(accessToken);
     setUserAll(userInfo);
-    // const user = useSignInUserStore.getState();
-    // console.log(user);
 
     await new Promise((res) => setTimeout(res, 500));
-
     navigate(ROOT_PATH);
   };
 
