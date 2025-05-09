@@ -22,7 +22,7 @@ export default function FollowButton({ getFollow, targetUserNickname, isFollowed
   const [follows, setFollows] = useState<string[]>([]);
 
   // state: 로그인 사용자 아이디 상태 //
-  const { userId } = useSignInUserStore();
+  const { userId, userNickname } = useSignInUserStore();
 
   const [internalFollow, setInternalFollow] = useState<boolean | null>(null);
 
@@ -117,7 +117,11 @@ export default function FollowButton({ getFollow, targetUserNickname, isFollowed
   const followClass = isNowFollowed ? "do following" : "do follow";
 
   return (
-    <div className={followClass} onClick={onFollowClick}>
+    <div
+      className={followClass}
+      onClick={onFollowClick}
+      style={targetNickname === userNickname ? { visibility: "hidden" } : {}}
+    >
       {isNowFollowed ? "팔로잉" : "팔로우"}
     </div>
   );
