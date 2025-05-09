@@ -56,6 +56,7 @@
 
 #trade-main-wrapper .trade-category-dropdown {
   position: absolute;
+  z-index: 999;
   top: 40px;
   width: 150px;
   background-color: white;
@@ -151,6 +152,7 @@
 }
 
 #trade-main-wrapper .thumbnail-image {
+  position: relative;
   height: 250px;
   background-image: url('/src/assets/images/닌텐도.jpg');
   background-size: cover;
@@ -183,14 +185,14 @@
 }
 
 #trade-main-wrapper .item-status {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   padding: 10px 0px;
   border-top: 1px solid #EFEEEA;
 }
 
 #trade-main-wrapper .title {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 #trade-main-wrapper .content-container {
@@ -215,4 +217,18 @@
   font-size: 14px;
   color: #888;
   padding-top: 10px;
+}
+
+#trade-main-wrapper .sold-out-tag {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 15px 60px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 5px;
+  white-space: nowrap;
 }

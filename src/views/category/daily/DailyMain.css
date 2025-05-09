@@ -42,7 +42,7 @@
 
 #daily-main-wrapper .daily-search-button:hover {
   cursor: pointer;
-  background-color: #007bbd;
+  background-color: #1976d2;
 }
 
 /* 작성 버튼 + 정렬 */
@@ -65,7 +65,7 @@
 }
 
 #daily-main-wrapper .daily-write-button:hover {
-  background-color: #007bbd;
+  background-color: #1976d2;
   cursor: pointer;
 }
 

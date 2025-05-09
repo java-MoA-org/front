@@ -1,0 +1,170 @@
+#trade-update-wrapper {
+  background-color: #FFFFFF;
+  padding: 50px 0px;
+}
+
+#trade-update-wrapper .trade-update-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 1050px;
+  margin: 0 auto;
+}
+
+#trade-update-wrapper .price-container,
+#trade-update-wrapper .transaction-location-container,
+#trade-update-wrapper .item-content-container,
+#trade-update-wrapper .item-status-container,
+#trade-update-wrapper .item-category-container,
+#trade-update-wrapper .item-name-container, 
+#trade-update-wrapper .item-images-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 40px;
+  padding: 30px 0px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+#trade-update-wrapper .price,
+#trade-update-wrapper .transaction-location,
+#trade-update-wrapper .item-content,
+#trade-update-wrapper .item-status,
+#trade-update-wrapper .item-category,
+#trade-update-wrapper .item-name,
+#trade-update-wrapper .item-images {
+  font-size: 20px;
+  width: 150px;
+  flex-shrink: 0;
+}
+
+#trade-update-wrapper .transaction-location-box input,
+#trade-update-wrapper .item-name-box {
+  padding: 10px 10px;
+  font-size: 16px;
+  width: 800px;
+  border: 1px solid #ccc;
+}
+
+#trade-update-wrapper .item-content-box {
+  padding: 10px 10px;
+  width: 800px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  height: 200px;
+}
+
+#trade-update-wrapper .price-box input {
+  padding: 10px 10px;
+  font-size: 16px;
+  width: 300px;
+  border: 1px solid #ccc;
+}
+
+#trade-update-wrapper .item-status-box,
+#trade-update-wrapper .item-category-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 0px;
+  border: 1px solid #ccc;
+  padding: 30px 30px;
+  width: 760px;
+}
+
+#trade-update-wrapper .checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  width: 180px; 
+}
+
+#trade-update-wrapper .button-container {
+  padding: 20px 0px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+
+#trade-update-wrapper .button {
+  display: flex;
+  justify-content: center;
+  padding: 10px 20px;
+  width: 120px;
+  height: 40px;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 40px;
+  transition: background-color 0.2s ease;
+  margin-right: 30px;
+}
+
+#trade-update-wrapper .button.middle.primary {
+  background-color: #8eaccd;
+  color: white;
+  cursor: pointer;
+}
+
+#trade-update-wrapper .button.middle.primary:hover {
+  background-color: #1976d2;
+}
+
+#trade-update-wrapper .button.middle.disable {
+  background-color: #bbbfca;
+  color: white;
+  cursor: not-allowed;
+}
+
+#trade-update-wrapper .swiper {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  background-image: url('/src/assets/images/add-photo.png');
+}
+
+#trade-update-wrapper img {
+  width: 100%;
+  height: 100%; 
+}
+
+#trade-update-wrapper .checkbox-item {
+  cursor: pointer;
+  position: relative;
+}
+
+#trade-update-wrapper .checkbox-item input[type='checkbox'] {
+  display: none;
+}
+
+#trade-update-wrapper .checkbox-item::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  box-sizing: border-box;
+  transition: all 0.s ease-in-out;
+}
+
+#trade-update-wrapper .checkbox-item.active::before {
+  border-color: #4a90e2;
+  background-color: transparent;
+  position: relative;
+}
+
+#trade-update-wrapper .checkbox-item.active::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #4a90e2;
+  transform: translate(-50%, -50%);
+}

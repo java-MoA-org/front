@@ -30,6 +30,7 @@ export default function UsedTradeWrite() {
   const [detailLocation, setDetailLocation] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
 
+  // state: 모달창 여부 //
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // variable: 카테고리 목록 //
@@ -113,18 +114,18 @@ export default function UsedTradeWrite() {
     setPrice(priceValue);
   };
 
-  // 거래 위치와 상세 주소 저장 함수
+  // state: 거래 위치와 상세 주소를 상태에 저장하는 함수 //
   const onSaveLocation = (location: string, detailLocation: string) => {
     setLocation(location);
     setDetailLocation(detailLocation);
   };
 
-  // 거래 위치 입력 모달 열기
+  // function: 거래 위치 입력 모달 열기 //
   const openLocationModal = () => {
     setIsModalOpen(true);
   };
 
-  // 거래 위치 입력 모달 닫기
+  // function: 거래 위치 입력 모달 닫기 //
   const closeLocationModal = () => {
     setIsModalOpen(false);
   };
@@ -167,7 +168,7 @@ export default function UsedTradeWrite() {
     setImageUrls(updatedImageUrls);
   };
 
-  // 이미지 업로드 버튼
+  // event handler: 이미지 업로드 버튼 //
   const handleFileInputClick = () => {
     document.getElementById('file-input')?.click();
   };
@@ -268,10 +269,9 @@ export default function UsedTradeWrite() {
           <div className="transaction-location">거래위치</div>
           <div className="transaction-location-box">
             <input type="text" placeholder="거래위치를 입력해주세요." 
-              value={
-                location.trim() !== "" || detailLocation.trim() !== "" ? `${location} ${detailLocation}` : ""
-              }
-              readOnly onClick={openLocationModal} />
+              value={ location.trim() !== "" || detailLocation.trim() !== "" ? `${location} ${detailLocation}` : "" }
+              readOnly onClick={openLocationModal} 
+            />
           </div>
           <LocationModal isOpen={isModalOpen} onClose={closeLocationModal} onSave={onSaveLocation} />
         </div>
