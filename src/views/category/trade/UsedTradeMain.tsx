@@ -5,7 +5,7 @@ import { useCookies } from "react-cookie";
 import useSignInUserStore from "../../../stores/sign-in-user.store";
 import { Trade } from "../../../types/interfaces";
 import { useElapsedTime, usePagination } from "../../../hooks";
-import { ACCESS_TOKEN, USED_TRADE_VIEW_ABSOLUTE_PATH, USED_TRADE_WRITE_ABSOLUTE_PATH } from "../../../constants";
+import { ACCESS_TOKEN, MY_USER_BOARD_ABSOLUTE_PATH, USED_TRADE_VIEW_ABSOLUTE_PATH, USED_TRADE_WRITE_ABSOLUTE_PATH } from "../../../constants";
 import { GetUsedTradeListResponseDto } from "../../../apis/dto/response/usedtrade";
 import ResponseDto from "../../../apis/dto/response/response.dto";
 import { getUsedTradeListRequest, searchUsedTradeRequest } from "../../../apis";
@@ -86,6 +86,9 @@ export default function UsedTradeMain() {
 
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
+
+  // state: 로그인 사용자 닉네임 상태 //
+  const { userNickname } = useSignInUserStore();
 
   // state: URL 쿼리 파라미터 //
   const [searchParams, setSearchParams] = useSearchParams();
@@ -177,15 +180,21 @@ export default function UsedTradeMain() {
 
   // event handler: 카테고리 탭 클릭 //
   const onCategoryClick = (category: string) => {
+    setSearchQuery('');
+    setCurrentPage(1);
     setSelectedCategory(category);
     setSearchParams({ tag: category, page: '1', sort });
-    window.location.reload();
+    
+  };
+
+  const onUserTradeClickHandler = () => {
+    if (!userNickname) return;
+    navigate(`${MY_USER_BOARD_ABSOLUTE_PATH(userNickname)}?type=trade`);
   };
 
   // event handler: 정렬 기준 클릭 //
   const onSortClick = (newSort: string) => {
     setSearchParams({ page: '1', sort: newSort });
-    window.location.reload();
   };
 
   // event handler: 검색어 입력 변경 //
@@ -212,12 +221,13 @@ export default function UsedTradeMain() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => { document.removeEventListener('mousedown', handleClickOutside); };
   }, []);
+  
 
-  // effect: 컴포넌트 렌더링 시 게시글 목록 요청 //
+  // effect: 컴포넌트 로드시 게시글 목록 요청 //
   useEffect(() => {
     if(searchQuery) return;
-    getUsedTradeListRequest(tag, page, sort, accessToken).then(getUsedTradeListResponse);
-  }, [tag, page, sort, accessToken]);
+    getUsedTradeListRequest(tag, currentPage, sort, accessToken).then(getUsedTradeListResponse);
+  }, [tag, currentPage, sort, searchQuery, accessToken]);
   
   // render: 중고거래 게시판 컴포넌트 렌더링 //
   return (
@@ -262,7 +272,7 @@ export default function UsedTradeMain() {
               <span className="write">판매하기</span>
             </div>
             <div className="block">|</div>
-            <div className="my-shop-button">
+            <div className="my-shop-button" onClick={onUserTradeClickHandler}>
               <img src={myShopIcon} alt="내상점 아이콘" className="my-shop-icon" />
               <span className="my-shop">내상점</span>
             </div>

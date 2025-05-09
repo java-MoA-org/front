@@ -106,10 +106,10 @@ export default function UsedTradeUpdate() {
   const onUpdateButtonClickHandler = () => {
     if (!isActive || !accessToken || !tradeSequence) return;
 
-    const requestBody: PatchUsedTradeRequestDto = {
-      title, content, price
-    };
-    patchUsedTradeRequest(tradeSequence, requestBody, accessToken).then(patchUsedTradeResponse);
+    // const requestBody: PatchUsedTradeRequestDto = {
+      // title, content, price, location, detailLocation, imageList
+    // };
+    // patchUsedTradeRequest(tradeSequence, requestBody, accessToken).then(patchUsedTradeResponse);
   };
 
   // effect: 게시글 번호가 변경될 시 실행할 함수 //

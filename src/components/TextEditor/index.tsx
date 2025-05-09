@@ -36,6 +36,7 @@ function MenuBar({ editor, isUploading, handleImageUpload }: MenuBarProp) {
           id="image-upload-input"
           type="file"
           accept="image/png, image/jpeg"
+          multiple
           onChange={handleImageUpload}
           style={{ display: 'none' }}
         />
@@ -88,47 +89,50 @@ export default function TextEditor({ content, setContent, onImageListChange, onI
   }, [editor, content, initialized]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (!['image/jpeg', 'image/png'].includes(file.type)) {
-        alert('PNG 또는 JPG 파일만 업로드할 수 있습니다.');
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        alert('파일 크기는 5MB 이하로 업로드해주세요.');
-        return;
-      }
-
-      setIsUploading(true);
-
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+  
+    const validFiles = Array.from(files).filter((file) =>
+      ['image/jpeg', 'image/png'].includes(file.type) && file.size <= 5 * 1024 * 1024
+    );
+  
+    if (validFiles.length === 0) {
+      alert('유효한 이미지 파일이 없습니다.');
+      return;
+    }
+  
+    setIsUploading(true);
+  
+    const uploadedUrls: string[] = [];
+  
+    for (const file of validFiles) {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('type', type || 'board');
-
+  
       try {
         const response = await axios.post('http://localhost:4000/api/v1/images/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-
-        if (editor) {
-          const imageUrl = response.data.data;
-          editor.chain().focus().setImage({ src: imageUrl }).run();
-
-          setImageList((prevList) => {
-            const updatedList = [...prevList, imageUrl];
-            onImageListChange?.(updatedList);
-            return updatedList;
-          });
-
-          onImageUpload?.(imageUrl);
-        }
+  
+        const imageUrl = response.data.data;
+        uploadedUrls.push(imageUrl);
+  
+        editor?.chain().focus().setImage({ src: imageUrl }).run();
       } catch (error) {
         console.error('이미지 업로드 실패:', error);
-      } finally {
-        setIsUploading(false);
       }
     }
+  
+    setImageList((prevList) => {
+      const updatedList = [...prevList, ...uploadedUrls];
+      onImageListChange?.(updatedList);
+      return updatedList;
+    });
+  
+    setIsUploading(false);
   };
+  
 
   return (
     <>

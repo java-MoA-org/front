@@ -10,5 +10,5 @@ export default interface PostUsedTradeRequestDto {
   price: number;
   location: string;
   detailLocation: string;
-  imageList: string[];
+  imageList: File[];
 }
