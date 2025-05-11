@@ -7,14 +7,15 @@ import useChatSocket from '../../hooks/useChatSocket';
 import axios from 'axios';
 import { getUserInfoByIdRequest, getUserProfileImageByIdRequest, getUserNicknameByIdRequest } from '../../apis';
 
-// 메시지 데이터 타입 정의
+// interface: 메시지 데이터 타입 정의
 interface Message {
   senderId: string;
   receiverId: string;
   content: string;
   imageUrl?: string;
-  type: 'TEXT' | 'IMAGE';
+  type: 'TEXT' | 'IMAGE' | 'DELETE';
   timestamp: string;
+  isRead?: boolean;
 }
 
 const MessageRoom = () => {
@@ -24,36 +25,57 @@ const MessageRoom = () => {
   const [cookies] = useCookies(['accessToken']);
   const accessToken = cookies['accessToken'];
 
-  // 메시지 목록 상태
+  // state: 메시지 목록 상태
   const [messages, setMessages] = useState<Message[]>([]);
-  // 입력창 값 상태
+  // state: 입력창 값 상태
   const [input, setInput] = useState('');
-  // 상대방 프로필 이미지 상태
+  // state: 상대방 프로필 이미지 상태
   const [partnerProfileImage, setPartnerProfileImage] = useState<string>(defaultProfile);
-  // 상대방 닉네임 상태
+  // state: 상대방 닉네임 상태
   const [partnerNickname, setPartnerNickname] = useState('');
-  // 삭제 옵션 표시할 메시지 인덱스 상태
+  // state: 삭제 옵션 표시할 메시지 인덱스 상태
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  // 채팅박스 DOM 참조 (스크롤 제어용)
+  // state: 채팅박스 DOM 참조 (스크롤 제어용)
   const chatBoxRef = useRef<HTMLDivElement>(null);
 
-  // 메시지 옵션(삭제 등) 토글 함수
+  // function: 메시지 옵션(삭제 등) 토글 함수
   const toggleOptions = (index: number) => {
     setActiveIndex((prev) => (prev === index ? null : index));
   };
 
-  // 메시지 삭제 처리 함수
+  // function: 메시지 삭제 처리 함수
   const handleDelete = (index: number) => {
+    const deletedMessage = messages[index];
+    if (!deletedMessage) return;
+
+    // 1. 로컬에서 삭제
     setMessages((prev) => prev.filter((_, i) => i !== index));
     setActiveIndex(null); // 옵션 닫기
+
+    // 2. WebSocket으로 삭제 메시지 전송
+    const deleteNotice: Message = {
+      senderId: userId!,
+      receiverId: partnerId!,
+      content: deletedMessage.timestamp, // 삭제 대상 메시지의 timestamp를 기준으로 삭제
+      imageUrl: '',
+      type: 'DELETE', // DELETE 타입으로 전송
+      timestamp: new Date().toISOString()
+    };
+
+    sendMessage(deleteNotice);
   };
 
-  // WebSocket 연결 및 메시지 수신 처리
+  // socket: WebSocket 연결 및 메시지 수신 처리
   const { sendMessage } = useChatSocket(userId!, (msg: Message) => {
-    setMessages((prev) => [...prev, msg]); // 새 메시지 추가
+    if (msg.type === 'DELETE') {
+      // 삭제 메시지 처리: content에 삭제할 메시지의 timestamp가 담겨옴
+      setMessages((prev) => prev.filter((m) => m.timestamp !== msg.content));
+    } else {
+      setMessages((prev) => [...prev, msg]);
+    }
   });
 
-  // 컴포넌트 마운트 시 초기 메시지 로딩 및 상대방 프로필 조회
+  // effect: 컴포넌트 마운트 시 초기 메시지 로딩 및 상대방 프로필 조회
   useEffect(() => {
     if (!userId || !partnerId || !accessToken) return;
 
@@ -81,7 +103,7 @@ const MessageRoom = () => {
       .catch(() => setPartnerNickname('알 수 없음'));
   }, [userId, partnerId, accessToken]);
 
-  // 외부 클릭 시 메시지 옵션 메뉴 닫기 처리
+  // effect: 외부 클릭 시 메시지 옵션 메뉴 닫기 처리
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -96,19 +118,30 @@ const MessageRoom = () => {
     };
   }, []);
 
-  // 메시지룸 접속 시 콘솔 출력 (디버깅용)
+  // effect: 메시지룸 접속 시 콘솔 출력 (디버깅용)
   useEffect(() => {
     console.log('[📡 메시지룸 접속]', userId, partnerId);
   }, []);
 
-  // 메시지 목록 변경 시 자동 스크롤 처리
+  // effect: 메시지 목록 변경 시 자동 스크롤 처리 및 읽음 처리 API 호출
   useEffect(() => {
     if (chatBoxRef.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
+    // 메시지 읽음 처리 API 호출
+    if (userId && partnerId && accessToken) {
+      axios.post('/api/message/read', {
+        userId,
+        partnerId
+      }, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      }).catch((err) => {
+        console.error('읽음 처리 실패:', err);
+      });
+    }
   }, [messages]);
 
-  // 메시지 전송 처리 함수
+  // function: 메시지 전송 처리 함수
   const handleSend = () => {
     if (!input.trim()) return; // 빈 메시지 전송 방지
 
@@ -126,13 +159,14 @@ const MessageRoom = () => {
     setInput(''); // 입력창 초기화
   };
 
-  // 입력창에서 Enter 키 입력 시 메시지 전송
+  // function: 입력창에서 Enter 키 입력 시 메시지 전송
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSend();
     }
   };
 
+  // render: 메시지룸 컴포넌트 렌더링
   return (
     <div className="message-room">
       {/* 헤더 - 상대 프로필 이미지 및 닉네임 표시 */}
@@ -165,6 +199,7 @@ const MessageRoom = () => {
                 {msg.type === 'IMAGE' && <img src={msg.imageUrl} alt="image" />}
                 <div className="message-timestamp">
                   {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {msg.senderId === userId && msg.isRead && <span className="read-icon">✓</span>}
                 </div>
                 <div className="message-options">
                   <span className="dots" onClick={() => toggleOptions(i)}>⋯</span>

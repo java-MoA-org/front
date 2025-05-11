@@ -2,12 +2,13 @@ import { useEffect, useRef } from 'react';
 import { Client } from '@stomp/stompjs';
 import { useCookies } from 'react-cookie';
 
+
 interface Message {
   senderId: string;
   receiverId: string;
   content: string;
   imageUrl?: string;
-  type: 'TEXT' | 'IMAGE';
+  type: 'TEXT' | 'IMAGE' | 'DELETE'; 
   timestamp: string;
 }
 
@@ -26,7 +27,7 @@ const useChatSocket = (
     }
 
     const client = new Client({
-      brokerURL: undefined, // Disable direct brokerURL to use webSocketFactory
+      brokerURL: undefined, 
       connectHeaders: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -58,7 +59,7 @@ const useChatSocket = (
     return () => {
       client.deactivate();
     };
-  }, [userId, onMessageReceived, accessToken]); // ✅ accessToken 추가
+  }, [userId, onMessageReceived, accessToken]); // accessToken 추가
 
   const sendMessage = (message: Message) => {
     if (clientRef.current && clientRef.current.connected) {
