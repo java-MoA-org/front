@@ -1,6 +1,6 @@
 import './MessageRoom.css';
 import defaultProfile from '../../assets/images/default-profile.png';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import useChatSocket from '../../hooks/useChatSocket';
@@ -13,7 +13,7 @@ interface Message {
   receiverId: string;
   content: string;
   imageUrl?: string;
-  type: 'TEXT' | 'IMAGE' | 'DELETE';
+  type: 'TEXT' | 'IMAGE' | 'DELETE' | 'READ';
   timestamp: string;
   isRead?: boolean;
 }
@@ -27,6 +27,7 @@ const MessageRoom = () => {
 
   // state: 메시지 목록 상태
   const [messages, setMessages] = useState<Message[]>([]);
+  const [hasUnreadSent, setHasUnreadSent] = useState(false);
   // state: 입력창 값 상태
   const [input, setInput] = useState('');
   // state: 상대방 프로필 이미지 상태
@@ -65,15 +66,26 @@ const MessageRoom = () => {
     sendMessage(deleteNotice);
   };
 
-  // socket: WebSocket 연결 및 메시지 수신 처리
-  const { sendMessage } = useChatSocket(userId!, (msg: Message) => {
+  // 메시지 수신 처리 함수 (useCallback으로 메모이제이션)
+  const onMessageReceived = useCallback((msg: Message) => {
     if (msg.type === 'DELETE') {
-      // 삭제 메시지 처리: content에 삭제할 메시지의 timestamp가 담겨옴
       setMessages((prev) => prev.filter((m) => m.timestamp !== msg.content));
+    } else if (msg.type === 'READ') {
+      console.log('[👁️ READ 수신 - isRead 업데이트 시도]', msg);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.senderId === partnerId && !m.isRead
+            ? { ...m, isRead: true }
+            : m
+        )
+      );
     } else {
       setMessages((prev) => [...prev, msg]);
     }
-  });
+  }, [partnerId]);
+
+  // socket: WebSocket 연결 및 메시지 수신 처리
+  const { sendMessage } = useChatSocket(userId!, onMessageReceived);
 
   // effect: 컴포넌트 마운트 시 초기 메시지 로딩 및 상대방 프로필 조회
   useEffect(() => {
@@ -84,6 +96,7 @@ const MessageRoom = () => {
       headers: { Authorization: `Bearer ${accessToken}` }
     }).then((res) => {
       setMessages(res.data); // 메시지 상태 세팅
+      setHasUnreadSent(false); // 추가: 메시지 초기화 시 읽음신호 재전송 가능하게
     }).catch((err) => {
       console.error('메시지 불러오기 실패:', err);
     });
@@ -138,6 +151,23 @@ const MessageRoom = () => {
       }).catch((err) => {
         console.error('읽음 처리 실패:', err);
       });
+
+      // 안 읽은 메시지가 있는 경우만 READ 메시지 전송 (중복 방지)
+      const hasUnread = messages.some((msg) =>
+        msg.receiverId === userId && !msg.isRead
+      );
+
+      if (hasUnread && !hasUnreadSent) {
+        sendMessage({
+          senderId: userId!,
+          receiverId: partnerId!,
+          content: '',
+          imageUrl: '',
+          type: 'READ',
+          timestamp: new Date().toISOString()
+        });
+        setHasUnreadSent(true);
+      }
     }
   }, [messages]);
 
@@ -183,7 +213,7 @@ const MessageRoom = () => {
       {/* 채팅 메시지 목록 영역 */}
       <div className="chat-box" ref={chatBoxRef}>
         {messages.map((msg, i) => {
-          const isMine = msg.senderId === userId;
+          const isMine = msg.senderId === userId; // 내가 보낸 메시지 여부
 
           return (
             <div key={i} className={`message-container ${isMine ? 'mine' : 'theirs'}`}>
@@ -199,7 +229,9 @@ const MessageRoom = () => {
                 {msg.type === 'IMAGE' && <img src={msg.imageUrl} alt="image" />}
                 <div className="message-timestamp">
                   {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  {msg.senderId === userId && msg.isRead && <span className="read-icon">✓</span>}
+                  {isMine && msg.isRead && (
+                    <span className="read-icon">[읽음]</span>
+                  )}
                 </div>
                 <div className="message-options">
                   <span className="dots" onClick={() => toggleOptions(i)}>⋯</span>
