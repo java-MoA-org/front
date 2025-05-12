@@ -26,9 +26,10 @@ const MessageList = () => {
     if (!accessToken) return;
 
     console.log('[📡 요청 시작] /api/message/rooms');
-    axios.get('/api/message/rooms', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+    axios
+      .get('/api/message/rooms', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
       .then((res) => {
         console.log('[✅ 응답 확인]', res.data);
         // 서버가 { rooms: [...] } 형태로 응답할 경우
@@ -51,22 +52,33 @@ const MessageList = () => {
   };
 
   return (
-    <div className="message-list">
-      {Array.isArray(rooms) && rooms.map((room) => (
-        <div key={room.partnerId} className="message-item" onClick={() => handleClickRoom(room.partnerId)}>
-          <img src={room.profileImage} alt="프로필" className="profile-img" />
-          <div className="text-info">
-            <div className="nickname-row">
-              <span className="nickname">{room.nickname}</span>
-              <span className="timestamp">{new Date(room.timestamp).toLocaleTimeString()}</span>
+    <div className="message-container">
+      <div className="message-list">
+        {Array.isArray(rooms) &&
+          rooms.map((room) => (
+            <div key={room.partnerId} className="message-item" onClick={() => handleClickRoom(room.partnerId)}>
+              <img src={room.profileImage} alt="프로필" className="profile-img" />
+              <div className="text-info">
+                <div className="nickname-row">
+                  <span className="nickname">{room.nickname}</span>
+                  <span className="timestamp">
+                    {new Date(room.timestamp).toLocaleString('ko-KR', {
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false,
+                    })}
+                  </span>
+                </div>
+                <div className="last-message">
+                  {room.lastMessage}
+                  {room.unread && <span className="unread-dot" />}
+                </div>
+              </div>
             </div>
-            <div className="last-message">
-              {room.lastMessage}
-              {room.unread && <span className="unread-dot" />}
-            </div>
-          </div>
-        </div>
-      ))}
+          ))}
+      </div>
     </div>
   );
 };
