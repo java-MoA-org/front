@@ -8,6 +8,10 @@ import { GetUsedTradeResponseDto } from "../../../../apis/dto/response/usedtrade
 import ResponseDto from "../../../../apis/dto/response/response.dto";
 import { PatchUsedTradeRequestDto } from "../../../../apis/dto/request/usedtrade";
 import { getUsedTradeRequest, patchUsedTradeRequest } from "../../../../apis";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { UsedItemStatusTag } from "../../../../types/enums/UsedItemStatusTag";
+import { ItemTypeTag } from "../../../../types/enums/ItemTypeTag";
+import LocationModal from "../../../../components/Location";
 
 // component: 중고거래 판매글 수정 컴포넌트 //
 export default function UsedTradeUpdate() {
@@ -24,15 +28,42 @@ export default function UsedTradeUpdate() {
   // state: 중고거래 판매글 수정 내용 상태 //
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
+  const [imageList, setImageList] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [itemTypeTag, setItemTypeTag] = useState<ItemTypeTag>(ItemTypeTag.ETC);
+  const [usedItemStatusTag, setUsedItemStatusTag] = useState<UsedItemStatusTag>(UsedItemStatusTag.NEW);
+  const [location, setLocation] = useState<string>('');
+  const [detailLocation, setDetailLocation] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  // variable: 카테고리 목록 //
+  const categorys = [
+    '기타', '전자기기', '의류', '가구',
+    '도서', '뷰티/미용', '운동/스포츠', '식품'
+  ];
+
+  // variable: 아이템 상태 표시 목록 //
+  const itemsStatusTag = [
+    '새상품', '사용감 거의 없음', '사용감 있음', '파손/고장 있음'
+  ];
 
   // variable: acess token //
   const accessToken = cookies[ACCESS_TOKEN];
 
-  // variable: 게시글 수정 가능 여부 //
-  const isActive = title !== '' && content !== "";
-  // variable: 게시글 수정 버튼 클래스 //
+  // variable: 중고거래글 수정 가능 여부 //
+  const isActive = title.trim() !== "" 
+  && content.trim() !== "" 
+  && price > 0 
+  && location.trim() !== "" 
+  && detailLocation.trim() !== "" 
+  && itemTypeTag !== undefined
+  && usedItemStatusTag !== undefined
+  && imageList !== undefined;
+
+  // variable: 중고거래글 수정 버튼 클래스 //
   const updateButtonClass = isActive ? 'button middle primary' : 'button middle disable';
 
   // function: 네비게이터 함수 //
@@ -53,10 +84,16 @@ export default function UsedTradeUpdate() {
       return;
     }
 
-    const { title, content } = responseBody as GetUsedTradeResponseDto;
-    setTitle(title);
+    const { title, content, location, detailLocation, imageUrls, itemTypeTag, usedItemStatusTag, price } = responseBody as GetUsedTradeResponseDto;
+    setTitle(title);  
     setContent(content);
+    setLocation(location);
+    setDetailLocation(detailLocation);
+    setImageList(imageUrls);
     setIsLoaded(true);
+    setItemTypeTag(itemTypeTag);
+    setPrice(Number(price));
+    setUsedItemStatusTag(usedItemStatusTag);
   };
 
   // function: patch used trade response 처리 함수 //
@@ -97,19 +134,83 @@ export default function UsedTradeUpdate() {
     setContent(value);
   };
 
+  // event handler: 아이템 타입 태그 변경 이벤트 처리 //
+  const onItemTypeTagChangeHandler = (itemTypeTag: ItemTypeTag) => {
+    setItemTypeTag(itemTypeTag);
+  };
+
+  // event handler: 사용감 상태 태그 변경 이벤트 처리 //
+  const onUsedItemStatusTag = (usedItemStatusTag: UsedItemStatusTag) => {
+    setUsedItemStatusTag(usedItemStatusTag);
+  };
+
   // event handler: 가격 변경 이벤트 처리 //
-  const onPriceChangeHandler = (value: number) => {
-    setPrice(value)
+  const onPriceChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const priceValue = Number(event.target.value);
+    setPrice(priceValue);
+  };
+
+  // state: 거래 위치와 상세 주소를 상태에 저장하는 함수 //
+  const onSaveLocation = (location: string, detailLocation: string) => {
+    setLocation(location);
+    setDetailLocation(detailLocation);
+  };
+
+  // function: 거래 위치 입력 모달 열기 //
+  const openLocationModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // function: 거래 위치 입력 모달 닫기 //
+  const closeLocationModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // event Handler: 이미지 업로드  //
+  const onImageInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.target;
+    if (!files || !files.length) return;
+  
+    const selectedFiles = Array.from(files);
+    setImageList(selectedFiles);
+  
+    const fileReader = new FileReader();
+    const imageUrls: string[] = [];
+  
+    selectedFiles.forEach((file, index) => {
+      fileReader.onloadend = () => {
+        imageUrls.push(fileReader.result as string);
+        if (index === selectedFiles.length - 1) {
+          setImageUrls(imageUrls);
+        }
+      };
+      fileReader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageDelete = (index: number) => {
+    const updatedFileList = [...imageList];
+    updatedFileList.splice(index, 1);
+    setImageList(updatedFileList);
+
+    const updatedImageUrls = [...imageUrls];
+    updatedImageUrls.splice(index, 1);
+    setImageUrls(updatedImageUrls);
+  };
+
+  // event handler: 이미지 업로드 버튼 //
+  const handleFileInputClick = () => {
+    document.getElementById('file-input')?.click();
   };
 
   // event handler: 판매글 수정 버튼 클릭 이벤트 처리 //
   const onUpdateButtonClickHandler = () => {
     if (!isActive || !accessToken || !tradeSequence) return;
 
-    // const requestBody: PatchUsedTradeRequestDto = {
-      // title, content, price, location, detailLocation, imageList
-    // };
-    // patchUsedTradeRequest(tradeSequence, requestBody, accessToken).then(patchUsedTradeResponse);
+    const requestBody: PatchUsedTradeRequestDto = {
+      title, content, price, location, detailLocation, imageList
+    };
+    patchUsedTradeRequest(tradeSequence, requestBody, accessToken).then(patchUsedTradeResponse);
   };
 
   // effect: 게시글 번호가 변경될 시 실행할 함수 //
@@ -120,8 +221,103 @@ export default function UsedTradeUpdate() {
 
   // render: 중고거래 판매글 수정 컴포넌트 렌더링 //
   return (
-    <div>
-      <h1>중고거래 판매글 수정 페이지</h1>
+    <div id="trade-update-wrapper">
+      <div className="trade-update-main">
+
+        <div className="item-images-container">
+          <div className="item-images">상품이미지</div>
+          <input
+            type="file"
+            accept="image/png, image/jpeg"
+            style={{ display: "none" }}
+            id="file-input"
+            onChange={onImageInputChangeHandler}
+            multiple
+          />
+          <div className="image-preview-slider" onClick={handleFileInputClick} style={{ width: "300px", height: "300px", marginTop: "10px" }}>
+            <Swiper spaceBetween={0} slidesPerView={1}>
+              {imageUrls.map((imageUrl, index) => (
+                <SwiperSlide key={index}>
+                  <div>
+                    <img
+                      src={imageUrl}
+                      alt={`업로드 이미지 ${index}`}
+                      style={{ width: "100%", height: "auto" }}
+                    />
+                    <button onClick={() => handleImageDelete(index)}>삭제</button>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </div>
+
+        <div className="item-name-container">
+          <div className="item-name">상품명</div>
+          <input className="item-name-box" type="text" placeholder="상품명을 입력해 주세요." value={title} onChange={onTitleChangeHandler} />
+        </div>
+      
+        <div className="item-category-container">
+          <div className="item-category">카테고리</div>
+          <div className="item-category-box">
+            {categorys.map((label, i) => {
+              const tag = label as ItemTypeTag;
+              const isChecked = itemTypeTag === tag;
+              return (
+                <label key={i} className={`checkbox-item ${isChecked ? 'active' : ''}`}>
+                  <input type="checkbox" checked={isChecked} onChange={() => onItemTypeTagChangeHandler(tag)} disabled={true} />
+                  {label}
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="item-status-container">
+          <div className="item-status">상품상태</div>
+          <div className="item-status-box">
+            {itemsStatusTag.map((label, i) => {
+              const tag = label as UsedItemStatusTag;
+              const isChecked = usedItemStatusTag === tag;
+              return (
+                <label key={i} className={`checkbox-item ${isChecked ? 'active' : ''}`}>
+                  <input type="checkbox" checked={isChecked} onChange={() => onUsedItemStatusTag(tag)} disabled={true} />
+                  {label}
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="item-content-container">
+          <div className="item-content">설명</div>
+          {isLoaded &&
+          <textarea className="item-content-box" placeholder="브랜드, 모델명, 구매 시기, 하자 유무 등 상품 설명을 최대한 자세히 적어주세요." value={content} onChange={(e) => onContentChangeHandler(e.target.value)} />
+          }
+        </div>
+
+        <div className="transaction-location-container">
+          <div className="transaction-location">거래위치</div>
+          <div className="transaction-location-box">
+            <input type="text" placeholder="거래위치를 입력해주세요." 
+              value={
+                location.trim() !== "" || detailLocation.trim() !== "" ? `${location} ${detailLocation}` : ""
+              }
+              readOnly onClick={openLocationModal} />
+          </div>
+          <LocationModal isOpen={isModalOpen} onClose={closeLocationModal} onSave={onSaveLocation} />
+        </div>
+
+        <div className="price-container">
+          <div className="price">가격</div>
+          <div className="price-box">
+            <input type="number" placeholder="가격을 입력하세요"value={price} onChange={onPriceChangeHandler} />
+          </div>
+        </div>
+        <div className="button-container">
+          <div className={updateButtonClass} onClick={onUpdateButtonClickHandler}>수정하기</div>
+        </div>
+      </div>
     </div>
   );
 }

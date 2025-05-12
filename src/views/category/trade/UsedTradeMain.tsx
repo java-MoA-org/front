@@ -27,7 +27,9 @@ interface TableItemProps {
 function TableItem({ trade }: TableItemProps) {
 
   // destructuring: 중고거래글 정보 추출 //
-  const { price, title, tradeSequence, creationDate, views, likeCount, userNickname, thumbnailImage, profileImage, usedItemStatusTag, location, itemTypeTag } = trade;
+  const { price, title, tradeSequence, creationDate, views, likeCount, userNickname, thumbnailImage, profileImage, usedItemStatusTag, location, transactionStatus } = trade;
+
+  console.log("transactionStatus: ", transactionStatus);
 
   // hook: 작성 시간 계산 //
   const elapsedTime = useElapsedTime(creationDate);
@@ -48,6 +50,13 @@ function TableItem({ trade }: TableItemProps) {
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
+  // function: HTML 문자열에서 HTML 태그 제거 함수 //
+  function stripHtmlTags(html: string): string {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || '';
+  }
+
   // event handler: 레코드 클릭 이벤트 처리 //
   const onClick = () => {
     navigator(USED_TRADE_VIEW_ABSOLUTE_PATH(tradeSequence));
@@ -64,14 +73,20 @@ function TableItem({ trade }: TableItemProps) {
         <span className="view-count">{views}</span>
       </div>
       <div className="thumbnail-image">
-        {/* <img src={thumbnailImage} alt="썸네일 이미지" className="thumbnail-img" /> */}
+        {transactionStatus === 'SOLD_OUT' && (
+          <div className="sold-out-tag">판매완료</div>
+        )}
+        {transactionStatus === 'RESERVED' && (
+          <div className="sold-out-tag">예약중</div>
+        )}
+        <img src={thumbnailImage} alt="썸네일 이미지" className="thumbnail-img" />
       </div>
       <div className="profile-list">
         <img src={profileImage} alt="프로필 이미지" className="trade-profile-image" />
         <div className="user-nickname">{userNickname}</div>
       </div>
       <div className="item-status">{tagInKorean}</div>
-      <div className="title">{title}</div>
+      <div className="title">{stripHtmlTags(title).length > 15 ? stripHtmlTags(title).slice(0, 15) + '...' : stripHtmlTags(title)}</div>
       <div className="content-container">
         <div className="price">{price.toLocaleString()}원</div>
         <div className="creation-date">{elapsedTime}</div>

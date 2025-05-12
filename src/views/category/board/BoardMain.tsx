@@ -26,32 +26,6 @@ function TableItem({ board }: TableItemProps) {
   // hook: 작성 시간 계산 //
   const elapsedTime = useElapsedTime(creationDate);
 
-  // function: 태그를 한글로 변환하는 함수 //
-  const getTagInKorean = (tag: string) => {
-    switch (tag) {
-      case 'GAME':
-        return '게임';
-      case 'TRAVEL':
-        return '여행';
-      case 'WORKOUT':
-        return '운동';
-      case 'MUSIC':
-        return '음악';
-      case 'ECONOMY':
-        return '경제';
-      case 'FASHION':
-        return '패션';
-      case 'FOOD':
-        return '음식';
-      case 'FREE':
-        return '자유';
-      default:
-        return tag;
-    }
-  };
-
-  const tagInKorean = getTagInKorean(tag);
-
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
@@ -83,7 +57,7 @@ function TableItem({ board }: TableItemProps) {
       </div>
       <div className="board-footer">
         <div className="footer-left">
-          <span className="category">{tagInKorean}</span>
+          <span className="category">{tag}</span>
           <span className="creation-date">{elapsedTime}</span>
           <span className="check-image">
             {images && images.length > 0 ? <img src={imageIcon} alt="icon" className="image-icon" /> : ''}

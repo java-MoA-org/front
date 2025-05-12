@@ -75,15 +75,13 @@ const GET_BOARD_LIST_URL = (tag: string, page: number, sort = 'LATEST') =>
 const GET_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
 const PATCH_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
 const DELETE_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
-const SEARCH_BOARD_LIST_URL = (tag: string, keyword: string, page: number) =>
-  `${BOARD_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
+const SEARCH_BOARD_LIST_URL = (tag: string, keyword: string, page: number) => `${BOARD_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
 
 const TOGGLE_BOARD_LIKE_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/likes`;
 
 const POST_BOARD_COMMENT_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/comments`;
 const GET_BOARD_COMMENT_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/comments`;
-const DELETE_BOARD_COMMENT_URL = (commentSequence: number | string) =>
-  `${BOARD_MODULE_URL}/${commentSequence}/comments`;
+const DELETE_BOARD_COMMENT_URL = (commentSequence: number | string) => `${BOARD_MODULE_URL}/${commentSequence}/comments`;
 
 const DAILY_MODULE_URL = `${API_DOMAIN}/api/v1/daily`;
 
@@ -92,8 +90,7 @@ const GET_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/$
 const GET_DAILY_LIST_URL = (page: number, sort = 'LATEST') => `${DAILY_MODULE_URL}/list/${page}?sortOption=${sort}`;
 const PATCH_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
 const DELETE_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
-const SEARCH_DAILY_LIST_URL = (keyword: string, page: number) =>
-  `${DAILY_MODULE_URL}/search?keyword=${keyword}&page=${page}`;
+const SEARCH_DAILY_LIST_URL = (keyword: string, page: number) => `${DAILY_MODULE_URL}/search?keyword=${keyword}&page=${page}`;
 
 const TOGGLE_DAILY_LIKE_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/likes`;
 const GET_DAILY_LIKES_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/likes`;
@@ -106,15 +103,14 @@ const USED_TRADE_MODULE_URL = `${API_DOMAIN}/api/v1/used-trade`;
 
 const POST_USED_TRADE_URL = USED_TRADE_MODULE_URL;
 const GET_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
-const GET_USED_TRADE_LIST_URL = (tag: string, page: number, sort = 'LATEST') =>
-  `${USED_TRADE_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
+const GET_USED_TRADE_LIST_URL = (tag: string, page: number, sort = 'LATEST') => `${USED_TRADE_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
 const PATCH_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
 const DELETE_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
-const SEARCH_USED_TRADE_LIST_URL = (tag: string, keyword: string, page: number) =>
-  `${USED_TRADE_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
+const SEARCH_USED_TRADE_LIST_URL = (tag: string, keyword: string, page: number) => `${USED_TRADE_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
 
-const TOGGLE_USED_TRADE_LIKE_URL = (tradeSequence: number | string) =>
-  `${USED_TRADE_MODULE_URL}/${tradeSequence}/likes`;
+const TOGGLE_USED_TRADE_LIKE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}/likes`;
+
+const PATCH_USED_TRADE_TRANSACTION_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}/status`;
 
 // notice API URL
 const NOTICE_MODULE_URL = `${API_DOMAIN}/api/v1/notice`;
@@ -680,6 +676,15 @@ export const searchUsedTradeRequest = async (tag: string, keyword: string, page:
 export const putUsedTradeLikeRequest = async (tradeSequence: number | string, accessToken: string) => {
   const responseBody = await axios
     .put(TOGGLE_USED_TRADE_LIKE_URL(tradeSequence), {}, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
+};
+
+// function: patch used trade transaction status API 요청 함수 //
+export const patchTransactionStatusRequest = async (tradeSequence: number | string, accessToken: string) => {
+  const responseBody = await axios
+    .patch(PATCH_USED_TRADE_TRANSACTION_URL(tradeSequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
     .catch(responseErrorHandler);
   return responseBody;
