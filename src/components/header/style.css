@@ -290,3 +290,7 @@
 .alert-image.unread {
   background-image: url('/src/assets/images/alert_unread.png');
 }
+
+.message-container {
+  position: relative;
+}
