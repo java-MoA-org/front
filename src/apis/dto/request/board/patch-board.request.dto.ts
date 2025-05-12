@@ -4,5 +4,5 @@ export default interface PatchBoardRequestDto {
   content: string;
   location?: string;
   detailLocation?: string;
-  imageList?: string[];
+  imageList?: File[];
 }

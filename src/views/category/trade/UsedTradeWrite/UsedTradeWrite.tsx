@@ -9,7 +9,6 @@ import { PostUsedTradeRequestDto } from "../../../../apis/dto/request/usedtrade"
 import { postUsedTradeRequest } from "../../../../apis";
 import { UsedItemStatusTag } from "../../../../types/enums/UsedItemStatusTag";
 import LocationModal from "../../../../components/Location";
-import TextEditor from "../../../../components/TextEditor";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 
@@ -91,8 +90,8 @@ export default function UsedTradeWrite() {
 
   // event handler: 내용 변경 이벤트 처리 //
   const onContentChangeHandler = (value: string) => {
-    if (value.length > 2000) {
-      alert("내용은 2000자 이내로 작성해주세요.");
+    if (value.length > 500) {
+      alert("내용은 500자 이내로 작성해주세요.");
       return;
     }
     setContent(value);
@@ -130,42 +129,17 @@ export default function UsedTradeWrite() {
     setIsModalOpen(false);
   };
 
-  // event Handler: 이미지 업로드 이후 content에 삽입된 이미지 태그 처리 //
-  const onImageUpload = (imageUrl: string) => {
-    const imageTag = `<img src="${imageUrl}" alt="업로드 이미지" />`;
-    setContent(prev => prev + imageTag);
-  };
+  // 이미지 파일 변경 핸들러
+  const onImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
 
-  // event Handler: 이미지 업로드  //
-  const onImageInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { files } = event.target;
-    if (!files || !files.length) return;
-  
     const selectedFiles = Array.from(files);
     setImageList(selectedFiles);
-  
-    const fileReader = new FileReader();
-    const imageUrls: string[] = [];
-  
-    selectedFiles.forEach((file, index) => {
-      fileReader.onloadend = () => {
-        imageUrls.push(fileReader.result as string);
-        if (index === selectedFiles.length - 1) {
-          setImageUrls(imageUrls);
-        }
-      };
-      fileReader.readAsDataURL(file);
-    });
-  };
 
-  const handleImageDelete = (index: number) => {
-    const updatedFileList = [...imageList];
-    updatedFileList.splice(index, 1);
-    setImageList(updatedFileList);
-
-    const updatedImageUrls = [...imageUrls];
-    updatedImageUrls.splice(index, 1);
-    setImageUrls(updatedImageUrls);
+    // 미리보기용 URL
+    const previewUrls = selectedFiles.map(file => URL.createObjectURL(file));
+    setImageUrls(previewUrls);
   };
 
   // event handler: 이미지 업로드 버튼 //
@@ -180,14 +154,13 @@ export default function UsedTradeWrite() {
     const requestBody: PostUsedTradeRequestDto = {
       title,
       content,
-      imageList,
       itemTypeTag,
       usedItemStatusTag,
       location,
       detailLocation,
       price
     };
-    postUsedTradeRequest(requestBody, accessToken).then(postUsedTradeResponse);
+    postUsedTradeRequest(requestBody, imageList, accessToken).then(postUsedTradeResponse);
   };
 
   // render: 중고거래 게시판 판매글 작성 컴포넌트 렌더링 //
@@ -202,10 +175,10 @@ export default function UsedTradeWrite() {
             accept="image/png, image/jpeg"
             style={{ display: "none" }}
             id="file-input"
-            onChange={onImageInputChangeHandler}
+            onChange={onImageChangeHandler}
             multiple
           />
-          <div className="image-preview-slider" onClick={handleFileInputClick} style={{ width: "300px", height: "300px", marginTop: "10px" }}>
+          <div className="image-preview-slider" onClick={handleFileInputClick } style={{ width: "300px", height: "300px", marginTop: "10px" }}>
             <Swiper spaceBetween={0} slidesPerView={1}>
               {imageUrls.map((imageUrl, index) => (
                 <SwiperSlide key={index}>
@@ -215,7 +188,6 @@ export default function UsedTradeWrite() {
                       alt={`업로드 이미지 ${index}`}
                       style={{ width: "100%", height: "auto" }}
                     />
-                    <button onClick={() => handleImageDelete(index)}>삭제</button>
                   </div>
                 </SwiperSlide>
               ))}
