@@ -2,7 +2,12 @@ import './style.css';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useCookies } from 'react-cookie';
-import { searchUserRequest, refreshAccessTokenRequest, userSignOutRequest } from '../../apis';
+import {
+  searchUserRequest,
+  refreshAccessTokenRequest,
+  userSignOutRequest,
+  getNewAlertCountByUserIdRequest,
+} from '../../apis';
 import moaHeaderLogo from '../../assets/images/moa_main_logo.png';
 import defaultProfile from '../../assets/images/default-profile.png';
 import cameraIcon from '../../assets/images/camera.png';
@@ -20,6 +25,7 @@ import useSignInUserStore from '../../stores/sign-in-user.store';
 import useSessionTimerStore from '../../stores/session-timer.store';
 import AlertDropdown from '../Alert';
 import useNotificationStore from '../../stores/alert-read.store';
+import useMessageAlertStore from '../../stores/message-alert.store';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -28,6 +34,7 @@ const Header = () => {
   const { alerts, isRead, setIsRead } = useNotificationStore();
   const { timeLeft, setTimeLeft, decreaseTimeLeft, resetTime } = useSessionTimerStore();
   const { userNickname, userEmail, userProfileImage, resetUser, userId } = useSignInUserStore();
+  const { unreadCount, isMessageRead } = useMessageAlertStore();
   const [cookies, , removeCookie] = useCookies();
 
   const accessToken = cookies[ACCESS_TOKEN];
@@ -153,9 +160,13 @@ const Header = () => {
         <div className="user-info">
           {accessToken ? (
             <>
-              
-                <span onClick={() => navigate(`/message/${userId}`)}>💬</span>
-              
+              <div className="message-container">
+                <span className="message" onClick={() => navigate(`/message/${userId}`)}>
+                  💬
+                </span>
+                <div className={`message-alert ${isMessageRead ? 'new' : 'none'}`}>{unreadCount}</div>
+              </div>
+
               <div className="alert-container">
                 <div
                   onClick={() => {

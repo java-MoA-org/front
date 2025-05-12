@@ -53,11 +53,17 @@ import UserPageUpdate from './views/UserPage/UserPageUpdate';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import useSignInUserStore from './stores/sign-in-user.store';
 import { useEffect } from 'react';
-import { GetUserAlertRequest, getUserInfoRequest, getUserPageInfoRequest } from './apis';
+import {
+  getNewAlertCountByUserIdRequest,
+  GetUserAlertRequest,
+  getUserInfoRequest,
+  getUserPageInfoRequest,
+} from './apis';
 import GetUserInfoResponseDto from './apis/dto/response/user/get-user-info.response.dto';
 import ScrollToTop from './components/ScrollToTop';
 import GetUserAlertResponseDto from './apis/dto/response/alert/get-user-alert.response.dto';
 import useNotificationStore from './stores/alert-read.store';
+import useMessageAlertStore from './stores/message-alert.store';
 
 function App() {
   const {
@@ -70,6 +76,8 @@ function App() {
     setUserRole,
     setUserInterests,
   } = useSignInUserStore();
+
+  const { unreadCount, isMessageRead, setUnreadCount, setIsMessageRead } = useMessageAlertStore();
 
   const { setAlerts } = useNotificationStore();
   const [cookies] = useCookies([ACCESS_TOKEN]);
@@ -107,16 +115,26 @@ function App() {
       setUserInterests(userInfo.userInterests);
     };
 
-    const fetchUserAlert = async () => {
-      const response = await GetUserAlertRequest(accessToken);
-      if (!response || response.code !== 'SU') return;
-
-      const { alerts } = response as GetUserAlertResponseDto;
-      setAlerts(alerts);
-    };
-
     fetchUserInfo();
-    fetchUserAlert();
+  }, [cookies]);
+
+  useEffect(() => {
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) return;
+
+    const intervalId = setInterval(async () => {
+      const response = await GetUserAlertRequest(accessToken);
+      if (response && response.code === 'SU') {
+        const { alerts } = response as GetUserAlertResponseDto;
+        setAlerts(alerts);
+      }
+
+      const messageCountResponse = await getNewAlertCountByUserIdRequest(accessToken);
+      setUnreadCount(messageCountResponse);
+      setIsMessageRead(messageCountResponse === 0);
+    }, 10000);
+
+    return () => clearInterval(intervalId);
   }, [cookies]);
 
   return (
@@ -172,10 +190,8 @@ function App() {
             <Route path="user-update" element={<UserPageUpdate />} />
           </Route>
 
-          
           <Route path="/message/:userId" element={<MessageList />} />
           <Route path="/message/:userId/:partnerId" element={<MessageRoom />} />
-          
         </Routes>
         <Footer />
       </BrowserRouter>
