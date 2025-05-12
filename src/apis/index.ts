@@ -146,6 +146,10 @@ const PATCH_READ_ALL_ALERT_URL = `${ALERT_MODULE_URL}/readAll`;
 const DELETE_ALERT_URL = (alert_id: number) => `${ALERT_MODULE_URL}/delete/${alert_id}`;
 const DELETE_ALERT_ALL_URL = `${ALERT_MODULE_URL}/deleteAll`;
 
+const SET_READ_MESSAGE_URL = `${API_DOMAIN}/api/message/read`;
+const GET_NEW_ALERT_BY_USER_ID_URL = `${API_DOMAIN}/api/message/get-alert`;
+const HIDE_CHAT_URL = `${API_DOMAIN}/api/message/hide`;
+
 // function: Authorization Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({
   headers: { Authorization: `Bearer ${accessToken}` },
@@ -845,11 +849,25 @@ export const getUserNicknameByIdRequest = async (userId: string, accessToken: st
 
 // function: userId 기반 새 메시지 알림 조회 API 요청 함수 //
 export const getNewAlertCountByUserIdRequest = async (accessToken: string) => {
-  const url = `/api/message/get-alert`;
   const response = await axios
-    .get(url, bearerAuthorization(accessToken))
+    .get(GET_NEW_ALERT_BY_USER_ID_URL, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
     .catch(responseErrorHandler);
   console.log('response', response);
+  return response;
+};
+
+export const patchMessageInvisibleByIdRequest = async (id: number, accessToken: string) => {
+  await axios.post(
+    HIDE_CHAT_URL,
+    {
+      messageNumber: id,
+    },
+    bearerAuthorization(accessToken)
+  );
+};
+
+export const patchReadMessageRequest = async (userId: string, partnerId: string, accessToken: string) => {
+  const response = await axios.post(SET_READ_MESSAGE_URL, { userId, partnerId }, bearerAuthorization(accessToken));
   return response;
 };

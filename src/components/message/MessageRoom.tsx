@@ -5,10 +5,17 @@ import { useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import useChatSocket from '../../hooks/useChatSocket';
 import axios from 'axios';
-import { getUserInfoByIdRequest, getUserProfileImageByIdRequest, getUserNicknameByIdRequest } from '../../apis';
+import {
+  getUserInfoByIdRequest,
+  getUserProfileImageByIdRequest,
+  getUserNicknameByIdRequest,
+  patchMessageInvisibleByIdRequest,
+  patchReadMessageRequest,
+} from '../../apis';
 
 // interface: 메시지 데이터 타입 정의
 interface Message {
+  id: number;
   senderId: string;
   receiverId: string;
   content: string;
@@ -53,15 +60,8 @@ const MessageRoom = () => {
     setActiveIndex(null); // 옵션 닫기
 
     try {
-      await axios.post(
-        '/api/message/hide',
-        {
-          messageNumber: index,
-        },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+      console.log('삭제 시도');
+      patchMessageInvisibleByIdRequest(deletedMessage.id, accessToken);
     } catch (err) {
       console.error('메시지 숨기기 실패:', err);
     }
@@ -147,20 +147,9 @@ const MessageRoom = () => {
     }
     // 메시지 읽음 처리 API 호출
     if (userId && partnerId && accessToken) {
-      axios
-        .post(
-          '/api/message/read',
-          {
-            userId,
-            partnerId,
-          },
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          }
-        )
-        .catch((err) => {
-          console.error('읽음 처리 실패:', err);
-        });
+      patchReadMessageRequest(userId, partnerId, accessToken).catch((err) => {
+        console.error('읽음 처리 실패:', err);
+      });
     }
   }, [messages]);
 
@@ -169,6 +158,7 @@ const MessageRoom = () => {
     if (!input.trim()) return; // 빈 메시지 전송 방지
 
     const newMsg: Message = {
+      id: 0,
       senderId: userId!,
       receiverId: partnerId!,
       content: input,
