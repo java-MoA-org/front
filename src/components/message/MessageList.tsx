@@ -34,11 +34,9 @@ const MessageList = () => {
     const nickname = await getUserNicknameByIdRequest(partnerId, accessToken);
     const profileImage = await getUserProfileImageByIdRequest(partnerId, accessToken);
 
-    setRooms(prev => {
+    setRooms((prev) => {
       const updated = [...prev];
-      const index = updated.findIndex(room =>
-        room.partnerId === partnerId
-      );
+      const index = updated.findIndex((room) => room.partnerId === partnerId);
 
       const newRoom: MessageRoomSummary = {
         partnerId,
@@ -67,9 +65,10 @@ const MessageList = () => {
 
     // 최초 진입 시 채팅방 목록 API 호출
     console.log('[📡 요청 시작] /api/message/rooms');
-    axios.get('/api/message/rooms', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    })
+    axios
+      .get('/api/message/rooms', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
       .then((res) => {
         let fetchedRooms: MessageRoomSummary[] = [];
 
@@ -82,7 +81,7 @@ const MessageList = () => {
           return setRooms([]);
         }
 
-        // 최신 (내림차순) 메시지 기준으로 정렬 
+        // 최신 (내림차순) 메시지 기준으로 정렬
         fetchedRooms.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
         setRooms(fetchedRooms);
@@ -117,70 +116,73 @@ const MessageList = () => {
     try {
       await axios.delete(`/api/message/hide-room/${userId}/${partnerId}`, {
         headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
-      setRooms(prev => prev.filter(room => room.partnerId !== partnerId));
+      setRooms((prev) => prev.filter((room) => room.partnerId !== partnerId));
     } catch (err) {
       console.error('채팅방 숨김 실패:', err);
     }
   };
 
-  // render: 채팅방 목록 렌더링 // 
+  // render: 채팅방 목록 렌더링 //
   return (
     <div className="message-list">
-      {Array.isArray(rooms) && rooms.map((room) => (
-        // 채팅방 하나를 렌더링
-        <div
-          key={room.partnerId}
-          className={`message-item ${room.unread ? 'unread' : ''}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleClickRoom(room.partnerId);
-          }}
-        >
-          <img src={room.profileImage} alt="프로필" className="profile-img" />
-          <div className="text-info">
-            <div className="nickname-row">
-              <span className="nickname">{room.nickname}</span>
-              <span className="timestamp">{new Date(room.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-            </div>
-            <div className="last-message">
-              {room.lastMessage}
-              {/* 안 읽은 메시지가 있는 경우 빨간 점 표시 */}
-              {room.unread && <span className="unread-dot" />}
-            </div>
-          </div>
-          <div className="message-options">
-            {/* 더보기 버튼 (삭제 메뉴 열기) */}
-            <button
-              className="more-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenMenuId((prev) => (prev === room.partnerId ? null : room.partnerId));
-              }}
-            >
-              ...
-            </button>
-            {/* 더보기 메뉴 - 삭제 버튼 포함 */}
-            {openMenuId === room.partnerId && (
-              <div className="dropdown-menu">
-                <button
-                  className="delete-room-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteRoom(room.partnerId);
-                    setOpenMenuId(null);
-                  }}
-                >
-                  삭제
-                </button>
+      {Array.isArray(rooms) &&
+        rooms.map((room) => (
+          // 채팅방 하나를 렌더링
+          <div
+            key={room.partnerId}
+            className={`message-item ${room.unread ? 'unread' : ''}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClickRoom(room.partnerId);
+            }}
+          >
+            <img src={room.profileImage} alt="프로필" className="profile-img" />
+            <div className="text-info">
+              <div className="nickname-row">
+                <span className="nickname">{room.nickname}</span>
+                <span className="timestamp">
+                  {new Date(room.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
               </div>
-            )}
+              <div className="last-message">
+                {room.lastMessage}
+                {/* 안 읽은 메시지가 있는 경우 빨간 점 표시 */}
+                {room.unread && <span className="unread-dot" />}
+              </div>
+            </div>
+            <div className="message-options">
+              {/* 더보기 버튼 (삭제 메뉴 열기) */}
+              <button
+                className="more-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenMenuId((prev) => (prev === room.partnerId ? null : room.partnerId));
+                }}
+              >
+                ...
+              </button>
+              {/* 더보기 메뉴 - 삭제 버튼 포함 */}
+              {openMenuId === room.partnerId && (
+                <div className="dropdown-menu">
+                  <button
+                    className="delete-room-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteRoom(room.partnerId);
+                      setOpenMenuId(null);
+                    }}
+                  >
+                    삭제
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 };
