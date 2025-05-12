@@ -14,10 +14,11 @@ interface Message {
 
 const useChatSocket = (userId: string, onMessageReceived: (message: Message) => void) => {
   const [cookies] = useCookies(['accessToken']);
-  const accessToken = cookies.accessToken;
+  let accessToken = cookies.accessToken;
   const clientRef = useRef<Client | null>(null);
 
   useEffect(() => {
+    accessToken = cookies.accessToken;
     if (!accessToken) {
       console.warn('[🚫 WebSocket 차단] accessToken이 없습니다.');
       return;
