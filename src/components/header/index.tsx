@@ -164,7 +164,9 @@ const Header = () => {
                 <span className="message" onClick={() => navigate(`/message/${userId}`)}>
                   💬
                 </span>
-                <div className={`message-alert ${isMessageRead ? 'new' : 'none'}`}>{unreadCount}</div>
+                <div className={`message-alert ${isMessageRead ? 'new' : 'none'}`}>
+                  {typeof unreadCount === 'number' ? unreadCount : ''}
+                </div>
               </div>
 
               <div className="alert-container">

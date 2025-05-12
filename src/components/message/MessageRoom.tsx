@@ -45,7 +45,7 @@ const MessageRoom = () => {
   };
 
   // function: 메시지 삭제 처리 함수
-  const handleDelete = (index: number) => {
+  const handleDelete = async (index: number) => {
     const deletedMessage = messages[index];
     if (!deletedMessage) return;
 
@@ -53,17 +53,31 @@ const MessageRoom = () => {
     setMessages((prev) => prev.filter((_, i) => i !== index));
     setActiveIndex(null); // 옵션 닫기
 
-    // 2. WebSocket으로 삭제 메시지 전송
-    const deleteNotice: Message = {
-      senderId: userId!,
-      receiverId: partnerId!,
-      content: deletedMessage.timestamp, // 삭제 대상 메시지의 timestamp를 기준으로 삭제
-      imageUrl: '',
-      type: 'DELETE', // DELETE 타입으로 전송
-      timestamp: new Date().toISOString()
-    };
+    try {
+      await axios.post(
+        '/api/message/hide',
+        {
+          messageNumber: index,
+        },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+    } catch (err) {
+      console.error('메시지 숨기기 실패:', err);
+    }
 
-    sendMessage(deleteNotice);
+    // 2. WebSocket으로 삭제 메시지 전송
+    // const deleteNotice: Message = {
+    //   senderId: userId!,
+    //   receiverId: partnerId!,
+    //   content: deletedMessage.timestamp, // 삭제 대상 메시지의 timestamp를 기준으로 삭제
+    //   imageUrl: '',
+    //   type: 'DELETE', // DELETE 타입으로 전송
+    //   timestamp: new Date().toISOString(),
+    // };
+
+    // sendMessage(deleteNotice);
   };
 
   // 메시지 수신 처리 함수 (useCallback으로 메모이제이션)
@@ -92,6 +106,7 @@ const MessageRoom = () => {
     if (!userId || !partnerId || !accessToken) return;
 
     // 과거 메시지 API 호출
+<<<<<<< HEAD
     axios.get(`/api/message/${userId}/${partnerId}`, {
       headers: { Authorization: `Bearer ${accessToken}` }
     }).then((res) => {
@@ -100,6 +115,18 @@ const MessageRoom = () => {
     }).catch((err) => {
       console.error('메시지 불러오기 실패:', err);
     });
+=======
+    axios
+      .get(`/api/message/${userId}/${partnerId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+      .then((res) => {
+        setMessages(res.data); // 메시지 상태 세팅
+      })
+      .catch((err) => {
+        console.error('메시지 불러오기 실패:', err);
+      });
+>>>>>>> 012e39c4c24b47ce9a77eb4b6c04876dc3cb7124
 
     // 상대방 프로필 이미지 요청
     getUserProfileImageByIdRequest(partnerId!, accessToken)
@@ -143,6 +170,7 @@ const MessageRoom = () => {
     }
     // 메시지 읽음 처리 API 호출
     if (userId && partnerId && accessToken) {
+<<<<<<< HEAD
       axios.post('/api/message/read', {
         userId,
         partnerId
@@ -168,6 +196,22 @@ const MessageRoom = () => {
         });
         setHasUnreadSent(true);
       }
+=======
+      axios
+        .post(
+          '/api/message/read',
+          {
+            userId,
+            partnerId,
+          },
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        )
+        .catch((err) => {
+          console.error('읽음 처리 실패:', err);
+        });
+>>>>>>> 012e39c4c24b47ce9a77eb4b6c04876dc3cb7124
     }
   }, [messages]);
 
@@ -181,7 +225,7 @@ const MessageRoom = () => {
       content: input,
       imageUrl: '',
       type: 'TEXT',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     setMessages((prev) => [...prev, newMsg]); // 클라이언트에서 즉시 메시지 추가
@@ -201,12 +245,7 @@ const MessageRoom = () => {
     <div className="message-room">
       {/* 헤더 - 상대 프로필 이미지 및 닉네임 표시 */}
       <div className="header">
-        <img
-          src={partnerProfileImage}
-          alt="상대 프로필"
-          width={40}
-          height={40}
-        />
+        <img src={partnerProfileImage} alt="상대 프로필" width={40} height={40} />
         <span>{partnerNickname}</span>
       </div>
 
@@ -217,13 +256,7 @@ const MessageRoom = () => {
 
           return (
             <div key={i} className={`message-container ${isMine ? 'mine' : 'theirs'}`}>
-              {!isMine && (
-                <img
-                  className="profile-icon"
-                  src={partnerProfileImage}
-                  alt="상대 프로필"
-                />
-              )}
+              {!isMine && <img className="profile-icon" src={partnerProfileImage} alt="상대 프로필" />}
               <div className={isMine ? 'my-message' : 'their-message'}>
                 {msg.type === 'TEXT' && <p>{msg.content}</p>}
                 {msg.type === 'IMAGE' && <img src={msg.imageUrl} alt="image" />}
@@ -234,7 +267,9 @@ const MessageRoom = () => {
                   )}
                 </div>
                 <div className="message-options">
-                  <span className="dots" onClick={() => toggleOptions(i)}>⋯</span>
+                  <span className="dots" onClick={() => toggleOptions(i)}>
+                    ⋯
+                  </span>
                   {activeIndex === i && (
                     <div className="dropdown-menu message-delete-menu">
                       <button onClick={() => handleDelete(i)}>삭제</button>
@@ -253,7 +288,7 @@ const MessageRoom = () => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown} 
+          onKeyDown={handleKeyDown}
           placeholder="메시지를 입력하세요"
         />
         <button onClick={handleSend}>전송</button>
