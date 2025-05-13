@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import { Board, Daily, Trade, UserInterest } from "../../types/interfaces";
 import { getUserPageRequest } from "../../apis";
 import MyUserPage from ".";
+import { useCookies } from "react-cookie";
+import { ACCESS_TOKEN } from "../../constants";
 // props 받아서 렌더링만 하는 컴포넌트
 
 export default function UserPageContainer() {
@@ -18,11 +20,14 @@ export default function UserPageContainer() {
   const [userProfileImage, setUserProfileImage] = useState<string>("");
   const [userPageId, setUserPageId] = useState<string>("");
 
+  const [cookies] = useCookies([ACCESS_TOKEN]);
+  const accessToken = cookies[ACCESS_TOKEN];
+
   useEffect(() => {
     if (!nickname) return;
 
     const fetchUserPage = async () => {
-      const response = await getUserPageRequest(nickname);
+      const response = await getUserPageRequest(nickname, accessToken);
 
       // Type narrowing: 응답이 성공적인 경우만 처리
       if (response && "boards" in response) {

@@ -3,6 +3,7 @@ import "./style.css";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Board, Daily, Trade } from "../../../types/interfaces";
 import {
+  ACCESS_TOKEN,
   BOARD_VIEW_ABSOLUTE_PATH,
   DAILY_VIEW_ABSOLUTE_PATH,
   MY_USER_PATH,
@@ -13,6 +14,7 @@ import ResponseDto from "../../../apis/dto/response/response.dto";
 import GetUserPageResponseDto from "../../../apis/dto/response/userpage/get-user-page.response.dto";
 import { usePagination } from "../../../hooks";
 import Pagination from "../../../components/pagination";
+import { useCookies } from "react-cookie";
 
 export default function UserBoard() {
   const [searchParams] = useSearchParams();
@@ -24,6 +26,9 @@ export default function UserBoard() {
   const [boards, setBoards] = useState<Board[]>([]);
   const [dailys, setDailys] = useState<Daily[]>([]);
   const [trades, setTrades] = useState<Trade[]>([]);
+
+  const [cookies] = useCookies([ACCESS_TOKEN]);
+  const accessToken = cookies[ACCESS_TOKEN];
 
   const [activeTab, setActiveTab] = useState<"board" | "daily" | "used">(
     typeParam === "board" ? "board" : typeParam === "daily" ? "daily" : "used"
@@ -69,7 +74,7 @@ export default function UserBoard() {
       return;
     }
 
-    getUserPageRequest(nickname)
+    getUserPageRequest(nickname, accessToken)
       .then(getUserBoardResponse)
       .catch(() => alert("서버 요청 중 오류가 발생했습니다."));
   }, [nickname]);

@@ -7,7 +7,7 @@ import useChatSocket from '../../hooks/useChatSocket';
 import axios from 'axios';
 import { getUserProfileImageByIdRequest, getUserNicknameByIdRequest } from '../../apis';
 
-// interface: 메시지 데이터 타입 정의
+// interface: 메시지 데이터 타입 정의 - 각 메시지 객체의 구조 (id, 송신자/수신자, 내용, 타입, 타임스탬프 등)
 interface Message {
   id: number;
   senderId: string;
@@ -27,7 +27,7 @@ const MessageRoom = () => {
   const [cookies] = useCookies(['accessToken']);
   const accessToken = cookies['accessToken'];
 
-  // state: 메시지 목록 상태
+  // state: 메시지 목록 상태 - 채팅방에 표시될 메시지들을 관리
   const [messages, setMessages] = useState<Message[]>([]);
   const [hasUnreadSent, setHasUnreadSent] = useState(false);
   // state: 입력창 값 상태
@@ -58,6 +58,9 @@ const MessageRoom = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
+      setTimeout(() => {
+        document.querySelector<HTMLInputElement>('input[type="text"]')?.focus();
+      }, 0);
     }
   };
 
@@ -103,24 +106,14 @@ const MessageRoom = () => {
 
     // 과거 메시지 API 호출
     axios
-      .get(`/api/message/${userId}/${partnerId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      })
-      .then((res) => {
-        setMessages(res.data); // 메시지 상태 세팅
-      })
-      .catch((err) => {
-        console.error('메시지 불러오기 실패:', err);
-      });
+      .get(`/api/message/${userId}/${partnerId}`, { headers: { Authorization: `Bearer ${accessToken}`}, })
+      .then((res) => { setMessages(res.data); })
+      .catch((err) => { console.error('메시지 불러오기 실패:', err)});
 
     // 상대방 프로필 이미지 요청
     getUserProfileImageByIdRequest(partnerId!, accessToken)
-      .then((url) => {
-        setPartnerProfileImage(url || defaultProfile);
-      })
-      .catch(() => {
-        setPartnerProfileImage(defaultProfile);
-      });
+      .then((url) => {setPartnerProfileImage(url || defaultProfile)})
+      .catch(() => {setPartnerProfileImage(defaultProfile)});
 
     // 상대방 닉네임 요청
     getUserNicknameByIdRequest(partnerId!, accessToken)
@@ -128,7 +121,7 @@ const MessageRoom = () => {
       .catch(() => setPartnerNickname('알 수 없음'));
   }, [userId, partnerId, accessToken]);
 
-  // effect: 외부 클릭 시 메시지 옵션 메뉴 닫기 처리
+  // effect: 외부 클릭 시 메시지 옵션 메뉴 닫기 처리 - 우측 점 3개 눌러 열리는 메뉴를 외부 클릭 시 닫음
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -136,7 +129,6 @@ const MessageRoom = () => {
         setActiveIndex(null);
       }
     };
-
     document.addEventListener('click', handleClickOutside);
     return () => {
       document.removeEventListener('click', handleClickOutside);
@@ -155,7 +147,7 @@ const MessageRoom = () => {
     }
   }, [messages]);
 
-  // function: 메시지 전송 처리 함수 (이미지 업로드 포함)
+  // function: 메시지 전송 처리 함수 (이미지 업로드 포함) - 텍스트 입력 또는 이미지 선택 후 서버로 전송
   const handleSend = async () => {
     if (!input.trim() && !imageFile) return; // 텍스트도 이미지도 없으면 전송 안 함
 
@@ -198,11 +190,12 @@ const MessageRoom = () => {
   // function: 입력창에서 Enter 키 입력 시 메시지 전송
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
+      e.preventDefault();
       handleSend();
     }
   };
 
-  // render: 메시지룸 컴포넌트 렌더링
+  // component: 메시지룸 컴포넌트 렌더링 - 상단 헤더, 메시지 목록, 입력창, 이미지 모달 포함
   return (
     <div className="message-room">
       {/* 헤더 - 상대 프로필 이미지 및 닉네임 표시 */}
@@ -214,6 +207,7 @@ const MessageRoom = () => {
       {/* 채팅 메시지 목록 영역 */}
       <div className="chat-box" ref={chatBoxRef}>
         {messages.map((msg, i) => {
+          // variable: 메세지 클래스 - 내가 보낸 메시지인지에 따라 스타일 구분
           const isMine = msg.senderId === userId; // 내가 보낸 메시지 여부
 
           return (
@@ -223,12 +217,10 @@ const MessageRoom = () => {
                 {msg.type === 'TEXT' && <p>{msg.content}</p>}
                 {msg.type === 'IMAGE' && msg.imageUrl && (
                   <>
-                    <img
+                    <img className="message-image"
                       src={msg.imageUrl}
                       alt="image"
-                      className="message-image"
                       onClick={() => setPreviewImage(msg.imageUrl!)}
-                      style={{ cursor: 'pointer' }}
                     />
                   </>
                 )}
@@ -264,7 +256,7 @@ const MessageRoom = () => {
       {previewImage && (
         <div className="image-modal" onClick={() => setPreviewImage(null)}>
           <div className="image-modal-backdrop" />
-          <img src={previewImage} alt="preview" className="image-modal-content" />
+          <img className="image-modal-content" src={previewImage} alt="preview"/>
         </div>
       )}
     </div>

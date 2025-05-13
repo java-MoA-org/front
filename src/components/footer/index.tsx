@@ -46,13 +46,13 @@ export default function Footer() {
           <h4>커뮤니티</h4>
           <ul>
             <li>
-              <Link to="/category/board">게시판</Link>
+              <Link to="/board">게시판</Link>
             </li>
             <li>
-              <Link to="/category/trade">중고거래</Link>
+              <Link to="/trade">중고거래</Link>
             </li>
             <li>
-              <Link to="/category/diary">이웃 일기</Link>
+              <Link to="/diary">이웃 일기</Link>
             </li>
           </ul>
         </div>
