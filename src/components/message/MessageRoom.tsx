@@ -7,7 +7,7 @@ import useChatSocket from '../../hooks/useChatSocket';
 import axios from 'axios';
 import { getUserProfileImageByIdRequest, getUserNicknameByIdRequest } from '../../apis';
 
-// interface: 메시지 데이터 타입 정의 - 각 메시지 객체의 구조 (id, 송신자/수신자, 내용, 타입, 타임스탬프 등)
+// interface: 메시지 데이터 타입 정의 //
 interface Message {
   id: number;
   senderId: string;
@@ -27,20 +27,20 @@ const MessageRoom = () => {
   const [cookies] = useCookies(['accessToken']);
   const accessToken = cookies['accessToken'];
 
-  // state: 메시지 목록 상태 - 채팅방에 표시될 메시지들을 관리
+  // state: 메시지 목록 상태 - 채팅방에 표시될 메시지들을 관리 //
   const [messages, setMessages] = useState<Message[]>([]);
   const [hasUnreadSent, setHasUnreadSent] = useState(false);
-  // state: 입력창 값 상태
+  // state: 입력창 값 상태 //
   const [input, setInput] = useState('');
-  // state: 상대방 프로필 이미지 상태
+  // state: 상대방 프로필 이미지 상태 //
   const [partnerProfileImage, setPartnerProfileImage] = useState<string>(defaultProfile);
-  // state: 상대방 닉네임 상태
+  // state: 상대방 닉네임 상태 //
   const [partnerNickname, setPartnerNickname] = useState('');
-  // state: 삭제 옵션 표시할 메시지 인덱스 상태
+  // state: 삭제 옵션 표시할 메시지 인덱스 상태 //
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  // state: 채팅박스 DOM 참조 (스크롤 제어용)
+  // state: 채팅박스 DOM 참조 (스크롤 제어용) //
   const chatBoxRef = useRef<HTMLDivElement>(null);
-  // state: 이미지 업로드 파일
+  // state: 이미지 업로드 파일 //
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   // 이미지 input ref
@@ -54,7 +54,7 @@ const MessageRoom = () => {
     imageInputRef.current?.click();
   };
 
-  // 이미지 파일 선택 시 처리
+  // event handler: 이미지 파일 선택 시 파일 상태를 업데이트하고, 입력창에 포커스 맞춤 //
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
@@ -147,7 +147,7 @@ const MessageRoom = () => {
     }
   }, [messages]);
 
-  // function: 메시지 전송 처리 함수 (이미지 업로드 포함) - 텍스트 입력 또는 이미지 선택 후 서버로 전송
+  // event handler: 메시지 전송 버튼 또는 Enter 키 입력 시 메시지 전송 처리 (이미지 업로드 포함)
   const handleSend = async () => {
     if (!input.trim() && !imageFile) return; // 텍스트도 이미지도 없으면 전송 안 함
 
@@ -187,7 +187,7 @@ const MessageRoom = () => {
     setImageFile(null); // 이미지 초기화
   };
 
-  // function: 입력창에서 Enter 키 입력 시 메시지 전송
+  // event handler: 입력창에서 Enter 키 입력 시 전송 처리
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -195,7 +195,6 @@ const MessageRoom = () => {
     }
   };
 
-  // component: 메시지룸 컴포넌트 렌더링 - 상단 헤더, 메시지 목록, 입력창, 이미지 모달 포함
   return (
     <div className="message-room">
       {/* 헤더 - 상대 프로필 이미지 및 닉네임 표시 */}
