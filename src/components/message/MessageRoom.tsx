@@ -9,6 +9,7 @@ import { getUserProfileImageByIdRequest, getUserNicknameByIdRequest } from '../.
 
 // interface: 메시지 데이터 타입 정의
 interface Message {
+  id: number;
   senderId: string;
   receiverId: string;
   content: string;
@@ -179,6 +180,7 @@ const MessageRoom = () => {
     }
 
     const newMsg: Message = {
+      id: 0,
       senderId: userId!,
       receiverId: partnerId!,
       content: input,

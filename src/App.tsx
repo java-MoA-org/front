@@ -120,6 +120,7 @@ function App() {
 
   useEffect(() => {
     const accessToken = cookies[ACCESS_TOKEN];
+    console.log(accessToken);
     if (!accessToken) return;
 
     const intervalId = setInterval(async () => {

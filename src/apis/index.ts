@@ -844,7 +844,7 @@ export const getUserNicknameByIdRequest = async (userId: string, accessToken: st
       Authorization: `Bearer ${accessToken}`,
     },
   });
-  return response.data; // string
+  return response.data;
 };
 
 // function: userId 기반 새 메시지 알림 조회 API 요청 함수 //
@@ -854,20 +854,5 @@ export const getNewAlertCountByUserIdRequest = async (accessToken: string) => {
     .then(responseSuccessHandler)
     .catch(responseErrorHandler);
   console.log('response', response);
-  return response;
-};
-
-export const patchMessageInvisibleByIdRequest = async (id: number, accessToken: string) => {
-  await axios.post(
-    HIDE_CHAT_URL,
-    {
-      messageNumber: id,
-    },
-    bearerAuthorization(accessToken)
-  );
-};
-
-export const patchReadMessageRequest = async (userId: string, partnerId: string, accessToken: string) => {
-  const response = await axios.post(SET_READ_MESSAGE_URL, { userId, partnerId }, bearerAuthorization(accessToken));
   return response;
 };

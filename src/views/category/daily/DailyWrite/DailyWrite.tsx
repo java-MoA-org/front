@@ -23,8 +23,14 @@ export default function DailyWrite() {
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
 
+  const getTextOnlyLength = (html: string) => {
+    const tempEl = document.createElement("div");
+    tempEl.innerHTML = html;
+    return tempEl.textContent?.length || 0;
+  };
+
   // variable: 일상 게시글 작성 가능 여부 //
-  const isActive = title !== "" && content !== "";
+  const isActive = title !== "" && getTextOnlyLength(content) > 0 && imageList.length > 0;
   // variable: 일상 게시글 작성 버튼 클래스 //
   const writeButtonClass = isActive ? "button middle primary" : "button middle disable";
 
@@ -59,7 +65,8 @@ export default function DailyWrite() {
 
   // event handler: 내용 변경 이벤트 처리 //
   const onContentChangeHandler = (value: string) => {
-    if (value.length > 2000) {
+    const plainTextLength = getTextOnlyLength(value);
+    if (plainTextLength > 2000) {
       alert("내용은 2000자 이내로 작성해주세요.");
       return;
     }
@@ -102,7 +109,7 @@ export default function DailyWrite() {
             <input type="text" value={title} placeholder="제목을 입력하세요." onChange={onTitleChangeHandler} />
           </div>
           <div className='input-column-box'>
-            <div className='title'>내용 ({content.length}/2000)</div>
+            <div className='title'>내용 ({getTextOnlyLength(content)}/2000)</div>
             <TextEditor
               content={content}
               setContent={onContentChangeHandler}

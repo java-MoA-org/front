@@ -2,8 +2,8 @@ import { useEffect, useRef } from 'react';
 import { Client } from '@stomp/stompjs';
 import { useCookies } from 'react-cookie';
 
-
 interface Message {
+  id: number;
   senderId: string;
   receiverId: string;
   content: string;
@@ -12,15 +12,13 @@ interface Message {
   timestamp: string;
 }
 
-const useChatSocket = (
-  userId: string,
-  onMessageReceived: (message: Message) => void
-) => {
+const useChatSocket = (userId: string, onMessageReceived: (message: Message) => void) => {
   const [cookies] = useCookies(['accessToken']);
-  const accessToken = cookies.accessToken;
+  let accessToken = cookies.accessToken;
   const clientRef = useRef<Client | null>(null);
 
   useEffect(() => {
+    accessToken = cookies.accessToken;
     if (!accessToken) {
       console.warn('[🚫 WebSocket 차단] accessToken이 없습니다.');
       return;
@@ -28,7 +26,7 @@ const useChatSocket = (
 
     console.log('[useChatSocket] WebSocket 클라이언트 생성됨');
     const client = new Client({
-      brokerURL: undefined, 
+      brokerURL: undefined,
       connectHeaders: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -49,14 +47,13 @@ const useChatSocket = (
 
           onMessageReceived(received);
         });
-
       },
       onDisconnect: () => {
         console.log('[🔴 연결 종료]');
       },
       debug: (str) => {
         console.log('[STOMP DEBUG]', str);
-      }
+      },
     });
 
     client.activate();
@@ -72,7 +69,7 @@ const useChatSocket = (
     if (clientRef.current && clientRef.current.connected) {
       clientRef.current.publish({
         destination: '/app/chat.send',
-        body: JSON.stringify(message)
+        body: JSON.stringify(message),
       });
     } else {
       console.warn('[⚠️ WebSocket 미연결 상태 - 메시지 큐에 저장]');

@@ -9,6 +9,7 @@ import StarterKit from '@tiptap/starter-kit';
 import axios from 'axios';
 
 import "./style.css";
+import { UPLOAD_IMAGES_URL } from '../../apis';
 
 // interface: Text Editor Menu Bar 컴포넌트 속성 //
 interface MenuBarProp {
@@ -67,7 +68,7 @@ interface Props {
 // component: tiptap Text Editor 컴포넌트 //
 export default function TextEditor({ content, setContent, onImageListChange, onImageUpload, type }: Props) {
   const [isUploading, setIsUploading] = useState(false);
-  const [imageList, setImageList] = useState<string[]>([]);
+  const [imageList, setImageList] = useState<Set<string>>(new Set());
 
   // editor 상태 변수
   const [initialized, setInitialized] = useState(false);
@@ -80,7 +81,6 @@ export default function TextEditor({ content, setContent, onImageListChange, onI
     },
   });
 
-  // content가 변경되면 editor에 내용이 반영되도록 설정 //
   useEffect(() => {
     if (editor && content !== undefined && !initialized) {
       editor.commands.setContent(content);
@@ -111,27 +111,35 @@ export default function TextEditor({ content, setContent, onImageListChange, onI
       formData.append('type', type || 'board');
   
       try {
-        const response = await axios.post('http://localhost:4000/api/v1/images/upload', formData, {
+        const response = await axios.post(UPLOAD_IMAGES_URL, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
   
         const imageUrl = response.data.data;
-        uploadedUrls.push(imageUrl);
+        if (Array.isArray(imageUrl)) {
+          uploadedUrls.push(...imageUrl);
+        } else {
+          uploadedUrls.push(imageUrl);
+        }
+  
+        setImageList((prevList) => {
+          const updatedList = new Set(prevList);
+          uploadedUrls.forEach((url) => updatedList.add(url));
+          onImageListChange?.([...updatedList]);
+          return updatedList;
+        });
   
         editor?.chain().focus().setImage({ src: imageUrl }).run();
+        onImageUpload?.(imageUrl);
       } catch (error) {
         console.error('이미지 업로드 실패:', error);
+        alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
       }
     }
   
-    setImageList((prevList) => {
-      const updatedList = [...prevList, ...uploadedUrls];
-      onImageListChange?.(updatedList);
-      return updatedList;
-    });
-  
     setIsUploading(false);
   };
+  
   
 
   return (
