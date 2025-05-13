@@ -191,7 +191,7 @@ export default function BoardMain() {
   // effect: 컴포넌트 로드시 게시글 목록 요청 //
   useEffect(() => {
     if (searchQuery) return;
-    getBoardListRequest(tag, currentPage, sort, accessToken).then(getBoardListResponse);
+    getBoardListRequest(tag, currentPage, sort).then(getBoardListResponse);
   }, [tag, currentPage, sort, searchQuery]);
 
   // render: 게시판 컴포넌트 렌더링 //

@@ -118,11 +118,15 @@
   cursor: not-allowed;
 }
 
-#trade-write-wrapper .swiper {
-  width: 100%;
-  height: 100%;
+#trade-write-wrapper .default-image,
+#trade-write-wrapper .image-preview {
+  width: 300px; 
+  height: 300px;
   object-fit: cover;
   border: 1px solid #ccc;
+}
+
+#trade-write-wrapper .default-image {
   background-image: url('/src/assets/images/add-photo.png');
 }
 
@@ -167,4 +171,23 @@
   border-radius: 50%;
   background-color: #4a90e2;
   transform: translate(-50%, -50%);
+}
+
+.image-preview {
+  width: 160px;
+  height: 160px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-preview img,
+.thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ✅ 이미지 꽉 채움 */
+  display: block;
 }

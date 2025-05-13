@@ -166,41 +166,26 @@
   font-weight: bold;
 }
 
-/* 사이드바 */
-#daily-main-wrapper .daily-sidebar {
-  width: 280px;
-  background-color: white;
-  border: 1px solid #bbbfca;
+#daily-main-wrapper .daily-thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
   border-radius: 8px;
-  padding: 20px;
-  height: fit-content;
-  margin-top: 60px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-#daily-main-wrapper .daily-sidebar-title {
-  font-weight: bold;
-  font-size: 16px;
   margin-bottom: 12px;
-}
-
-#daily-main-wrapper .daily-sidebar-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-#daily-main-wrapper .daily-sidebar-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #bbbfca;
-  font-size: 14px;
-  color: #444;
+  display: block;
+  margin-left: 0;
+  margin-right: auto;
 }
 
 #daily-main-wrapper .daily-sidebar-item:last-child {
   border-bottom: none;
+}
+
+#daily-main-wrapper .icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  vertical-align: middle;
 }
 
 /* 미디어 쿼리 - 화면 크기가 800px 이하일 때 */

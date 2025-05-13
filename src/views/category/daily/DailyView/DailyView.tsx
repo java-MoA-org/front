@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useSignInUserStore from '../../../../stores/sign-in-user.store';
 import { GetDailyCommentResponseDto, GetDailyResponseDto } from '../../../../apis/dto/response/daily';
 import ResponseDto from '../../../../apis/dto/response/response.dto';
-import { ACCESS_TOKEN, DAILY_ABSOLUTE_PATH, DAILY_UPDATE_ABSOLUTE_PATH } from '../../../../constants';
+import { ACCESS_TOKEN, DAILY_ABSOLUTE_PATH, DAILY_UPDATE_ABSOLUTE_PATH, MY_USER_ABSOLUTE_PATH } from '../../../../constants';
 import {
   deleteDailyRequest,
   getDailyCommentRequest,
@@ -19,6 +19,10 @@ import { PostDailyCommentRequestDto } from '../../../../apis/dto/request/daily';
 import Comment from '../../../../types/interfaces/comment.interface';
 import PostCommentAlertRequestDto from '../../../../apis/dto/request/alert/post-comment-alert.request.dto';
 import PostLikeAlertRequestDto from '../../../../apis/dto/request/alert/post-like-alert.request.dto';
+import likeClickIcon from '../../../../assets/images/likeClick.png';
+import likeIcon from '../../../../assets/images/like.png';
+import commentIcon from '../../../../assets/images/comment.png';
+import viewsIcon from '../../../../assets/images/views.png';
 
 // interface: 댓글 컴포넌트 속성 //
 interface CommentItemProps {
@@ -27,14 +31,21 @@ interface CommentItemProps {
 
 // component: 댓글 컴포넌트 //
 function CommentItem({ commentItem }: CommentItemProps) {
-  const { commentWriterNickname, commentWriteDate, comment } = commentItem;
+  const { writerNickname, commentWriteDate, comment, profileImage } = commentItem;
+  // function: 네비게이터 함수 //
+  const navigator = useNavigate();
+
+  // event handler: 프로필 클릭 이벤트 처리 //
+  const onProfileClickHandler = () => {
+    navigator(MY_USER_ABSOLUTE_PATH(writerNickname));
+  }
 
   // render: 댓글 컴포넌트 렌더링 //
   return (
     <div className="comment-box">
       <div className="title-box">
-        <div className="comment-default-user-image"></div>
-        <div className="user-name">{commentWriterNickname}</div>
+        <img src={profileImage} alt="프로필 이미지" className="daily-comment-profile-image" onClick={onProfileClickHandler} />
+        <div className="user-name" onClick={onProfileClickHandler}>{writerNickname}</div>
         <div className="divider"></div>
         <div className="write-date">{commentWriteDate}</div>
       </div>
@@ -61,6 +72,7 @@ export default function DailyView() {
   const [content, setContent] = useState<string>('');
   const [views, setViews] = useState<number>(0);
   const [likeCount, setLikeCount] = useState<number>(0);
+  const [profileImage, setProfileImage] = useState<string>('');
 
   // state: 댓글 상태 //
   const [comment, setComment] = useState<string>('');
@@ -113,8 +125,7 @@ export default function DailyView() {
       return;
     }
 
-    const { title, content, creationDate, views, likeCount, writerNickname, imageUrls } =
-      responseBody as GetDailyResponseDto;
+    const { title, content, creationDate, views, likeCount, writerNickname, imageUrls, profileImage } = responseBody as GetDailyResponseDto;
 
     setTitle(title);
     setContent(content);
@@ -122,7 +133,7 @@ export default function DailyView() {
     setWriteDate(creationDate);
     setViews(views);
     setLikeCount(likeCount);
-    console.log(images);
+    setProfileImage(profileImage);
     const uniqueImages = Array.from(new Set(imageUrls));
     setImages(uniqueImages);
   };
@@ -270,6 +281,11 @@ export default function DailyView() {
     postCommentAlertRequest(requestBody2, accessToken);
   };
 
+  // event handler: 프로필 클릭 이벤트 처리 //
+  const onProfileClickHandler = () => {
+    navigator(MY_USER_ABSOLUTE_PATH(writerNickname));
+  }
+
   // effect: 컴포넌트 로드시 실행할 함수 //
   useEffect(() => {
     if (!dailySequence) {
@@ -282,7 +298,7 @@ export default function DailyView() {
 
   // render: 일상 게시판 게시글 상세보기 컴포넌트 렌더링 //
   return (
-    <div id="board-view-wrapper">
+    <div id="daily-view-wrapper">
       <div className="button-container">
         <div className="back-button" onClick={() => navigator(DAILY_ABSOLUTE_PATH)}>
           글 목록
@@ -304,14 +320,20 @@ export default function DailyView() {
           <div className="title">{title}</div>
         </div>
         <div className="bottom-bar">
-          <div className="user-profile-image">{}</div>
+          <div className="user-profile-image">
+            <img src={profileImage} alt="프로필 이미지" className="daily-profile-image" onClick={onProfileClickHandler} />
+          </div>
           <div className="user-info-wrapper">
-            <div className="userName">닉네임</div>
+            <div className="userName" onClick={onProfileClickHandler}>{writerNickname}</div>
             <div className="date">{writeDate}</div>
           </div>
           <div className="stats">
-            <div className="like-count">좋아요</div>
-            <div className="view-count">조회수</div>
+            <div className="like-count">
+              <img src={likeClickIcon} alt="Like" className="icon" /> {likeCount}
+            </div>
+            <div className="view-count">
+              <img src={viewsIcon} alt="Views" className="icon" /> {views}
+            </div>
           </div>
         </div>
       </div>
@@ -322,11 +344,17 @@ export default function DailyView() {
         </div>
 
         <div className="content-bottom-bar">
-          <div className="like-button" onClick={onLikeClickHandler}>
-            좋아요
+          <div className="like-button">
+            <img
+              src={isLiked ? likeClickIcon : likeIcon}
+              alt="Like"
+              className={likedClass}
+              onClick={onLikeClickHandler}
+            />
+            {likeCount}
           </div>
           <div className="comment-button" onClick={onCommentIconClickHandler}>
-            댓글
+            <img src={commentIcon} alt="Comment" className="icon" />
           </div>
         </div>
       </div>

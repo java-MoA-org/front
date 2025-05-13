@@ -62,7 +62,7 @@ interface Props {
   setContent: (content: string) => void;
   onImageListChange?: (imageList: string[]) => void;
   onImageUpload?: (imageUrl: string) => void;
-  type?: 'board' | 'usedtrade' | 'daily' | 'profile';
+  type?: 'board' | 'daily' | 'profile';
 }
 
 // component: tiptap Text Editor 컴포넌트 //

@@ -221,8 +221,8 @@ export default function UsedTradeView() {
     postLikeAlertRequest(requestBody, accessToken);
   };
 
-  // event handler: 프로필이미지 클릭 이벤트 처리 //
-  const onProfileImageClickHandler = () => {
+  // event handler: 프로필 클릭 이벤트 처리 //
+  const onProfileClickHandler = () => {
     navigator(MY_USER_ABSOLUTE_PATH(writerNickname));
   }
 
@@ -305,8 +305,8 @@ export default function UsedTradeView() {
         </div>
         <div className="user-info-container">
           <div className="user">
-            <img src={profileImage} alt="프로필 이미지" className="trade-profile-image" onClick={onProfileImageClickHandler} />
-            <div className="writer-name">{writerNickname}</div>
+            <img src={profileImage} alt="프로필 이미지" className="trade-profile-image" onClick={onProfileClickHandler} />
+            <div className="writer-name" onClick={onProfileClickHandler}>{writerNickname}</div>
           </div>
           <div className="location-box">
             <div className="location-header">

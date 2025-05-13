@@ -28,7 +28,7 @@ export default function UsedTradeUpdate() {
   // state: 중고거래 판매글 수정 내용 상태 //
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [imageList, setImageList] = useState<File[]>([]);
+  const [imageList, setImageList] = useState<String[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [itemTypeTag, setItemTypeTag] = useState<ItemTypeTag>(ItemTypeTag.ETC);
   const [usedItemStatusTag, setUsedItemStatusTag] = useState<UsedItemStatusTag>(UsedItemStatusTag.NEW);
@@ -166,43 +166,6 @@ export default function UsedTradeUpdate() {
     setIsModalOpen(false);
   };
 
-  // event Handler: 이미지 업로드  //
-  const onImageInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { files } = event.target;
-    if (!files || !files.length) return;
-  
-    const selectedFiles = Array.from(files);
-    setImageList(selectedFiles);
-  
-    const fileReader = new FileReader();
-    const imageUrls: string[] = [];
-  
-    selectedFiles.forEach((file, index) => {
-      fileReader.onloadend = () => {
-        imageUrls.push(fileReader.result as string);
-        if (index === selectedFiles.length - 1) {
-          setImageUrls(imageUrls);
-        }
-      };
-      fileReader.readAsDataURL(file);
-    });
-  };
-
-  const handleImageDelete = (index: number) => {
-    const updatedFileList = [...imageList];
-    updatedFileList.splice(index, 1);
-    setImageList(updatedFileList);
-
-    const updatedImageUrls = [...imageUrls];
-    updatedImageUrls.splice(index, 1);
-    setImageUrls(updatedImageUrls);
-  };
-
-  // event handler: 이미지 업로드 버튼 //
-  const handleFileInputClick = () => {
-    document.getElementById('file-input')?.click();
-  };
-
   // event handler: 판매글 수정 버튼 클릭 이벤트 처리 //
   const onUpdateButtonClickHandler = () => {
     if (!isActive || !accessToken || !tradeSequence) return;
@@ -231,10 +194,10 @@ export default function UsedTradeUpdate() {
             accept="image/png, image/jpeg"
             style={{ display: "none" }}
             id="file-input"
-            onChange={onImageInputChangeHandler}
+            // onChange={onImageInputChangeHandler}
             multiple
           />
-          <div className="image-preview-slider" onClick={handleFileInputClick} style={{ width: "300px", height: "300px", marginTop: "10px" }}>
+          {/* <div className="image-preview-slider" onClick={handleFileInputClick} style={{ width: "300px", height: "300px", marginTop: "10px" }}>
             <Swiper spaceBetween={0} slidesPerView={1}>
               {imageUrls.map((imageUrl, index) => (
                 <SwiperSlide key={index}>
@@ -249,7 +212,7 @@ export default function UsedTradeUpdate() {
                 </SwiperSlide>
               ))}
             </Swiper>
-          </div>
+          </div> */}
         </div>
 
         <div className="item-name-container">
