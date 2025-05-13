@@ -9,4 +9,5 @@ export default interface GetUserPageResponseDto extends ResponseDto {
   interests: UserInterest;
   userIntroduce: string;
   userProfileImage: string;
+  userPageId: string;
 }

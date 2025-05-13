@@ -14,7 +14,12 @@ import UpdateButton from "../../components/UpdateButton";
 import useSignInUserStore from "../../stores/sign-in-user.store";
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
-import { getFollowRequest, getUserPageInfoRequest, postFollowRequest } from "../../apis";
+import {
+  getFollowRequest,
+  getUserPageInfoRequest,
+  getUserPageRequest,
+  postFollowRequest
+} from "../../apis";
 import GetUserInfoResponseDto from "../../apis/dto/response/user/get-user-info.response.dto";
 import ResponseDto from "../../apis/dto/response/response.dto";
 import GetFollowResponseDto from "../../apis/dto/response/follow/get-follow.response.dto";
@@ -27,6 +32,7 @@ interface MyUserPageProps {
   interests: UserInterest;
   userIntroduce: string;
   userProfileImage: string;
+  userPageId: string;
 }
 
 export default function MyUserPage({
@@ -35,13 +41,15 @@ export default function MyUserPage({
   trades,
   interests,
   userIntroduce,
-  userProfileImage
+  userProfileImage,
+  userPageId
 }: MyUserPageProps) {
   const { nickname } = useParams(); // ✅ URL에서 :nickname 추출
   const [cookies] = useCookies([ACCESS_TOKEN]);
   const accessToken = cookies[ACCESS_TOKEN];
+  const [id, setId] = useState<string | null>(null);
 
-  const { userNickname, setUserNickname } = useSignInUserStore();
+  const { userNickname, setUserNickname, userId } = useSignInUserStore();
 
   const [follower, setFollower] = useState<number>(0);
   const [followee, setFollowee] = useState<number>(0);
@@ -106,6 +114,12 @@ export default function MyUserPage({
     navigator(`${MY_USER_FOLLOW_ABSOLUTE_PATH(nickname)}?type=followee`);
   };
 
+  // event handler: 채팅 페이지 처리 //
+  const onChatPageClickHandler = () => {
+    if (!nickname) return;
+    navigator(`/message/${userId}/${userPageId}`);
+  };
+
   // event handler: 게시판 클릭 처리 //
   const onUserDailyClickHandler = () => {
     if (!nickname) return;
@@ -141,8 +155,15 @@ export default function MyUserPage({
             <div className="profile-container">
               <div className="profile-line">
                 <div>프로필</div>
-                {nickname !== userNickname && <FollowButton getFollow={getFollow} />}
-                {nickname === userNickname && <UpdateButton nickname={nickname!} />}
+                <div className="button-tag-container">
+                  {nickname !== userNickname && (
+                    <div className="chatting-button" onClick={onChatPageClickHandler}>
+                      채팅
+                    </div>
+                  )}
+                  {nickname !== userNickname && <FollowButton getFollow={getFollow} />}
+                  {nickname === userNickname && <UpdateButton nickname={nickname!} />}
+                </div>
               </div>
               <div className="profile-image">
                 <img
