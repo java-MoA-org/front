@@ -1,44 +1,56 @@
 // src/apis/index.ts
 
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import IdCheckRequestDto from './dto/request/auth/user-id-check.request.dto';
-import ResponseDto from './dto/response/response.dto';
+import axios, { AxiosError, AxiosResponse } from "axios";
+import IdCheckRequestDto from "./dto/request/auth/user-id-check.request.dto";
+import ResponseDto from "./dto/response/response.dto";
 
-import PostNoticeRequestDto from './dto/request/notice/post-notice.request.dto';
-import PatchNoticeRequestDto from './dto/request/notice/patch-notice.request.dto';
-import GetNoticeListResponseDto from './dto/response/notice/get-notice-list.response.dto';
-import GetNoticeResponseDto from './dto/response/notice/get-notice.response.dto';
-import UserIdCheckRequestDto from './dto/request/auth/user-id-check.request.dto';
-import UserNicknameCheckRequestDto from './dto/request/auth/user-nickname-check.request.dto';
-import UserEmailCheckRequestDto from './dto/request/auth/user-email-check.request.dto';
-import UserPhoneNumberCheckRequestDto from './dto/request/auth/user-phone-number-check.request.dto';
-import UserSignUpRequestDto from './dto/request/auth/user-sign-up.request.dto';
-import UserSignInRequestDto from './dto/request/auth/user-sign-in.request.dto';
+import PostNoticeRequestDto from "./dto/request/notice/post-notice.request.dto";
+import PatchNoticeRequestDto from "./dto/request/notice/patch-notice.request.dto";
+import GetNoticeListResponseDto from "./dto/response/notice/get-notice-list.response.dto";
+import GetNoticeResponseDto from "./dto/response/notice/get-notice.response.dto";
+import UserIdCheckRequestDto from "./dto/request/auth/user-id-check.request.dto";
+import UserNicknameCheckRequestDto from "./dto/request/auth/user-nickname-check.request.dto";
+import UserEmailCheckRequestDto from "./dto/request/auth/user-email-check.request.dto";
+import UserPhoneNumberCheckRequestDto from "./dto/request/auth/user-phone-number-check.request.dto";
+import UserSignUpRequestDto from "./dto/request/auth/user-sign-up.request.dto";
+import UserSignInRequestDto from "./dto/request/auth/user-sign-in.request.dto";
 
-import { PatchBoardRequestDto, PostBoardCommentRequestDto, PostBoardRequestDto } from './dto/request/board';
-import { GetBoardCommentResponseDto, GetBoardListResponseDto, GetBoardResponseDto } from './dto/response/board';
-import { PatchDailyRequestDto, PostDailyCommentRequestDto, PostDailyRequestDto } from './dto/request/daily';
+import {
+  PatchBoardRequestDto,
+  PostBoardCommentRequestDto,
+  PostBoardRequestDto
+} from "./dto/request/board";
+import {
+  GetBoardCommentResponseDto,
+  GetBoardListResponseDto,
+  GetBoardResponseDto
+} from "./dto/response/board";
+import {
+  PatchDailyRequestDto,
+  PostDailyCommentRequestDto,
+  PostDailyRequestDto
+} from "./dto/request/daily";
 import {
   GetDailyCommentResponseDto,
   GetDailyListResponseDto,
   GetDailyResponseDto,
-  GetLikedUserListResponseDto,
-} from './dto/response/daily';
-import { PatchUsedTradeRequestDto, PostUsedTradeRequestDto } from './dto/request/usedtrade';
-import { GetUsedTradeListResponseDto, GetUsedTradeResponseDto } from './dto/response/usedtrade';
-import GetUserPageResponseDto from './dto/response/userpage/get-user-page.response.dto';
-import UserEmailVerifyRequestDto from './dto/request/auth/user-email-verify.request.dto';
-import UserPhoneNumberVerifyRequestDto from './dto/request/auth/user-phone-number-verify.request.dto';
-import { ACCESS_TOKEN } from '../constants';
-import GetUserInfoResponseDto from './dto/response/user/get-user-info.response.dto';
-import PatchPasswordRequestDto from './dto/request/auth/patch-password.request.dto';
-import PasswordVerifyRequestDto from './dto/request/userInfo/post-verify-pawword.request.dto';
-import PatchPasswordUserPageRequestDto from './dto/request/userInfo/patch-password-userpage.request.dto';
-import PatchUserInfoRequestDto from './dto/request/userInfo/patch-user-info.request.dto';
-import PostCommentAlertRequestDto from './dto/request/alert/post-comment-alert.request.dto';
-import PostLikeAlertRequestDto from './dto/request/alert/post-like-alert.request.dto';
+  GetLikedUserListResponseDto
+} from "./dto/response/daily";
+import { PatchUsedTradeRequestDto, PostUsedTradeRequestDto } from "./dto/request/usedtrade";
+import { GetUsedTradeListResponseDto, GetUsedTradeResponseDto } from "./dto/response/usedtrade";
+import GetUserPageResponseDto from "./dto/response/userpage/get-user-page.response.dto";
+import UserEmailVerifyRequestDto from "./dto/request/auth/user-email-verify.request.dto";
+import UserPhoneNumberVerifyRequestDto from "./dto/request/auth/user-phone-number-verify.request.dto";
+import { ACCESS_TOKEN } from "../constants";
+import GetUserInfoResponseDto from "./dto/response/user/get-user-info.response.dto";
+import PatchPasswordRequestDto from "./dto/request/auth/patch-password.request.dto";
+import PasswordVerifyRequestDto from "./dto/request/userInfo/post-verify-pawword.request.dto";
+import PatchPasswordUserPageRequestDto from "./dto/request/userInfo/patch-password-userpage.request.dto";
+import PatchUserInfoRequestDto from "./dto/request/userInfo/patch-user-info.request.dto";
+import PostCommentAlertRequestDto from "./dto/request/alert/post-comment-alert.request.dto";
+import PostLikeAlertRequestDto from "./dto/request/alert/post-like-alert.request.dto";
 
-export { searchUserRequest } from './dto/request/usersearch/search-user.request';
+export { searchUserRequest } from "./dto/request/usersearch/search-user.request";
 
 const API_DOMAIN = process.env.REACT_APP_API_DOMAIN;
 
@@ -58,7 +70,7 @@ const GET_USER_INFO_URL = `${AUTH_MODULE_URL}/userInfo`;
 
 const SIGN_UP_URL = `${AUTH_MODULE_URL}/sign-up`;
 const SIGN_IN_URL = `${AUTH_MODULE_URL}/sign-in`;
-export const SNS_SIGN_IN_URL = (sns: 'kakao' | 'naver') => `${AUTH_MODULE_URL}/sns/${sns}`;
+export const SNS_SIGN_IN_URL = (sns: "kakao" | "naver") => `${AUTH_MODULE_URL}/sns/${sns}`;
 const SIGN_OUT_URL = `${AUTH_MODULE_URL}/sign-out`;
 
 const PATCH_PASSWORD_URL = (userId: string) => `${AUTH_MODULE_URL}/${userId}/password`;
@@ -70,51 +82,71 @@ const USER_MODULE_URL = `${API_DOMAIN}/api/v1/user`;
 const BOARD_MODULE_URL = `${API_DOMAIN}/api/v1/board`;
 
 const POST_BOARD_URL = BOARD_MODULE_URL;
-const GET_BOARD_LIST_URL = (tag: string, page: number, sort = 'LATEST') => `${BOARD_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
+const GET_BOARD_LIST_URL = (tag: string, page: number, sort = "LATEST") =>
+  `${BOARD_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
 const GET_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
 const PATCH_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
 const DELETE_BOARD_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}`;
-const SEARCH_BOARD_LIST_URL = (tag: string, keyword: string, page: number) => `${BOARD_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
+const SEARCH_BOARD_LIST_URL = (tag: string, keyword: string, page: number) =>
+  `${BOARD_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
 
-const TOGGLE_BOARD_LIKE_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/likes`;
+const TOGGLE_BOARD_LIKE_URL = (boardSequence: number | string) =>
+  `${BOARD_MODULE_URL}/${boardSequence}/likes`;
 
-const POST_BOARD_COMMENT_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/comments`;
-const GET_BOARD_COMMENT_URL = (boardSequence: number | string) => `${BOARD_MODULE_URL}/${boardSequence}/comments`;
-const DELETE_BOARD_COMMENT_URL = (commentSequence: number | string) => `${BOARD_MODULE_URL}/${commentSequence}/comments`;
+const POST_BOARD_COMMENT_URL = (boardSequence: number | string) =>
+  `${BOARD_MODULE_URL}/${boardSequence}/comments`;
+const GET_BOARD_COMMENT_URL = (boardSequence: number | string) =>
+  `${BOARD_MODULE_URL}/${boardSequence}/comments`;
+const DELETE_BOARD_COMMENT_URL = (commentSequence: number | string) =>
+  `${BOARD_MODULE_URL}/${commentSequence}/comments`;
 
 const DAILY_MODULE_URL = `${API_DOMAIN}/api/v1/daily`;
 
 const POST_DAILY_URL = DAILY_MODULE_URL;
 const GET_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
-const GET_DAILY_LIST_URL = (page: number, sort = 'LATEST') => `${DAILY_MODULE_URL}/list/${page}?sortOption=${sort}`;
+const GET_DAILY_LIST_URL = (page: number, sort = "LATEST") =>
+  `${DAILY_MODULE_URL}/list/${page}?sortOption=${sort}`;
 const PATCH_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
 const DELETE_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}`;
-const SEARCH_DAILY_LIST_URL = (keyword: string, page: number) => `${DAILY_MODULE_URL}/search?keyword=${keyword}&page=${page}`;
+const SEARCH_DAILY_LIST_URL = (keyword: string, page: number) =>
+  `${DAILY_MODULE_URL}/search?keyword=${keyword}&page=${page}`;
 
-const TOGGLE_DAILY_LIKE_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/likes`;
-const GET_DAILY_LIKES_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/likes`;
+const TOGGLE_DAILY_LIKE_URL = (dailySequence: number | string) =>
+  `${DAILY_MODULE_URL}/${dailySequence}/likes`;
+const GET_DAILY_LIKES_URL = (dailySequence: number | string) =>
+  `${DAILY_MODULE_URL}/${dailySequence}/likes`;
 
-const POST_DAILY_COMMENT_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/comments`;
-const GET_DAILY_COMMENT_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/comments`;
-const DELETE_DAILY_COMMENT_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/comments`;
+const POST_DAILY_COMMENT_URL = (dailySequence: number | string) =>
+  `${DAILY_MODULE_URL}/${dailySequence}/comments`;
+const GET_DAILY_COMMENT_URL = (dailySequence: number | string) =>
+  `${DAILY_MODULE_URL}/${dailySequence}/comments`;
+const DELETE_DAILY_COMMENT_URL = (dailySequence: number | string) =>
+  `${DAILY_MODULE_URL}/${dailySequence}/comments`;
 
 const USED_TRADE_MODULE_URL = `${API_DOMAIN}/api/v1/used-trade`;
 
 const POST_USED_TRADE_URL = USED_TRADE_MODULE_URL;
-const GET_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
-const GET_USED_TRADE_LIST_URL = (tag: string, page: number, sort = 'LATEST') => `${USED_TRADE_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
-const PATCH_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
-const DELETE_USED_TRADE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
-const SEARCH_USED_TRADE_LIST_URL = (tag: string, keyword: string, page: number) => `${USED_TRADE_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
+const GET_USED_TRADE_URL = (tradeSequence: number | string) =>
+  `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
+const GET_USED_TRADE_LIST_URL = (tag: string, page: number, sort = "LATEST") =>
+  `${USED_TRADE_MODULE_URL}/${tag}/${page}?sortOption=${sort}`;
+const PATCH_USED_TRADE_URL = (tradeSequence: number | string) =>
+  `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
+const DELETE_USED_TRADE_URL = (tradeSequence: number | string) =>
+  `${USED_TRADE_MODULE_URL}/${tradeSequence}`;
+const SEARCH_USED_TRADE_LIST_URL = (tag: string, keyword: string, page: number) =>
+  `${USED_TRADE_MODULE_URL}/search?tag=${tag}&keyword=${keyword}&page=${page}`;
 
-const TOGGLE_USED_TRADE_LIKE_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}/likes`;
+const TOGGLE_USED_TRADE_LIKE_URL = (tradeSequence: number | string) =>
+  `${USED_TRADE_MODULE_URL}/${tradeSequence}/likes`;
 
-const PATCH_USED_TRADE_TRANSACTION_URL = (tradeSequence: number | string) => `${USED_TRADE_MODULE_URL}/${tradeSequence}/status`;
+const PATCH_USED_TRADE_TRANSACTION_URL = (tradeSequence: number | string) =>
+  `${USED_TRADE_MODULE_URL}/${tradeSequence}/status`;
 
 const IMAGE_UPLOAD_MODULE_URL = `${API_DOMAIN}/api/v1/images`;
 
-export  const UPLOAD_IMAGES_URL = `${IMAGE_UPLOAD_MODULE_URL}/upload`;
-export  const imageUrl = (fileName: string) => `${IMAGE_UPLOAD_MODULE_URL}/${fileName}`;
+export const UPLOAD_IMAGES_URL = `${IMAGE_UPLOAD_MODULE_URL}/upload`;
+export const imageUrl = (fileName: string) => `${IMAGE_UPLOAD_MODULE_URL}/${fileName}`;
 
 // notice API URL
 const NOTICE_MODULE_URL = `${API_DOMAIN}/api/v1/notice`;
@@ -131,11 +163,12 @@ const PATCH_USER_UPDATE_PAGE_URL = `${USER_PAGE_MODULE_URL}/revise`;
 const POST_USER_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/verify`;
 const PATCH_USER_PAGE_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/change`;
 const FILE_UPLOAD_URL = `${USER_PAGE_MODULE_URL}/images/file/upload`;
-const multipartFormData = { headers: { 'Content-Type': 'multipart/form-data' } };
+const multipartFormData = { headers: { "Content-Type": "multipart/form-data" } };
 
 const POST_FOLLOW_URL = (nickname: string) => `${API_DOMAIN}/api/v1/follow/${nickname}`;
 const GET_FOLLOW_URL = (nickname: string) => `${API_DOMAIN}/api/v1/follow/number/${nickname}`;
-const GET_FOLLOW_INFO_URL = (nickname: string) => `${API_DOMAIN}/api/v1/follow/number/info/${nickname}`;
+const GET_FOLLOW_INFO_URL = (nickname: string) =>
+  `${API_DOMAIN}/api/v1/follow/number/info/${nickname}`;
 
 const ALERT_MODULE_URL = `${API_DOMAIN}/api/v1/alert`;
 const POST_COMMENT_ALERT_URL = `${ALERT_MODULE_URL}/comment`;
@@ -152,7 +185,7 @@ const HIDE_CHAT_URL = `${API_DOMAIN}/api/message/hide`;
 
 // function: Authorization Bearer 헤더 //
 const bearerAuthorization = (accessToken: string) => ({
-  headers: { Authorization: `Bearer ${accessToken}` },
+  headers: { Authorization: `Bearer ${accessToken}` }
 });
 
 // function: User Id 중복 확인 요청 함수 //
@@ -218,7 +251,9 @@ export const userPhoneNumberCheckRequest = async (requestBody: UserPhoneNumberCh
 };
 
 // function: User 전화번호 인증번호 확인 요청 함수 //
-export const UserPhoneNumberVerifyRequest = async (requestBody: UserPhoneNumberVerifyRequestDto) => {
+export const UserPhoneNumberVerifyRequest = async (
+  requestBody: UserPhoneNumberVerifyRequestDto
+) => {
   const responseBody = await axios
     .post(PHONE_NUMBER_VERIFY_URL, requestBody)
     .then(responseSuccessHandler)
@@ -279,7 +314,7 @@ export const PatchPasswordRequest = async (requestBody: PatchPasswordRequestDto)
 // function: profile Image Upload 요청 함수 //
 export const userProfileImageUpload = async (requestBody: FormData) => {
   const url = await axios.post(PROFILE_IMAGE_UPLOAD_URL, requestBody, {
-    withCredentials: true,
+    withCredentials: true
   });
   return url;
 };
@@ -325,11 +360,10 @@ export const getFollowInfoRequest = async (nickname: string, accessToken: string
 };
 
 // function: user page API 요청 함수 //
-export const getUserPageRequest = async (nickname: string) => {
+export const getUserPageRequest = async (nickname: string, accessToken: string) => {
   const url = GET_USER_PAGE_URL(nickname);
   const responseBody = await axios
-    // .get(url, bearerAuthorization(accessToken))
-    .get(url)
+    .get(url, bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetUserPageResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
@@ -352,7 +386,7 @@ export const passwordVerifyRequest = async (
 ): Promise<ResponseDto | null> => {
   try {
     const response = await axios.post(POST_USER_PASSWORD_VERIFY_URL, body, {
-      headers: { Authorization: `Bearer ${accessToken}` },
+      headers: { Authorization: `Bearer ${accessToken}` }
     });
     return response.data;
   } catch {
@@ -366,7 +400,7 @@ export const patchPasswordUserPageRequest = async (
 ): Promise<ResponseDto | null> => {
   try {
     const response = await axios.patch(PATCH_USER_PAGE_PASSWORD_VERIFY_URL, body, {
-      headers: { Authorization: `Bearer ${accessToken}` },
+      headers: { Authorization: `Bearer ${accessToken}` }
     });
     return response.data;
   } catch {
@@ -381,8 +415,8 @@ export const patchUserInfoRequest = async (
   try {
     const response = await axios.patch(PATCH_USER_UPDATE_PAGE_URL, requestBody, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     });
     return response.data;
   } catch (error) {
@@ -430,7 +464,12 @@ export const getBoardRequest = async (boardSequence: number | string, accessToke
 };
 
 // function: get board list API 요청 함수 //
-export const getBoardListRequest = async (tag: string, page: number, sort: string = 'LATEST', accessToken: string) => {
+export const getBoardListRequest = async (
+  tag: string,
+  page: number,
+  sort: string = "LATEST",
+  accessToken: string
+) => {
   const responseBody = await axios
     .get(GET_BOARD_LIST_URL(tag, page, sort), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetBoardListResponseDto>)
@@ -461,7 +500,12 @@ export const deleteBoardRequest = async (boardSequence: number | string, accessT
 };
 
 // function: search board API 요청 함수 //
-export const searchBoardRequest = async (tag: string, keyword: string, page: number, accessToken: string) => {
+export const searchBoardRequest = async (
+  tag: string,
+  keyword: string,
+  page: number,
+  accessToken: string
+) => {
   const responseBody = await axios
     .get(SEARCH_BOARD_LIST_URL(tag, keyword, page), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetBoardListResponseDto>)
@@ -492,7 +536,10 @@ export const postBoardCommentRequest = async (
 };
 
 // function: get board comment API 요청 함수 //
-export const getBoardCommentRequest = async (boardSequence: number | string, accessToken: string) => {
+export const getBoardCommentRequest = async (
+  boardSequence: number | string,
+  accessToken: string
+) => {
   const responseBody = await axios
     .get(GET_BOARD_COMMENT_URL(boardSequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetBoardCommentResponseDto>)
@@ -501,7 +548,10 @@ export const getBoardCommentRequest = async (boardSequence: number | string, acc
 };
 
 // function: delete board comment API 요청 함수 //
-export const deleteBoardCommentRequest = async (commentSequence: number | string, accessToken: string) => {
+export const deleteBoardCommentRequest = async (
+  commentSequence: number | string,
+  accessToken: string
+) => {
   const responseBody = await axios
     .delete(DELETE_BOARD_COMMENT_URL(commentSequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -528,7 +578,11 @@ export const getDailyRequest = async (dailySequence: number | string, accessToke
 };
 
 // function: get daily list API 요청 함수 //
-export const getDailyListRequest = async (page: number, sort: string = 'LATEST', accessToken: string) => {
+export const getDailyListRequest = async (
+  page: number,
+  sort: string = "LATEST",
+  accessToken: string
+) => {
   const responseBody = await axios
     .get(GET_DAILY_LIST_URL(page, sort), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetDailyListResponseDto>)
@@ -599,7 +653,10 @@ export const postDailyCommentRequest = async (
 };
 
 // function: get daily comment API 요청 함수 //
-export const getDailyCommentRequest = async (dailySequence: number | string, accessToken: string) => {
+export const getDailyCommentRequest = async (
+  dailySequence: number | string,
+  accessToken: string
+) => {
   const responseBody = await axios
     .get(GET_DAILY_COMMENT_URL(dailySequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetDailyCommentResponseDto>)
@@ -608,7 +665,10 @@ export const getDailyCommentRequest = async (dailySequence: number | string, acc
 };
 
 // function: delete daily comment API 요청 함수 //
-export const deleteDailyCommentRequest = async (commentSequence: number | string, accessToken: string) => {
+export const deleteDailyCommentRequest = async (
+  commentSequence: number | string,
+  accessToken: string
+) => {
   const responseBody = await axios
     .delete(DELETE_DAILY_COMMENT_URL(commentSequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -617,20 +677,21 @@ export const deleteDailyCommentRequest = async (commentSequence: number | string
 };
 
 // function: post used trade API 요청 함수 //
-export const postUsedTradeRequest = async (dto: PostUsedTradeRequestDto, imageList: File[], accessToken: string): Promise<ResponseDto | null> => {
+export const postUsedTradeRequest = async (
+  dto: PostUsedTradeRequestDto,
+  imageList: File[],
+  accessToken: string
+): Promise<ResponseDto | null> => {
   const formData = new FormData();
-  formData.append(
-    "dto",
-    new Blob([JSON.stringify(dto)], { type: "application/json" })
-  );
+  formData.append("dto", new Blob([JSON.stringify(dto)], { type: "application/json" }));
   imageList.forEach((file) => formData.append("imageList", file));
 
   try {
     const response = await axios.post("/api/v1/usedtrade", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${accessToken}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     });
     return response.data;
   } catch (error) {
@@ -652,7 +713,7 @@ export const getUsedTradeRequest = async (tradeSequence: number | string, access
 export const getUsedTradeListRequest = async (
   tag: string,
   page: number,
-  sort: string = 'LATEST',
+  sort: string = "LATEST",
   accessToken: string
 ) => {
   const responseBody = await axios
@@ -676,7 +737,10 @@ export const patchUsedTradeRequest = async (
 };
 
 // function: delete used trade API 요청 함수 //
-export const deleteUsedTradeRequest = async (tradeSequence: number | string, accessToken: string) => {
+export const deleteUsedTradeRequest = async (
+  tradeSequence: number | string,
+  accessToken: string
+) => {
   const responseBody = await axios
     .delete(DELETE_USED_TRADE_URL(tradeSequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -685,7 +749,12 @@ export const deleteUsedTradeRequest = async (tradeSequence: number | string, acc
 };
 
 // function: search used trade API 요청 함수 //
-export const searchUsedTradeRequest = async (tag: string, keyword: string, page: number, accessToken: string) => {
+export const searchUsedTradeRequest = async (
+  tag: string,
+  keyword: string,
+  page: number,
+  accessToken: string
+) => {
   const responseBody = await axios
     .get(SEARCH_USED_TRADE_LIST_URL(tag, keyword, page), bearerAuthorization(accessToken))
     .then(responseSuccessHandler<GetUsedTradeListResponseDto>)
@@ -694,7 +763,10 @@ export const searchUsedTradeRequest = async (tag: string, keyword: string, page:
 };
 
 // function: put used trade like API 요청 함수 //
-export const putUsedTradeLikeRequest = async (tradeSequence: number | string, accessToken: string) => {
+export const putUsedTradeLikeRequest = async (
+  tradeSequence: number | string,
+  accessToken: string
+) => {
   const responseBody = await axios
     .put(TOGGLE_USED_TRADE_LIKE_URL(tradeSequence), {}, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -703,7 +775,10 @@ export const putUsedTradeLikeRequest = async (tradeSequence: number | string, ac
 };
 
 // function: patch used trade transaction status API 요청 함수 //
-export const patchTransactionStatusRequest = async (tradeSequence: number | string, accessToken: string) => {
+export const patchTransactionStatusRequest = async (
+  tradeSequence: number | string,
+  accessToken: string
+) => {
   const responseBody = await axios
     .patch(PATCH_USED_TRADE_TRANSACTION_URL(tradeSequence), bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -761,7 +836,10 @@ export const deleteNoticeRequest = async (noticeId: number | string, accessToken
 };
 
 // function: post comment alert API 요청 함수 //
-export const postCommentAlertRequest = async (commentData: PostCommentAlertRequestDto, accessToken: string) => {
+export const postCommentAlertRequest = async (
+  commentData: PostCommentAlertRequestDto,
+  accessToken: string
+) => {
   const responseBody = await axios
     .post(POST_COMMENT_ALERT_URL, commentData, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -770,7 +848,10 @@ export const postCommentAlertRequest = async (commentData: PostCommentAlertReque
 };
 
 // function: post like alert API 요청 함수 //
-export const postLikeAlertRequest = async (likeData: PostLikeAlertRequestDto, accessToken: string) => {
+export const postLikeAlertRequest = async (
+  likeData: PostLikeAlertRequestDto,
+  accessToken: string
+) => {
   const responseBody = await axios
     .post(POST_LIKE_ALERT_URL, likeData, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -819,8 +900,8 @@ export const getUserInfoByIdRequest = async (userId: string, accessToken: string
   return await axios
     .get(`/api/v1/user/${userId}`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+        Authorization: `Bearer ${accessToken}`
+      }
     })
     .then((res) => res.data);
 };
@@ -830,8 +911,8 @@ export const getUserProfileImageByIdRequest = async (userId: string, accessToken
   const url = `/api/v1/user/${userId}/profile-image`;
   const response = await axios.get(url, {
     headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+      Authorization: `Bearer ${accessToken}`
+    }
   });
   return response.data; // string
 };
@@ -841,8 +922,8 @@ export const getUserNicknameByIdRequest = async (userId: string, accessToken: st
   const url = `/api/v1/user/${userId}/nickname`;
   const response = await axios.get(url, {
     headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+      Authorization: `Bearer ${accessToken}`
+    }
   });
   return response.data; // string
 };
@@ -853,7 +934,7 @@ export const getNewAlertCountByUserIdRequest = async (accessToken: string) => {
     .get(GET_NEW_ALERT_BY_USER_ID_URL, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
     .catch(responseErrorHandler);
-  console.log('response', response);
+  console.log("response", response);
   return response;
 };
 
@@ -861,13 +942,21 @@ export const patchMessageInvisibleByIdRequest = async (id: number, accessToken: 
   await axios.post(
     HIDE_CHAT_URL,
     {
-      messageNumber: id,
+      messageNumber: id
     },
     bearerAuthorization(accessToken)
   );
 };
 
-export const patchReadMessageRequest = async (userId: string, partnerId: string, accessToken: string) => {
-  const response = await axios.post(SET_READ_MESSAGE_URL, { userId, partnerId }, bearerAuthorization(accessToken));
+export const patchReadMessageRequest = async (
+  userId: string,
+  partnerId: string,
+  accessToken: string
+) => {
+  const response = await axios.post(
+    SET_READ_MESSAGE_URL,
+    { userId, partnerId },
+    bearerAuthorization(accessToken)
+  );
   return response;
 };
