@@ -9,12 +9,12 @@ interface ImageUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (images: string[]) => void;
+  initialImages?: (string | null)[];
 }
 
-const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isOpen, onClose, onSave }) => {
+const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isOpen, onClose, onSave, initialImages }) => {
   const [imageList, setImageList] = useState<(string | null)[]>(Array(5).fill(null));
   const [isUploading, setIsUploading] = useState(false);
-  const [images, setImages] = useState<(string | null)[]>([]);
 
   const handleImageChange = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,7 +32,6 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isOpen, onClose, on
         });
 
         const imageUrl = response.data.data;
-
         newImageList[index] = imageUrl;
         setImageList(newImageList);
       } catch (error) {
@@ -46,22 +45,17 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isOpen, onClose, on
 
   const handleImageDelete = (index: number) => {
     const newImageList = [...imageList];
-  
     for (let i = index; i < newImageList.length - 1; i++) {
       newImageList[i] = newImageList[i + 1];
     }
-  
     newImageList[newImageList.length - 1] = null;
-  
     setImageList(newImageList);
   };
 
   const findEmptySlot = () => imageList.findIndex(img => img === null);
 
   const handleSave = () => {
-    const validImages = imageList
-      .filter((img) => img !== null)
-      .flat() as string[]; 
+    const validImages = imageList.filter((img) => img !== null).flat() as string[];
     onSave(validImages);
     onClose();
   };
@@ -75,6 +69,14 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isOpen, onClose, on
       });
     };
   }, [imageList]);
+
+  useEffect(() => {
+    if (isOpen) {
+      const filled = (initialImages ?? []).slice(0, 5);
+      const padded = [...filled, ...Array(5 - filled.length).fill(null)];
+      setImageList(padded);
+    }
+  }, [isOpen, initialImages]);
 
   if (!isOpen) return null;
 
@@ -97,7 +99,7 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isOpen, onClose, on
             <div key={idx} className="image-slot">
               {img ? (
                 <>
-                  <img src={img} alt={`preview-${idx}`} className="image-preview" />
+                  <img src={img} alt={`preview-${idx}`} className="trade-image-preview" />
                   <label className="image-replace-label">
                     <input
                       type="file"

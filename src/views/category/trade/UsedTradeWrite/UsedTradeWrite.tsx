@@ -223,7 +223,7 @@ export default function UsedTradeWrite() {
             multiple
           />
           <ImageUploadModal isOpen={isImageModalOpen} onClose={closeImageUploadModal} onSave={onSaveImageList} />
-          <div className="image-preview" onClick={openImageUploadModal} >
+          <div className="trade-image-preview" onClick={openImageUploadModal} >
             {imageList[0] ? (
               <img src={imageList[0]} alt="썸네일" className="thumbnail-image" />
             ) : (
