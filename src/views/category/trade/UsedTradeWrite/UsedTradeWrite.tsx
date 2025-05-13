@@ -1,21 +1,20 @@
-import React, { ChangeEvent, useState } from "react";
-import "./UsedTradeWrite.css";
-import { useCookies } from "react-cookie";
-import { ItemTypeTag } from "../../../../types/enums/ItemTypeTag";
-import { ACCESS_TOKEN, USED_TRADE_ABSOLUTE_PATH } from "../../../../constants";
-import { useNavigate } from "react-router-dom";
-import ResponseDto from "../../../../apis/dto/response/response.dto";
-import { PostUsedTradeRequestDto } from "../../../../apis/dto/request/usedtrade";
-import { postUsedTradeRequest } from "../../../../apis";
-import { UsedItemStatusTag } from "../../../../types/enums/UsedItemStatusTag";
-import LocationModal from "../../../../components/Location";
-import TextEditor from "../../../../components/TextEditor";
+import React, { ChangeEvent, useState } from 'react';
+import './UsedTradeWrite.css';
+import { useCookies } from 'react-cookie';
+import { ItemTypeTag } from '../../../../types/enums/ItemTypeTag';
+import { ACCESS_TOKEN, USED_TRADE_ABSOLUTE_PATH } from '../../../../constants';
+import { useNavigate } from 'react-router-dom';
+import ResponseDto from '../../../../apis/dto/response/response.dto';
+import { PostUsedTradeRequestDto } from '../../../../apis/dto/request/usedtrade';
+import { postUsedTradeRequest } from '../../../../apis';
+import { UsedItemStatusTag } from '../../../../types/enums/UsedItemStatusTag';
+import LocationModal from '../../../../components/Location';
+import TextEditor from '../../../../components/TextEditor';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 
 // component: 중고거래 게시판 판매글 작성 컴포넌트 //
 export default function UsedTradeWrite() {
-
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
 
@@ -34,43 +33,42 @@ export default function UsedTradeWrite() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // variable: 카테고리 목록 //
-  const categorys = [
-    '기타', '전자기기', '의류', '가구',
-    '도서', '뷰티/미용', '운동/스포츠', '식품'
-  ];
+  const categorys = ['기타', '전자기기', '의류', '가구', '도서', '뷰티/미용', '운동/스포츠', '식품'];
 
   // variable: 아이템 상태 표시 목록 //
-  const itemsStatusTag = [
-    '새상품', '사용감 거의 없음', '사용감 있음', '파손/고장 있음'
-  ];
+  const itemsStatusTag = ['새상품', '사용감 거의 없음', '사용감 있음', '파손/고장 있음'];
 
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
 
   // variable: 중고거래글 작성 가능 여부 //
-  const isActive = title.trim() !== "" 
-  && content.trim() !== "" 
-  && price > 0 
-  && location.trim() !== "" 
-  && detailLocation.trim() !== "" 
-  && itemTypeTag !== undefined
-  && usedItemStatusTag !== undefined
-  && imageList !== undefined;
+  const isActive =
+    title.trim() !== '' &&
+    content.trim() !== '' &&
+    price > 0 &&
+    location.trim() !== '' &&
+    detailLocation.trim() !== '' &&
+    itemTypeTag !== undefined &&
+    usedItemStatusTag !== undefined &&
+    imageList !== undefined;
 
   // variable: 중고거래글 작성 버튼 클래스 //
-  const writeButtonClass = isActive ? "button middle primary" : "button middle disable";
+  const writeButtonClass = isActive ? 'button middle primary' : 'button middle disable';
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
   // function: post board response 처리 함수 //
   const postUsedTradeResponse = (responseBody: ResponseDto | null) => {
-    const message = 
-      !responseBody ? "서버에 문제가 있습니다." : 
-      responseBody.code === "DBE" ? "서버에 문제가 있습니다." : 
-      responseBody.code === "AF" ? "인증에 실패했습니다." : "";
+    const message = !responseBody
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'AF'
+      ? '인증에 실패했습니다.'
+      : '';
 
-    const isSuccess = responseBody !== null && responseBody.code === "SU";
+    const isSuccess = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccess) {
       alert(message);
       return;
@@ -83,7 +81,7 @@ export default function UsedTradeWrite() {
   const onTitleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     if (value.length > 50) {
-      alert("제목은 50자 이내로 작성해주세요.");
+      alert('제목은 50자 이내로 작성해주세요.');
       return;
     }
     setTitle(value);
@@ -92,7 +90,7 @@ export default function UsedTradeWrite() {
   // event handler: 내용 변경 이벤트 처리 //
   const onContentChangeHandler = (value: string) => {
     if (value.length > 2000) {
-      alert("내용은 2000자 이내로 작성해주세요.");
+      alert('내용은 2000자 이내로 작성해주세요.');
       return;
     }
     setContent(value);
@@ -133,20 +131,20 @@ export default function UsedTradeWrite() {
   // event Handler: 이미지 업로드 이후 content에 삽입된 이미지 태그 처리 //
   const onImageUpload = (imageUrl: string) => {
     const imageTag = `<img src="${imageUrl}" alt="업로드 이미지" />`;
-    setContent(prev => prev + imageTag);
+    setContent((prev) => prev + imageTag);
   };
 
   // event Handler: 이미지 업로드  //
   const onImageInputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target;
     if (!files || !files.length) return;
-  
+
     const selectedFiles = Array.from(files);
     setImageList(selectedFiles);
-  
+
     const fileReader = new FileReader();
     const imageUrls: string[] = [];
-  
+
     selectedFiles.forEach((file, index) => {
       fileReader.onloadend = () => {
         imageUrls.push(fileReader.result as string);
@@ -185,8 +183,9 @@ export default function UsedTradeWrite() {
       usedItemStatusTag,
       location,
       detailLocation,
-      price
+      price,
     };
+    console.log(accessToken);
     postUsedTradeRequest(requestBody, accessToken).then(postUsedTradeResponse);
   };
 
@@ -194,27 +193,26 @@ export default function UsedTradeWrite() {
   return (
     <div id="trade-write-wrapper">
       <div className="trade-write-main">
-
         <div className="item-images-container">
           <div className="item-images">상품이미지</div>
           <input
             type="file"
             accept="image/png, image/jpeg"
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
             id="file-input"
             onChange={onImageInputChangeHandler}
             multiple
           />
-          <div className="image-preview-slider" onClick={handleFileInputClick} style={{ width: "300px", height: "300px", marginTop: "10px" }}>
+          <div
+            className="image-preview-slider"
+            onClick={handleFileInputClick}
+            style={{ width: '300px', height: '300px', marginTop: '10px' }}
+          >
             <Swiper spaceBetween={0} slidesPerView={1}>
               {imageUrls.map((imageUrl, index) => (
                 <SwiperSlide key={index}>
                   <div>
-                    <img
-                      src={imageUrl}
-                      alt={`업로드 이미지 ${index}`}
-                      style={{ width: "100%", height: "auto" }}
-                    />
+                    <img src={imageUrl} alt={`업로드 이미지 ${index}`} style={{ width: '100%', height: 'auto' }} />
                     <button onClick={() => handleImageDelete(index)}>삭제</button>
                   </div>
                 </SwiperSlide>
@@ -225,9 +223,15 @@ export default function UsedTradeWrite() {
 
         <div className="item-name-container">
           <div className="item-name">상품명</div>
-          <input className="item-name-box" type="text" placeholder="상품명을 입력해 주세요." value={title} onChange={onTitleChangeHandler} />
+          <input
+            className="item-name-box"
+            type="text"
+            placeholder="상품명을 입력해 주세요."
+            value={title}
+            onChange={onTitleChangeHandler}
+          />
         </div>
-      
+
         <div className="item-category-container">
           <div className="item-category">카테고리</div>
           <div className="item-category-box">
@@ -236,7 +240,7 @@ export default function UsedTradeWrite() {
               const isChecked = itemTypeTag === tag;
               return (
                 <label key={i} className={`checkbox-item ${isChecked ? 'active' : ''}`}>
-                  <input type="checkbox" checked={isChecked} onChange={() => onItemTypeTagChangeHandler(tag)}/>
+                  <input type="checkbox" checked={isChecked} onChange={() => onItemTypeTagChangeHandler(tag)} />
                   {label}
                 </label>
               );
@@ -252,7 +256,7 @@ export default function UsedTradeWrite() {
               const isChecked = usedItemStatusTag === tag;
               return (
                 <label key={i} className={`checkbox-item ${isChecked ? 'active' : ''}`}>
-                  <input type="checkbox" checked={isChecked} onChange={() => onUsedItemStatusTag(tag)}/>
+                  <input type="checkbox" checked={isChecked} onChange={() => onUsedItemStatusTag(tag)} />
                   {label}
                 </label>
               );
@@ -262,15 +266,23 @@ export default function UsedTradeWrite() {
 
         <div className="item-content-container">
           <div className="item-content">설명</div>
-          <textarea className="item-content-box" placeholder="브랜드, 모델명, 구매 시기, 하자 유무 등 상품 설명을 최대한 자세히 적어주세요." value={content} onChange={(e) => onContentChangeHandler(e.target.value)} />
+          <textarea
+            className="item-content-box"
+            placeholder="브랜드, 모델명, 구매 시기, 하자 유무 등 상품 설명을 최대한 자세히 적어주세요."
+            value={content}
+            onChange={(e) => onContentChangeHandler(e.target.value)}
+          />
         </div>
 
         <div className="transaction-location-container">
           <div className="transaction-location">거래위치</div>
           <div className="transaction-location-box">
-            <input type="text" placeholder="거래위치를 입력해주세요." 
-              value={ location.trim() !== "" || detailLocation.trim() !== "" ? `${location} ${detailLocation}` : "" }
-              readOnly onClick={openLocationModal} 
+            <input
+              type="text"
+              placeholder="거래위치를 입력해주세요."
+              value={location.trim() !== '' || detailLocation.trim() !== '' ? `${location} ${detailLocation}` : ''}
+              readOnly
+              onClick={openLocationModal}
             />
           </div>
           <LocationModal isOpen={isModalOpen} onClose={closeLocationModal} onSave={onSaveLocation} />
@@ -279,11 +291,13 @@ export default function UsedTradeWrite() {
         <div className="price-container">
           <div className="price">가격</div>
           <div className="price-box">
-            <input type="number" placeholder="가격을 입력하세요"value={price} onChange={onPriceChangeHandler} />
+            <input type="number" placeholder="가격을 입력하세요" value={price} onChange={onPriceChangeHandler} />
           </div>
         </div>
         <div className="button-container">
-          <div className={writeButtonClass} onClick={onWriteButtonClickHandler}>작성하기</div>
+          <div className={writeButtonClass} onClick={onWriteButtonClickHandler}>
+            작성하기
+          </div>
         </div>
       </div>
     </div>
