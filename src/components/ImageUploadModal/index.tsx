@@ -14,6 +14,7 @@ interface ImageUploadModalProps {
 const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isOpen, onClose, onSave }) => {
   const [imageList, setImageList] = useState<(string | null)[]>(Array(5).fill(null));
   const [isUploading, setIsUploading] = useState(false);
+  const [images, setImages] = useState<(string | null)[]>([]);
 
   const handleImageChange = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
