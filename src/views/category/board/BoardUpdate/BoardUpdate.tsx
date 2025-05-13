@@ -1,18 +1,17 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import "./BoardUpdate.css";
-import { useNavigate, useParams } from "react-router-dom";
-import { useCookies } from "react-cookie";
-import useSignInUserStore from "../../../../stores/sign-in-user.store";
-import { ACCESS_TOKEN, BOARD_ABSOLUTE_PATH, BOARD_VIEW_ABSOLUTE_PATH } from "../../../../constants";
-import { GetBoardResponseDto } from "../../../../apis/dto/response/board";
-import ResponseDto from "../../../../apis/dto/response/response.dto";
-import { PatchBoardRequestDto } from "../../../../apis/dto/request/board";
-import { getBoardRequest, patchBoardRequest } from "../../../../apis";
-import TextEditor from "../../../../components/TextEditor";
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import './BoardUpdate.css';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import useSignInUserStore from '../../../../stores/sign-in-user.store';
+import { ACCESS_TOKEN, BOARD_ABSOLUTE_PATH, BOARD_VIEW_ABSOLUTE_PATH } from '../../../../constants';
+import { GetBoardResponseDto } from '../../../../apis/dto/response/board';
+import ResponseDto from '../../../../apis/dto/response/response.dto';
+import { PatchBoardRequestDto } from '../../../../apis/dto/request/board';
+import { getBoardRequest, patchBoardRequest } from '../../../../apis';
+import TextEditor from '../../../../components/TextEditor';
 
 // component: 게시판 게시글 수정 컴포넌트 //
 export default function BoardUpdate() {
-
   // state: 경로 변수 상태 //
   const { boardSequence } = useParams();
 
@@ -30,11 +29,11 @@ export default function BoardUpdate() {
   const [content, setContent] = useState<string>('');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  // variable: acess token //
+  // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
 
   // variable: 게시글 수정 가능 여부 //
-  const isActive = title !== '' && content !== "";
+  const isActive = title !== '' && content !== '';
   // variable: 게시글 수정 버튼 클래스 //
   const updateButtonClass = isActive ? 'button middle primary' : 'button middle disable';
 
@@ -43,14 +42,18 @@ export default function BoardUpdate() {
 
   // function: get board response 처리 함수 //
   const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null) => {
-    const message =
-      !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' : 
-      responseBody.code === 'AF' ? '인증에 실패했습니다.' : 
-      responseBody.code === 'NB' ? '존재하지 않는 게시글입니다.' : '';
+    const message = !responseBody
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'AF'
+      ? '인증에 실패했습니다.'
+      : responseBody.code === 'NB'
+      ? '존재하지 않는 게시글입니다.'
+      : '';
 
     const isSuccess = responseBody !== null && responseBody.code === 'SU';
-    if(!isSuccess) {
+    if (!isSuccess) {
       alert(message);
       navigator(BOARD_ABSOLUTE_PATH);
       return;
@@ -67,12 +70,17 @@ export default function BoardUpdate() {
 
   // function: patch board response 처리 함수 //
   const patchBoardResponse = (responseBody: ResponseDto | null) => {
-    const message = 
-      !responseBody ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'DBE' ? '서버에 문제가 있습니다.' :
-      responseBody.code === 'AF' ? '인증에 실패했습니다.' :
-      responseBody.code === 'NB' ? '존재하지 않는 게시글입니다.' :
-      responseBody.code === 'NP' ? '권한이 없습니다.' : '';
+    const message = !responseBody
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'AF'
+      ? '인증에 실패했습니다.'
+      : responseBody.code === 'NB'
+      ? '존재하지 않는 게시글입니다.'
+      : responseBody.code === 'NP'
+      ? '권한이 없습니다.'
+      : '';
 
     const isSuccess = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccess) {
@@ -80,7 +88,7 @@ export default function BoardUpdate() {
       return;
     }
 
-    if(!boardSequence) return;
+    if (!boardSequence) return;
     navigator(BOARD_VIEW_ABSOLUTE_PATH(boardSequence));
   };
 
@@ -88,7 +96,7 @@ export default function BoardUpdate() {
   const onTitleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     if (value.length > 50) {
-      alert("제목은 50자 이내로 작성해주세요.");
+      alert('제목은 50자 이내로 작성해주세요.');
       return;
     }
     setTitle(value);
@@ -97,7 +105,7 @@ export default function BoardUpdate() {
   // event handler: 내용 변경 이벤트 처리 //
   const onContentChangeHandler = (value: string) => {
     if (value.length > 2000) {
-      alert("내용은 2000자 이내로 작성해주세요.");
+      alert('내용은 2000자 이내로 작성해주세요.');
       return;
     }
     setContent(value);
@@ -108,7 +116,8 @@ export default function BoardUpdate() {
     if (!isActive || !accessToken || !boardSequence) return;
 
     const requestBody: PatchBoardRequestDto = {
-      title, content
+      title,
+      content,
     };
     patchBoardRequest(boardSequence, requestBody, accessToken).then(patchBoardResponse);
   };
@@ -129,26 +138,26 @@ export default function BoardUpdate() {
 
   // render: 게시판 게시글 수정 컴포넌트 렌더링 //
   return (
-    <div id='board-update-wrapper'>
-      <div className='update-container'>
-        <div className='update-title'>게시글 수정</div>
-        <div className='contents-container'>
-          <div className='board-category'>카테고리</div>
-          <div className='input-row-box'>
+    <div id="board-update-wrapper">
+      <div className="update-container">
+        <div className="update-title">게시글 수정</div>
+        <div className="contents-container">
+          <div className="board-category">카테고리</div>
+          <div className="input-row-box">
             <div className="content">{boardTag}</div>
           </div>
           <div className="input-column-box">
-            <div className='title'>제목 ({title.length}/50)</div>
+            <div className="title">제목 ({title.length}/50)</div>
             <input type="text" value={title} placeholder="제목을 입력하세요." onChange={onTitleChangeHandler} />
           </div>
-          <div className='input-column-box'>
-            <div className='title'>내용 ({content.length}/2000)</div>
-            {isLoaded &&
-            <TextEditor content={content}setContent={onContentChangeHandler} />
-            }
+          <div className="input-column-box">
+            <div className="title">내용 ({content.length}/2000)</div>
+            {isLoaded && <TextEditor content={content} setContent={onContentChangeHandler} />}
           </div>
           <div className="button-box">
-            <div className={updateButtonClass} onClick={onUpdateButtonClickHandler}>작성 완료</div>
+            <div className={updateButtonClass} onClick={onUpdateButtonClickHandler}>
+              작성 완료
+            </div>
           </div>
         </div>
       </div>

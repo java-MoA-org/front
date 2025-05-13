@@ -7,11 +7,13 @@ import { ACCESS_TOKEN, USED_TRADE_ABSOLUTE_PATH, USED_TRADE_VIEW_ABSOLUTE_PATH }
 import { GetUsedTradeResponseDto } from "../../../../apis/dto/response/usedtrade";
 import ResponseDto from "../../../../apis/dto/response/response.dto";
 import { PatchUsedTradeRequestDto } from "../../../../apis/dto/request/usedtrade";
-import { getUsedTradeRequest, patchUsedTradeRequest } from "../../../../apis";
+import { getUsedTradeRequest, patchUsedTradeRequest, UPLOAD_IMAGES_URL } from "../../../../apis";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { UsedItemStatusTag } from "../../../../types/enums/UsedItemStatusTag";
 import { ItemTypeTag } from "../../../../types/enums/ItemTypeTag";
 import LocationModal from "../../../../components/Location";
+import ImageUploadModal from "../../../../components/ImageUploadModal";
+import axios from "axios";
 
 // component: 중고거래 판매글 수정 컴포넌트 //
 export default function UsedTradeUpdate() {
@@ -21,21 +23,22 @@ export default function UsedTradeUpdate() {
 
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
-
-  // state: 로그인 유저 아이디 상태 //
-  const { userId } = useSignInUserStore();
   
   // state: 중고거래 판매글 수정 내용 상태 //
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [imageList, setImageList] = useState<String[]>([]);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageList, setImageList] = useState<(string | null)[]>(Array(5).fill(null))
   const [itemTypeTag, setItemTypeTag] = useState<ItemTypeTag>(ItemTypeTag.ETC);
   const [usedItemStatusTag, setUsedItemStatusTag] = useState<UsedItemStatusTag>(UsedItemStatusTag.NEW);
   const [location, setLocation] = useState<string>('');
   const [detailLocation, setDetailLocation] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
+  const filteredImages = imageList.filter((img): img is string => img !== null);
+
+  // state: 모달창 여부 //
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -55,13 +58,13 @@ export default function UsedTradeUpdate() {
 
   // variable: 중고거래글 수정 가능 여부 //
   const isActive = title.trim() !== "" 
-  && content.trim() !== "" 
+  && content.length > 0
   && price > 0 
   && location.trim() !== "" 
   && detailLocation.trim() !== "" 
   && itemTypeTag !== undefined
   && usedItemStatusTag !== undefined
-  && imageList !== undefined;
+  && imageList.some(img => img !== null);
 
   // variable: 중고거래글 수정 버튼 클래스 //
   const updateButtonClass = isActive ? 'button middle primary' : 'button middle disable';
@@ -150,6 +153,61 @@ export default function UsedTradeUpdate() {
     setPrice(priceValue);
   };
 
+  // event handler: 이미지 목록 변경 이벤트 처리 //
+  const onImageListChangeHandler = (imageList: string[]) => {
+    setImageList(imageList);
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+  
+    const validFiles = Array.from(files).filter((file) =>
+      ['image/jpeg', 'image/png'].includes(file.type) && file.size <= 5 * 1024 * 1024
+    );
+  
+    if (validFiles.length === 0) {
+      alert('유효한 이미지 파일이 없습니다.');
+      return;
+    }
+  
+    const formData = new FormData();
+    validFiles.forEach((file) => formData.append('files', file));
+  
+    try {
+      const response = await axios.post(UPLOAD_IMAGES_URL, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+  
+      const imageUrls = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
+  
+      const newImageList = [...imageList, ...imageUrls].slice(0, 5);
+      setImageList(newImageList);
+      onImageListChangeHandler(newImageList);
+  
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  // state: 이미지 저장하는 함수 //
+  const onSaveImageList = (newImageList: (string | null)[]) => {
+    setImageList(newImageList);
+  };
+
+  // function: 이미지 업로드 모달 열기 //
+  const openImageUploadModal = () => {
+    setIsImageModalOpen(true);
+  }
+  // function: 이미지 업로드 모달 닫기 //
+  const closeImageUploadModal = () => {
+    setIsImageModalOpen(false);
+  }
+
   // state: 거래 위치와 상세 주소를 상태에 저장하는 함수 //
   const onSaveLocation = (location: string, detailLocation: string) => {
     setLocation(location);
@@ -171,7 +229,7 @@ export default function UsedTradeUpdate() {
     if (!isActive || !accessToken || !tradeSequence) return;
 
     const requestBody: PatchUsedTradeRequestDto = {
-      title, content, price, location, detailLocation, imageList
+      title, content, price, location, detailLocation, imageList: filteredImages
     };
     patchUsedTradeRequest(tradeSequence, requestBody, accessToken).then(patchUsedTradeResponse);
   };
@@ -194,25 +252,17 @@ export default function UsedTradeUpdate() {
             accept="image/png, image/jpeg"
             style={{ display: "none" }}
             id="file-input"
-            // onChange={onImageInputChangeHandler}
+            onChange={handleImageUpload}
             multiple
           />
-          {/* <div className="image-preview-slider" onClick={handleFileInputClick} style={{ width: "300px", height: "300px", marginTop: "10px" }}>
-            <Swiper spaceBetween={0} slidesPerView={1}>
-              {imageUrls.map((imageUrl, index) => (
-                <SwiperSlide key={index}>
-                  <div>
-                    <img
-                      src={imageUrl}
-                      alt={`업로드 이미지 ${index}`}
-                      style={{ width: "100%", height: "auto" }}
-                    />
-                    <button onClick={() => handleImageDelete(index)}>삭제</button>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div> */}
+          <ImageUploadModal isOpen={isImageModalOpen} onClose={closeImageUploadModal} onSave={onSaveImageList} initialImages={imageList} />
+          <div className="trade-image-preview" onClick={openImageUploadModal} >
+            {imageList[0] ? (
+              <img src={imageList[0]} alt="썸네일" className="thumbnail-image" />
+            ) : (
+              <div className="default-image" />
+            )}
+          </div>
         </div>
 
         <div className="item-name-container">
