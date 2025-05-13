@@ -24,6 +24,7 @@ import messageIcon from '../../../../assets/images/chat.png';
 import { useElapsedTime } from '../../../../hooks';
 import PostLikeAlertRequestDto from '../../../../apis/dto/request/alert/post-like-alert.request.dto';
 import TransactionStatusModal from '../../../../components/TransactionStatus';
+import TradeImageSlider from '../../../../components/TradeImageSlider';
 
 // component: 중고거래 판매글 상세보기 컴포넌트 //
 export default function UsedTradeView() {
@@ -266,7 +267,7 @@ export default function UsedTradeView() {
         )}
         <div className="object-container">
           <div className="object-images">
-            <img src={images[0]} alt="상품 이미지" className="trade-object-images" />
+            <TradeImageSlider images={images} />
           </div>
           <div className="object-details">
             <div className="object-status-container">
