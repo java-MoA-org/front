@@ -37,7 +37,7 @@ const Header = () => {
   const { unreadCount, isMessageRead } = useMessageAlertStore();
   const [cookies, , removeCookie] = useCookies();
 
-  const accessToken = cookies[ACCESS_TOKEN];
+  let accessToken = cookies[ACCESS_TOKEN];
   const refreshToken = cookies[REFRESH_TOKEN];
 
   const [cookieReady, setCookieReady] = useState(false);
