@@ -8,5 +8,5 @@ export default interface Daily {
   userNickname: string;
   profileImage: string | null;
   commentCount: number;
-  images: string[] | null;
+  images: string[];
 }

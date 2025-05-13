@@ -1,73 +1,78 @@
-import React, { ChangeEvent, useState } from 'react';
-import './UsedTradeWrite.css';
-import { useCookies } from 'react-cookie';
-import { ItemTypeTag } from '../../../../types/enums/ItemTypeTag';
-import { ACCESS_TOKEN, USED_TRADE_ABSOLUTE_PATH } from '../../../../constants';
-import { useNavigate } from 'react-router-dom';
-import ResponseDto from '../../../../apis/dto/response/response.dto';
-import { PostUsedTradeRequestDto } from '../../../../apis/dto/request/usedtrade';
-import { postUsedTradeRequest } from '../../../../apis';
-import { UsedItemStatusTag } from '../../../../types/enums/UsedItemStatusTag';
-import LocationModal from '../../../../components/Location';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
+import React, { ChangeEvent, useState } from "react";
+import "./UsedTradeWrite.css";
+import { useCookies } from "react-cookie";
+import { ItemTypeTag } from "../../../../types/enums/ItemTypeTag";
+import { ACCESS_TOKEN, USED_TRADE_ABSOLUTE_PATH } from "../../../../constants";
+import { useNavigate } from "react-router-dom";
+import ResponseDto from "../../../../apis/dto/response/response.dto";
+import { PostUsedTradeRequestDto } from "../../../../apis/dto/request/usedtrade";
+import { postUsedTradeRequest, UPLOAD_IMAGES_URL } from "../../../../apis";
+import { UsedItemStatusTag } from "../../../../types/enums/UsedItemStatusTag";
+import LocationModal from "../../../../components/Location";
+import ImageUploadModal from "../../../../components/ImageUploadModal";
+import axios from "axios";
 
 // component: 중고거래 게시판 판매글 작성 컴포넌트 //
 export default function UsedTradeWrite() {
+
   // state: 쿠키 상태 //
   const [cookies] = useCookies();
 
   // state: 중고거래글 작성 내용 상태 //
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [imageList, setImageList] = useState<File[]>([]);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageList, setImageList] = useState<(string | null)[]>(Array(5).fill(null))
   const [itemTypeTag, setItemTypeTag] = useState<ItemTypeTag>(ItemTypeTag.ETC);
   const [usedItemStatusTag, setUsedItemStatusTag] = useState<UsedItemStatusTag>(UsedItemStatusTag.NEW);
   const [location, setLocation] = useState<string>('');
   const [detailLocation, setDetailLocation] = useState<string>('');
   const [price, setPrice] = useState<number>(0);
 
+  const filteredImages = imageList.filter((img): img is string => img !== null);
+  console.log("🟣 필터링된 이미지 리스트:", filteredImages);
+
   // state: 모달창 여부 //
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
   // variable: 카테고리 목록 //
-  const categorys = ['기타', '전자기기', '의류', '가구', '도서', '뷰티/미용', '운동/스포츠', '식품'];
+  const categorys = [
+    '기타', '전자기기', '의류', '가구',
+    '도서', '뷰티/미용', '운동/스포츠', '식품'
+  ];
 
   // variable: 아이템 상태 표시 목록 //
-  const itemsStatusTag = ['새상품', '사용감 거의 없음', '사용감 있음', '파손/고장 있음'];
+  const itemsStatusTag = [
+    '새상품', '사용감 거의 없음', '사용감 있음', '파손/고장 있음'
+  ];
 
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
 
   // variable: 중고거래글 작성 가능 여부 //
-  const isActive =
-    title.trim() !== '' &&
-    content.trim() !== '' &&
-    price > 0 &&
-    location.trim() !== '' &&
-    detailLocation.trim() !== '' &&
-    itemTypeTag !== undefined &&
-    usedItemStatusTag !== undefined &&
-    imageList !== undefined;
+  const isActive = title.trim() !== "" 
+  && content.length > 0
+  && price > 0 
+  && location.trim() !== "" 
+  && detailLocation.trim() !== "" 
+  && itemTypeTag !== undefined
+  && usedItemStatusTag !== undefined
+  && imageList.some(img => img !== null);
 
   // variable: 중고거래글 작성 버튼 클래스 //
-  const writeButtonClass = isActive ? 'button middle primary' : 'button middle disable';
+  const writeButtonClass = isActive ? "button middle primary" : "button middle disable";
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
-  // function: post board response 처리 함수 //
+  // function: post used trade response 처리 함수 //
   const postUsedTradeResponse = (responseBody: ResponseDto | null) => {
-    const message = !responseBody
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'DBE'
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'AF'
-      ? '인증에 실패했습니다.'
-      : '';
+    const message = 
+      !responseBody ? "서버에 문제가 있습니다." : 
+      responseBody.code === "DBE" ? "서버에 문제가 있습니다." : 
+      responseBody.code === "AF" ? "인증에 실패했습니다." : "";
 
-    const isSuccess = responseBody !== null && responseBody.code === 'SU';
+    const isSuccess = responseBody !== null && responseBody.code === "SU";
     if (!isSuccess) {
       alert(message);
       return;
@@ -80,7 +85,7 @@ export default function UsedTradeWrite() {
   const onTitleChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     if (value.length > 50) {
-      alert('제목은 50자 이내로 작성해주세요.');
+      alert("제목은 50자 이내로 작성해주세요.");
       return;
     }
     setTitle(value);
@@ -88,11 +93,57 @@ export default function UsedTradeWrite() {
 
   // event handler: 내용 변경 이벤트 처리 //
   const onContentChangeHandler = (value: string) => {
-    if (value.length > 500) {
-      alert('내용은 500자 이내로 작성해주세요.');
+    if (content.length > 500) {
+      alert("내용은 500자 이내로 작성해주세요.");
       return;
     }
     setContent(value);
+  };
+
+  const onTextareaChangeHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onContentChangeHandler(event.target.value);
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+  
+    const validFiles = Array.from(files).filter((file) =>
+      ['image/jpeg', 'image/png'].includes(file.type) && file.size <= 5 * 1024 * 1024
+    );
+  
+    if (validFiles.length === 0) {
+      alert('유효한 이미지 파일이 없습니다.');
+      return;
+    }
+  
+    const formData = new FormData();
+    validFiles.forEach((file) => formData.append('files', file));
+  
+    try {
+      const response = await axios.post(UPLOAD_IMAGES_URL, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+  
+      const imageUrls = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
+      console.log("업로드된 URL:", imageUrls);
+  
+      const newImageList = [...imageList, ...imageUrls].slice(0, 5);
+      setImageList(newImageList);
+      onImageListChangeHandler(newImageList);
+  
+    } catch (error) {
+      console.error('이미지 업로드 실패:', error);
+      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
+
+  // event handler: 이미지 목록 변경 이벤트 처리 //
+  const onImageListChangeHandler = (imageList: string[]) => {
+    setImageList(imageList);
   };
 
   // event handler: 아이템 타입 태그 변경 이벤트 처리 //
@@ -111,38 +162,34 @@ export default function UsedTradeWrite() {
     setPrice(priceValue);
   };
 
+  const onSaveImageList = (newImageList: (string | null)[]) => {
+    console.log("🟢 Write 컴포넌트에서 받은 이미지 리스트:", newImageList);
+    setImageList(newImageList);
+  };
+
   // state: 거래 위치와 상세 주소를 상태에 저장하는 함수 //
   const onSaveLocation = (location: string, detailLocation: string) => {
     setLocation(location);
     setDetailLocation(detailLocation);
   };
 
+  // function: 이미지 업로드 모달 열기 //
+  const openImageUploadModal = () => {
+    setIsImageModalOpen(true);
+  }
+  // function: 이미지 업로드 모달 닫기 //
+  const closeImageUploadModal = () => {
+    setIsImageModalOpen(false);
+  }
+
   // function: 거래 위치 입력 모달 열기 //
   const openLocationModal = () => {
-    setIsModalOpen(true);
+    setIsLocationModalOpen(true);
   };
 
   // function: 거래 위치 입력 모달 닫기 //
   const closeLocationModal = () => {
-    setIsModalOpen(false);
-  };
-
-  // 이미지 파일 변경 핸들러
-  const onImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files) return;
-
-    const selectedFiles = Array.from(files);
-    setImageList(selectedFiles);
-
-    // 미리보기용 URL
-    const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file));
-    setImageUrls(previewUrls);
-  };
-
-  // event handler: 이미지 업로드 버튼 //
-  const handleFileInputClick = () => {
-    document.getElementById('file-input')?.click();
+    setIsLocationModalOpen(false);
   };
 
   // event handler: 게시판 글 작성 버튼 클릭 이벤트 처리 //
@@ -157,52 +204,43 @@ export default function UsedTradeWrite() {
       location,
       detailLocation,
       price,
+      imageList: filteredImages,
     };
-    postUsedTradeRequest(requestBody, imageList, accessToken).then(postUsedTradeResponse);
+    console.log("🔵 서버로 보낼 이미지 리스트:", filteredImages);
+    postUsedTradeRequest(requestBody, accessToken).then(postUsedTradeResponse);
   };
 
   // render: 중고거래 게시판 판매글 작성 컴포넌트 렌더링 //
   return (
     <div id="trade-write-wrapper">
       <div className="trade-write-main">
+
         <div className="item-images-container">
           <div className="item-images">상품이미지</div>
           <input
             type="file"
             accept="image/png, image/jpeg"
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
             id="file-input"
-            onChange={onImageChangeHandler}
+            onChange={handleImageUpload}
             multiple
           />
-          <div
-            className="image-preview-slider"
-            onClick={handleFileInputClick}
-            style={{ width: '300px', height: '300px', marginTop: '10px' }}
-          >
-            <Swiper spaceBetween={0} slidesPerView={1}>
-              {imageUrls.map((imageUrl, index) => (
-                <SwiperSlide key={index}>
-                  <div>
-                    <img src={imageUrl} alt={`업로드 이미지 ${index}`} style={{ width: '100%', height: 'auto' }} />
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+          <ImageUploadModal isOpen={isImageModalOpen} onClose={closeImageUploadModal} onSave={onSaveImageList} />
+          <div className="image-preview" onClick={openImageUploadModal} >
+            {imageList[0] ? (
+              <img src={imageList[0]} alt="썸네일" className="thumbnail-image" />
+            ) : (
+              <div className="default-image" />
+            )}
           </div>
         </div>
 
         <div className="item-name-container">
           <div className="item-name">상품명</div>
-          <input
-            className="item-name-box"
-            type="text"
-            placeholder="상품명을 입력해 주세요."
-            value={title}
-            onChange={onTitleChangeHandler}
-          />
+          <input className="item-name-box" type="text" placeholder="상품명을 입력해 주세요." value={title} onChange={onTitleChangeHandler} />
+          <div className='length'>({title.length}/50)</div>
         </div>
-
+      
         <div className="item-category-container">
           <div className="item-category">카테고리</div>
           <div className="item-category-box">
@@ -211,7 +249,7 @@ export default function UsedTradeWrite() {
               const isChecked = itemTypeTag === tag;
               return (
                 <label key={i} className={`checkbox-item ${isChecked ? 'active' : ''}`}>
-                  <input type="checkbox" checked={isChecked} onChange={() => onItemTypeTagChangeHandler(tag)} />
+                  <input type="checkbox" checked={isChecked} onChange={() => onItemTypeTagChangeHandler(tag)}/>
                   {label}
                 </label>
               );
@@ -227,7 +265,7 @@ export default function UsedTradeWrite() {
               const isChecked = usedItemStatusTag === tag;
               return (
                 <label key={i} className={`checkbox-item ${isChecked ? 'active' : ''}`}>
-                  <input type="checkbox" checked={isChecked} onChange={() => onUsedItemStatusTag(tag)} />
+                  <input type="checkbox" checked={isChecked} onChange={() => onUsedItemStatusTag(tag)}/>
                   {label}
                 </label>
               );
@@ -237,38 +275,29 @@ export default function UsedTradeWrite() {
 
         <div className="item-content-container">
           <div className="item-content">설명</div>
-          <textarea
-            className="item-content-box"
-            placeholder="브랜드, 모델명, 구매 시기, 하자 유무 등 상품 설명을 최대한 자세히 적어주세요."
-            value={content}
-            onChange={(e) => onContentChangeHandler(e.target.value)}
-          />
+          <textarea className="item-content-box" placeholder="브랜드, 모델명, 구매 시기, 하자 유무 등 상품 설명을 최대한 자세히 적어주세요." value={content} onChange={onTextareaChangeHandler} />
+          <div className='title'>({content.length}/500)</div>
         </div>
 
         <div className="transaction-location-container">
           <div className="transaction-location">거래위치</div>
           <div className="transaction-location-box">
-            <input
-              type="text"
-              placeholder="거래위치를 입력해주세요."
-              value={location.trim() !== '' || detailLocation.trim() !== '' ? `${location} ${detailLocation}` : ''}
-              readOnly
-              onClick={openLocationModal}
+            <input type="text" placeholder="거래위치를 입력해주세요." 
+              value={ location.trim() !== "" || detailLocation.trim() !== "" ? `${location} ${detailLocation}` : "" }
+              readOnly onClick={openLocationModal} 
             />
           </div>
-          <LocationModal isOpen={isModalOpen} onClose={closeLocationModal} onSave={onSaveLocation} />
+          <LocationModal isOpen={isLocationModalOpen} onClose={closeLocationModal} onSave={onSaveLocation} />
         </div>
 
         <div className="price-container">
           <div className="price">가격</div>
           <div className="price-box">
-            <input type="number" placeholder="가격을 입력하세요" value={price} onChange={onPriceChangeHandler} />
+            <input type="number" placeholder="가격을 입력하세요"value={price} onChange={onPriceChangeHandler} />
           </div>
         </div>
         <div className="button-container">
-          <div className={writeButtonClass} onClick={onWriteButtonClickHandler}>
-            작성하기
-          </div>
+          <div className={writeButtonClass} onClick={onWriteButtonClickHandler}>작성하기</div>
         </div>
       </div>
     </div>

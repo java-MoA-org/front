@@ -20,7 +20,7 @@ export interface UsedTradeSummaryResponseDto {
   creationDate: string;
   location: string;
   usedItemStatusTag: string;
-  thumbnailImage: string;
+  images: string[];
   userNickname: string;
   profileImage: string;
   price: number;

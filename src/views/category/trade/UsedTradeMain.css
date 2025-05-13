@@ -154,11 +154,14 @@
 #trade-main-wrapper .thumbnail-image {
   position: relative;
   height: 250px;
-  background-image: url('/src/assets/images/닌텐도.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   border: 1px solid #EFEEEA;
+  border-radius: 15px;
+}
+
+#trade-main-wrapper .trade-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 15px;
 }
 
@@ -231,4 +234,11 @@
   font-weight: bold;
   border-radius: 5px;
   white-space: nowrap;
+}
+
+#trade-main-wrapper .icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  vertical-align: middle;
 }

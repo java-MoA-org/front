@@ -457,10 +457,9 @@ export const getBoardListRequest = async (
   tag: string,
   page: number,
   sort: string = "LATEST",
-  accessToken: string
 ) => {
   const responseBody = await axios
-    .get(GET_BOARD_LIST_URL(tag, page, sort), bearerAuthorization(accessToken))
+    .get(GET_BOARD_LIST_URL(tag, page, sort))
     .then(responseSuccessHandler<GetBoardListResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
@@ -666,27 +665,12 @@ export const deleteDailyCommentRequest = async (
 };
 
 // function: post used trade API 요청 함수 //
-export const postUsedTradeRequest = async (
-  dto: PostUsedTradeRequestDto,
-  imageList: File[],
-  accessToken: string
-): Promise<ResponseDto | null> => {
-  const formData = new FormData();
-  formData.append("dto", new Blob([JSON.stringify(dto)], { type: "application/json" }));
-  imageList.forEach((file) => formData.append("imageList", file));
-
-  try {
-    const response = await axios.post("/api/v1/usedtrade", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error("중고거래 글 작성 실패", error);
-    return null;
-  }
+export const postUsedTradeRequest = async (requestBody: PostUsedTradeRequestDto, accessToken: string) => {
+  const responseBody = await axios
+    .post(POST_USED_TRADE_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
 };
 
 // function: get used trade API 요청 함수 //
