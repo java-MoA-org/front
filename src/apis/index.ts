@@ -162,7 +162,7 @@ const GET_USER_UPDATE_PAGE_URL = `${USER_PAGE_MODULE_URL}/revise`;
 const PATCH_USER_UPDATE_PAGE_URL = `${USER_PAGE_MODULE_URL}/revise`;
 const POST_USER_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/verify`;
 const PATCH_USER_PAGE_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/change`;
-const FILE_UPLOAD_URL = `${USER_PAGE_MODULE_URL}/images/file/upload`;
+const FILE_UPLOAD_URL = `${API_DOMAIN}/api/v1/images/file/upload`;
 const multipartFormData = { headers: { "Content-Type": "multipart/form-data" } };
 
 const POST_FOLLOW_URL = (nickname: string) => `${API_DOMAIN}/api/v1/follow/${nickname}`;
@@ -383,45 +383,34 @@ export const postFollowRequest = async (nickname: string, accessToken: string) =
 export const passwordVerifyRequest = async (
   accessToken: string,
   body: PasswordVerifyRequestDto
-): Promise<ResponseDto | null> => {
-  try {
-    const response = await axios.post(POST_USER_PASSWORD_VERIFY_URL, body, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    return response.data;
-  } catch {
-    return null;
-  }
+) => {
+  const responseBody = await axios
+    .post(POST_USER_PASSWORD_VERIFY_URL, body, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
 };
 // function: 새 비밀번호 수정 API 요청 함수 //
 export const patchPasswordUserPageRequest = async (
   accessToken: string,
   body: PatchPasswordUserPageRequestDto
-): Promise<ResponseDto | null> => {
-  try {
-    const response = await axios.patch(PATCH_USER_PAGE_PASSWORD_VERIFY_URL, body, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    return response.data;
-  } catch {
-    return null;
-  }
+) => {
+  const responseBody = await axios
+    .patch(PATCH_USER_PAGE_PASSWORD_VERIFY_URL, body, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
 };
 // function: 유저 정보 수정 API 요청 함수 //
 export const patchUserInfoRequest = async (
   accessToken: string,
   requestBody: PatchUserInfoRequestDto
-): Promise<ResponseDto | null> => {
-  try {
-    const response = await axios.patch(PATCH_USER_UPDATE_PAGE_URL, requestBody, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-    return response.data;
-  } catch (error) {
-    return null;
-  }
+) => {
+  const responseBody = await axios
+    .patch(PATCH_USER_UPDATE_PAGE_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
 };
 
 // function: 파일 업로드 요청 함수 //
@@ -468,10 +457,9 @@ export const getBoardListRequest = async (
   tag: string,
   page: number,
   sort: string = "LATEST",
-  accessToken: string
 ) => {
   const responseBody = await axios
-    .get(GET_BOARD_LIST_URL(tag, page, sort), bearerAuthorization(accessToken))
+    .get(GET_BOARD_LIST_URL(tag, page, sort))
     .then(responseSuccessHandler<GetBoardListResponseDto>)
     .catch(responseErrorHandler);
   return responseBody;
@@ -677,27 +665,12 @@ export const deleteDailyCommentRequest = async (
 };
 
 // function: post used trade API 요청 함수 //
-export const postUsedTradeRequest = async (
-  dto: PostUsedTradeRequestDto,
-  imageList: File[],
-  accessToken: string
-): Promise<ResponseDto | null> => {
-  const formData = new FormData();
-  formData.append("dto", new Blob([JSON.stringify(dto)], { type: "application/json" }));
-  imageList.forEach((file) => formData.append("imageList", file));
-
-  try {
-    const response = await axios.post("/api/v1/usedtrade", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error("중고거래 글 작성 실패", error);
-    return null;
-  }
+export const postUsedTradeRequest = async (requestBody: PostUsedTradeRequestDto, accessToken: string) => {
+  const responseBody = await axios
+    .post(POST_USED_TRADE_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
 };
 
 // function: get used trade API 요청 함수 //

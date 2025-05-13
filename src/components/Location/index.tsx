@@ -20,7 +20,7 @@ const LocationModal = ({ isOpen, onClose, onSave }: LocationModalProps) => {
 
   return (
     isOpen && (
-      <div id="modal-overlay">
+      <div id="location-modal-overlay">
         <div className="modal-content">
           <h2>거래 위치 입력</h2>
           <div>

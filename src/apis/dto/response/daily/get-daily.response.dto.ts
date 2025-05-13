@@ -6,6 +6,7 @@ export default interface GetDailyResponseDto extends ResponseDto {
   dailySequence: number;
   title: string;
   content: string;
+  profileImage: string;
   creationDate: string;
   writerNickname: string;
   views: number;

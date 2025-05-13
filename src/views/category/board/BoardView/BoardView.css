@@ -291,7 +291,7 @@
 }
 
 /* 아이콘 영역 */
-.icon {
+#board-view-wrapper .icon {
   width: 18px;
   height: 18px;
   margin-right: 5px;

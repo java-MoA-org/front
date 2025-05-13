@@ -45,7 +45,7 @@ const Home = () => {
 
   // effect: 게시판, 일상, 중고거래 리스트 각각 최대 5개 불러오기 //
   useEffect(() => {
-    getBoardListRequest("ALL", 1, "", accessToken).then((res) => {
+    getBoardListRequest("ALL", 1, "").then((res) => {
       if (res && res.code === "SU" && "boardList" in res) {
         const typed = res as GetBoardListResponseDto;
         setBoardList(typed.boardList.slice(0, 5));

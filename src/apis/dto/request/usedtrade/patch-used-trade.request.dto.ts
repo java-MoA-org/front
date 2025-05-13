@@ -5,5 +5,5 @@ export default interface PatchUsedTradeRequestDto {
   price: number;
   location: string;
   detailLocation: string;
-  imageList: File[];
+  imageList: String[];
 }
