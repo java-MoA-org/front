@@ -20,4 +20,5 @@ export default interface GetUsedTradeResponseDto extends ResponseDto {
   images: string[];
   likeCount: number;
   hasChatRoom: boolean;
+  
 }
