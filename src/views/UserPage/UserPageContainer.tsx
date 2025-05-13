@@ -16,6 +16,7 @@ export default function UserPageContainer() {
   const [interests, setInterest] = useState<UserInterest>();
   const [userIntroduce, setUserIntroduce] = useState<string>("");
   const [userProfileImage, setUserProfileImage] = useState<string>("");
+  const [userPageId, setUserPageId] = useState<string>("");
 
   useEffect(() => {
     if (!nickname) return;
@@ -31,6 +32,7 @@ export default function UserPageContainer() {
         setInterest(response.interests);
         setUserIntroduce(response.userIntroduce);
         setUserProfileImage(response.userProfileImage);
+        setUserPageId(response.userPageId);
       }
     };
 
@@ -47,6 +49,7 @@ export default function UserPageContainer() {
       trades={trades}
       interests={interests}
       userIntroduce={userIntroduce}
+      userPageId={userPageId}
     />
   );
 }
