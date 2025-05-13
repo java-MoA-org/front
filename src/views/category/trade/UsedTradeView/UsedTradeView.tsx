@@ -63,10 +63,8 @@ export default function UsedTradeView() {
   // state: 좋아요 여부 //
   const [liked, setLiked] = useState<boolean>(false);
 
-  // variable: 좋아요 여부 //
-  const isLiked = liked;
   // variable: 좋아요 클래스 //
-  const likedClass = isLiked ? 'icon-likes-click' : 'icon-likes';
+  const likedClass = liked ? 'icon-likes-click' : 'icon-likes';
 
   // state: 이미지 목록 상태 //
   const [images, setImages] = useState<string[]>([]);
@@ -142,6 +140,7 @@ export default function UsedTradeView() {
       profileImage,
       transactionStatus,
       usedItemStatusTag,
+      liked
     } = responseBody as GetUsedTradeResponseDto;
 
     setTitle(title);
@@ -158,6 +157,7 @@ export default function UsedTradeView() {
     setPrice(price);
     setUsedItemStatusTag(usedItemStatusTag);
     setImages(images);
+    setLiked(liked);
   };
 
   // function: delete used trade response 처리 함수 //
@@ -305,7 +305,7 @@ export default function UsedTradeView() {
             <div className="object-content">{content}</div>
             <div className="click-box">
               <div className={likedClass} onClick={onLikeClickHandler}>
-                <img src={isLiked ? likeClickIcon : likeIcon} alt="Like" style={{ width: '25px', height: '25px' }} />
+                <img src={liked ? likeClickIcon : likeIcon} alt="Like" style={{ width: '25px', height: '25px' }} />
                 <span>{likeCount}</span>
               </div>
               <div className="icon-message">
