@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import userImage from "../../../../assets/images/ex-user1.png";
+import userImage from "../../../../assets/images/default-profile.png";
 import FollowButton from "../../../../components/FollowButton";
 import GetFollowResponseDto from "../../../../apis/dto/response/follow/get-follow.response.dto";
 import ResponseDto from "../../../../apis/dto/response/response.dto";
@@ -34,7 +34,6 @@ export default function UserPageFollowee({ setActiveTab }: Props) {
   };
 
   useEffect(() => {
-    console.log(accessToken, nickname);
     if (!accessToken || !nickname) return;
 
     getFollowInfoRequest(nickname, accessToken)

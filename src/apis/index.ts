@@ -162,7 +162,7 @@ const GET_USER_UPDATE_PAGE_URL = `${USER_PAGE_MODULE_URL}/revise`;
 const PATCH_USER_UPDATE_PAGE_URL = `${USER_PAGE_MODULE_URL}/revise`;
 const POST_USER_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/verify`;
 const PATCH_USER_PAGE_PASSWORD_VERIFY_URL = `${USER_PAGE_MODULE_URL}/password/change`;
-const FILE_UPLOAD_URL = `${USER_PAGE_MODULE_URL}/images/file/upload`;
+const FILE_UPLOAD_URL = `${API_DOMAIN}/api/v1/images/file/upload`;
 const multipartFormData = { headers: { "Content-Type": "multipart/form-data" } };
 
 const POST_FOLLOW_URL = (nickname: string) => `${API_DOMAIN}/api/v1/follow/${nickname}`;
@@ -383,45 +383,34 @@ export const postFollowRequest = async (nickname: string, accessToken: string) =
 export const passwordVerifyRequest = async (
   accessToken: string,
   body: PasswordVerifyRequestDto
-): Promise<ResponseDto | null> => {
-  try {
-    const response = await axios.post(POST_USER_PASSWORD_VERIFY_URL, body, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    return response.data;
-  } catch {
-    return null;
-  }
+) => {
+  const responseBody = await axios
+    .post(POST_USER_PASSWORD_VERIFY_URL, body, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
 };
 // function: 새 비밀번호 수정 API 요청 함수 //
 export const patchPasswordUserPageRequest = async (
   accessToken: string,
   body: PatchPasswordUserPageRequestDto
-): Promise<ResponseDto | null> => {
-  try {
-    const response = await axios.patch(PATCH_USER_PAGE_PASSWORD_VERIFY_URL, body, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    return response.data;
-  } catch {
-    return null;
-  }
+) => {
+  const responseBody = await axios
+    .patch(PATCH_USER_PAGE_PASSWORD_VERIFY_URL, body, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
 };
 // function: 유저 정보 수정 API 요청 함수 //
 export const patchUserInfoRequest = async (
   accessToken: string,
   requestBody: PatchUserInfoRequestDto
-): Promise<ResponseDto | null> => {
-  try {
-    const response = await axios.patch(PATCH_USER_UPDATE_PAGE_URL, requestBody, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-    return response.data;
-  } catch (error) {
-    return null;
-  }
+) => {
+  const responseBody = await axios
+    .patch(PATCH_USER_UPDATE_PAGE_URL, requestBody, bearerAuthorization(accessToken))
+    .then(responseSuccessHandler)
+    .catch(responseErrorHandler);
+  return responseBody;
 };
 
 // function: 파일 업로드 요청 함수 //
@@ -464,11 +453,7 @@ export const getBoardRequest = async (boardSequence: number | string, accessToke
 };
 
 // function: get board list API 요청 함수 //
-export const getBoardListRequest = async (
-  tag: string,
-  page: number,
-  sort: string = "LATEST",
-) => {
+export const getBoardListRequest = async (tag: string, page: number, sort: string = "LATEST") => {
   const responseBody = await axios
     .get(GET_BOARD_LIST_URL(tag, page, sort))
     .then(responseSuccessHandler<GetBoardListResponseDto>)
@@ -676,7 +661,10 @@ export const deleteDailyCommentRequest = async (
 };
 
 // function: post used trade API 요청 함수 //
-export const postUsedTradeRequest = async (requestBody: PostUsedTradeRequestDto, accessToken: string) => {
+export const postUsedTradeRequest = async (
+  requestBody: PostUsedTradeRequestDto,
+  accessToken: string
+) => {
   const responseBody = await axios
     .post(POST_USED_TRADE_URL, requestBody, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -909,7 +897,7 @@ export const getUserNicknameByIdRequest = async (userId: string, accessToken: st
       Authorization: `Bearer ${accessToken}`
     }
   });
-  return response.data; // string
+  return response.data;
 };
 
 // function: userId 기반 새 메시지 알림 조회 API 요청 함수 //
@@ -918,7 +906,6 @@ export const getNewAlertCountByUserIdRequest = async (accessToken: string) => {
     .get(GET_NEW_ALERT_BY_USER_ID_URL, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
     .catch(responseErrorHandler);
-  console.log("response", response);
   return response;
 };
 

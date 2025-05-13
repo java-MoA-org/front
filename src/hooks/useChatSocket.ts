@@ -8,7 +8,7 @@ interface Message {
   receiverId: string;
   content: string;
   imageUrl?: string;
-  type: 'TEXT' | 'IMAGE' | 'DELETE';
+  type: 'TEXT' | 'IMAGE' | 'DELETE' | 'READ';
   timestamp: string;
 }
 
@@ -24,6 +24,7 @@ const useChatSocket = (userId: string, onMessageReceived: (message: Message) => 
       return;
     }
 
+    console.log('[useChatSocket] WebSocket 클라이언트 생성됨');
     const client = new Client({
       brokerURL: undefined,
       connectHeaders: {
@@ -39,6 +40,11 @@ const useChatSocket = (userId: string, onMessageReceived: (message: Message) => 
         client.subscribe(`/topic/messages/${userId}`, (message) => {
           const received = JSON.parse(message.body);
           console.log('[📩 메시지 수신]', received);
+
+          if (received.type === 'READ') {
+            console.log('[👁️ READ 수신 - isRead 업데이트 시도]', received);
+          }
+
           onMessageReceived(received);
         });
       },
@@ -51,6 +57,7 @@ const useChatSocket = (userId: string, onMessageReceived: (message: Message) => 
     });
 
     client.activate();
+    console.log('[useChatSocket] WebSocket 클라이언트 activate 호출됨');
     clientRef.current = client;
 
     return () => {

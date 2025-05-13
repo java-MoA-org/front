@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import userImage from "../../../../assets/images/ex-user1.png";
+import userImage from "../../../../assets/images/default-profile.png";
 import FollowButton from "../../../../components/FollowButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -34,7 +34,6 @@ export default function UserPageFollower({ setActiveTab }: Props) {
   };
 
   useEffect(() => {
-    console.log(accessToken, nickname);
     if (!accessToken || !nickname) return;
 
     getFollowInfoRequest(nickname, accessToken)
