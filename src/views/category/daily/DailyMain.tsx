@@ -12,7 +12,6 @@ import Pagination from "../../../components/pagination";
 import likeIcon from '../../../assets/images/likeClick.png';
 import commentIcon from '../../../assets/images/comment.png';
 import viewsIcon from '../../../assets/images/views.png';
-import imageIcon from '../../../assets/images/image.png';
 
 // interface: 일상 게시판 테이블 레코드 컴포넌트 속성 //
 interface TableItemProps {
