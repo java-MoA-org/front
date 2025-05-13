@@ -84,12 +84,12 @@ export default function UsedTradeUpdate() {
       return;
     }
 
-    const { title, content, location, detailLocation, imageUrls, itemTypeTag, usedItemStatusTag, price } = responseBody as GetUsedTradeResponseDto;
+    const { title, content, location, detailLocation, images, itemTypeTag, usedItemStatusTag, price } = responseBody as GetUsedTradeResponseDto;
     setTitle(title);  
     setContent(content);
     setLocation(location);
     setDetailLocation(detailLocation);
-    setImageList(imageUrls);
+    setImageList(images);
     setIsLoaded(true);
     setItemTypeTag(itemTypeTag);
     setPrice(Number(price));
