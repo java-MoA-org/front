@@ -164,8 +164,6 @@ export default function UserPageUpdate() {
   };
 
   const onCheckUserEmailVCClickHandler = async () => {
-    console.log("newUserEmail", newUserEmail);
-    console.log("emailVerificationCode", userEmailVC);
     if (newUserEmail === "" || userEmailVC === "") {
       return;
     }

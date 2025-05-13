@@ -15,6 +15,7 @@ interface MessageRoomSummary {
   lastMessage: string;
   timestamp: string;
   unread: boolean;
+  messageType: 'TEXT' | 'IMAGE' | 'READ' | 'DELETE';
 }
 
 const MessageList = () => {
@@ -42,9 +43,10 @@ const MessageList = () => {
         partnerId,
         nickname,
         profileImage,
-        lastMessage: message.content,
+        lastMessage: message.type?.toUpperCase() === 'IMAGE' ? '(사진)' : message.content,
         timestamp: message.timestamp,
         unread: isIncoming,
+        messageType: message.type,
       };
 
       if (index !== -1) {
@@ -83,6 +85,11 @@ const MessageList = () => {
 
         // 최신 (내림차순) 메시지 기준으로 정렬
         fetchedRooms.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+        fetchedRooms = fetchedRooms.map((room) => ({
+          ...room,
+          lastMessage: room.messageType?.toUpperCase() === 'IMAGE' ? '(사진)' : room.lastMessage,
+        }));
 
         setRooms(fetchedRooms);
       })
