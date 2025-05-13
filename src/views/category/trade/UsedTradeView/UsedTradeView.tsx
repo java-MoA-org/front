@@ -73,7 +73,7 @@ export default function UsedTradeView() {
   
     if (!tradeSequence || !accessToken) return;
   
-    patchTransactionStatusRequest(tradeSequence, accessToken + `&status=${updatedStatus}`)
+    patchTransactionStatusRequest(tradeSequence, accessToken)
       .then((response) => {
         if (!response || response.code !== 'SU') {
           alert('거래 상태 변경에 실패했습니다.');
