@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import useChatSocket from '../../hooks/useChatSocket';
 import axios from 'axios';
-import { getUserInfoByIdRequest, getUserProfileImageByIdRequest, getUserNicknameByIdRequest } from '../../apis';
+import { getUserProfileImageByIdRequest, getUserNicknameByIdRequest } from '../../apis';
 
 // interface: 메시지 데이터 타입 정의
 interface Message {
@@ -16,6 +16,7 @@ interface Message {
   type: 'TEXT' | 'IMAGE' | 'DELETE' | 'READ';
   timestamp: string;
   isRead?: boolean;
+  isDeleted?: boolean;
 }
 
 const MessageRoom = () => {
@@ -38,54 +39,48 @@ const MessageRoom = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   // state: 채팅박스 DOM 참조 (스크롤 제어용)
   const chatBoxRef = useRef<HTMLDivElement>(null);
+  // state: 이미지 업로드 파일
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  // 이미지 input ref
+  const imageInputRef = useRef<HTMLInputElement>(null);
+
+  // New state for image preview modal
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  // 이미지 업로드 버튼 클릭 시 input 트리거
+  const handleImageButtonClick = () => {
+    imageInputRef.current?.click();
+  };
+
+  // 이미지 파일 선택 시 처리
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
 
   // function: 메시지 옵션(삭제 등) 토글 함수
   const toggleOptions = (index: number) => {
     setActiveIndex((prev) => (prev === index ? null : index));
   };
 
-  // function: 메시지 삭제 처리 함수
-  const handleDelete = async (index: number) => {
-    const deletedMessage = messages[index];
-    if (!deletedMessage) return;
-
-    // 1. 로컬에서 삭제
-    setMessages((prev) => prev.filter((_, i) => i !== index));
-    setActiveIndex(null); // 옵션 닫기
-
-    try {
-      await axios.post(
-        '/api/message/hide',
-        {
-          messageNumber: index,
-        },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-    } catch (err) {
-      console.error('메시지 숨기기 실패:', err);
-    }
-
-    // 2. WebSocket으로 삭제 메시지 전송
-    // const deleteNotice: Message = {
-    //   senderId: userId!,
-    //   receiverId: partnerId!,
-    //   content: deletedMessage.timestamp, // 삭제 대상 메시지의 timestamp를 기준으로 삭제
-    //   imageUrl: '',
-    //   type: 'DELETE', // DELETE 타입으로 전송
-    //   timestamp: new Date().toISOString(),
-    // };
-
-    // sendMessage(deleteNotice);
-  };
-
   // 메시지 수신 처리 함수 (useCallback으로 메모이제이션)
   const onMessageReceived = useCallback((msg: Message) => {
     if (msg.type === 'DELETE') {
-      setMessages((prev) => prev.filter((m) => m.timestamp !== msg.content));
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.timestamp === msg.content
+            ? {
+                ...m,
+                type: 'TEXT',
+                content: '상대가 메시지를 삭제했습니다.',
+                isDeleted: true,
+              }
+            : m
+        )
+      );
     } else if (msg.type === 'READ') {
-      console.log('[👁️ READ 수신 - isRead 업데이트 시도]', msg);
       setMessages((prev) =>
         prev.map((m) =>
           m.senderId === partnerId && !m.isRead
@@ -106,16 +101,6 @@ const MessageRoom = () => {
     if (!userId || !partnerId || !accessToken) return;
 
     // 과거 메시지 API 호출
-<<<<<<< HEAD
-    axios.get(`/api/message/${userId}/${partnerId}`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    }).then((res) => {
-      setMessages(res.data); // 메시지 상태 세팅
-      setHasUnreadSent(false); // 추가: 메시지 초기화 시 읽음신호 재전송 가능하게
-    }).catch((err) => {
-      console.error('메시지 불러오기 실패:', err);
-    });
-=======
     axios
       .get(`/api/message/${userId}/${partnerId}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -126,7 +111,6 @@ const MessageRoom = () => {
       .catch((err) => {
         console.error('메시지 불러오기 실패:', err);
       });
->>>>>>> 012e39c4c24b47ce9a77eb4b6c04876dc3cb7124
 
     // 상대방 프로필 이미지 요청
     getUserProfileImageByIdRequest(partnerId!, accessToken)
@@ -163,74 +147,50 @@ const MessageRoom = () => {
     console.log('[📡 메시지룸 접속]', userId, partnerId);
   }, []);
 
-  // effect: 메시지 목록 변경 시 자동 스크롤 처리 및 읽음 처리 API 호출
+  // effect: 메시지 목록 변경 시 자동 스크롤 처리 API 호출
   useEffect(() => {
     if (chatBoxRef.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
-    // 메시지 읽음 처리 API 호출
-    if (userId && partnerId && accessToken) {
-<<<<<<< HEAD
-      axios.post('/api/message/read', {
-        userId,
-        partnerId
-      }, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).catch((err) => {
-        console.error('읽음 처리 실패:', err);
-      });
-
-      // 안 읽은 메시지가 있는 경우만 READ 메시지 전송 (중복 방지)
-      const hasUnread = messages.some((msg) =>
-        msg.receiverId === userId && !msg.isRead
-      );
-
-      if (hasUnread && !hasUnreadSent) {
-        sendMessage({
-          senderId: userId!,
-          receiverId: partnerId!,
-          content: '',
-          imageUrl: '',
-          type: 'READ',
-          timestamp: new Date().toISOString()
-        });
-        setHasUnreadSent(true);
-      }
-=======
-      axios
-        .post(
-          '/api/message/read',
-          {
-            userId,
-            partnerId,
-          },
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          }
-        )
-        .catch((err) => {
-          console.error('읽음 처리 실패:', err);
-        });
->>>>>>> 012e39c4c24b47ce9a77eb4b6c04876dc3cb7124
-    }
   }, [messages]);
 
-  // function: 메시지 전송 처리 함수
-  const handleSend = () => {
-    if (!input.trim()) return; // 빈 메시지 전송 방지
+  // function: 메시지 전송 처리 함수 (이미지 업로드 포함)
+  const handleSend = async () => {
+    if (!input.trim() && !imageFile) return; // 텍스트도 이미지도 없으면 전송 안 함
+
+    let imageUrl = '';
+
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append('file', imageFile);
+
+      try {
+        const res = await axios.post('/api/upload-image', formData, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        imageUrl = res.data.data; // 백엔드 ResponseDto 기준
+      } catch (err) {
+        console.error('이미지 업로드 실패:', err);
+        return;
+      }
+    }
 
     const newMsg: Message = {
       senderId: userId!,
       receiverId: partnerId!,
       content: input,
-      imageUrl: '',
-      type: 'TEXT',
+      imageUrl,
+      type: imageFile ? 'IMAGE' : 'TEXT',
       timestamp: new Date().toISOString(),
     };
 
     setMessages((prev) => [...prev, newMsg]); // 클라이언트에서 즉시 메시지 추가
     sendMessage(newMsg); // WebSocket으로 서버 전송
     setInput(''); // 입력창 초기화
+    setImageFile(null); // 이미지 초기화
   };
 
   // function: 입력창에서 Enter 키 입력 시 메시지 전송
@@ -259,22 +219,19 @@ const MessageRoom = () => {
               {!isMine && <img className="profile-icon" src={partnerProfileImage} alt="상대 프로필" />}
               <div className={isMine ? 'my-message' : 'their-message'}>
                 {msg.type === 'TEXT' && <p>{msg.content}</p>}
-                {msg.type === 'IMAGE' && <img src={msg.imageUrl} alt="image" />}
+                {msg.type === 'IMAGE' && msg.imageUrl && (
+                  <>
+                    <img
+                      src={msg.imageUrl}
+                      alt="image"
+                      className="message-image"
+                      onClick={() => setPreviewImage(msg.imageUrl!)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </>
+                )}
                 <div className="message-timestamp">
                   {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  {isMine && msg.isRead && (
-                    <span className="read-icon">[읽음]</span>
-                  )}
-                </div>
-                <div className="message-options">
-                  <span className="dots" onClick={() => toggleOptions(i)}>
-                    ⋯
-                  </span>
-                  {activeIndex === i && (
-                    <div className="dropdown-menu message-delete-menu">
-                      <button onClick={() => handleDelete(i)}>삭제</button>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -284,6 +241,14 @@ const MessageRoom = () => {
 
       {/* 메시지 입력창 및 전송 버튼 */}
       <div className="input-area">
+        <button className="image-upload-button" onClick={handleImageButtonClick}>＋</button>
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          style={{ display: 'none' }}
+        />
         <input
           type="text"
           value={input}
@@ -293,6 +258,13 @@ const MessageRoom = () => {
         />
         <button onClick={handleSend}>전송</button>
       </div>
+
+      {previewImage && (
+        <div className="image-modal" onClick={() => setPreviewImage(null)}>
+          <div className="image-modal-backdrop" />
+          <img src={previewImage} alt="preview" className="image-modal-content" />
+        </div>
+      )}
     </div>
   );
 };
