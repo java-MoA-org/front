@@ -34,7 +34,6 @@ export default function UserPageFollowee({ setActiveTab }: Props) {
   };
 
   useEffect(() => {
-    console.log(accessToken, nickname);
     if (!accessToken || !nickname) return;
 
     getFollowInfoRequest(nickname, accessToken)

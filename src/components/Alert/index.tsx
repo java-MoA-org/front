@@ -1,8 +1,13 @@
-import React, { RefObject, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { patchReadAlertRequest, deleteAlertRequest, patchReadAllAlertRequest, deleteAlertAllRequest } from '../../apis';
-import './style.css';
-import useNotificationStore from '../../stores/alert-read.store';
+import React, { RefObject, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  patchReadAlertRequest,
+  deleteAlertRequest,
+  patchReadAllAlertRequest,
+  deleteAlertAllRequest
+} from "../../apis";
+import "./style.css";
+import useNotificationStore from "../../stores/alert-read.store";
 
 const ALERTS_PER_PAGE = 3;
 
@@ -12,12 +17,12 @@ interface AlertDropdownProps {
 }
 
 export default function AlertDropdown({ accessToken, dropdownRef }: AlertDropdownProps) {
-  const { alerts, markAsRead, removeAlert, markAllAsRead, removeAllAlerts } = useNotificationStore();
+  const { alerts, markAsRead, removeAlert, markAllAsRead, removeAllAlerts } =
+    useNotificationStore();
   const [visibleAlerts, setVisibleAlerts] = useState(ALERTS_PER_PAGE);
   const navigate = useNavigate();
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    console.log('scroll');
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     if (scrollTop + clientHeight >= scrollHeight - 10) {
       setVisibleAlerts((prev) => Math.min(prev + ALERTS_PER_PAGE, alerts.length));
@@ -32,7 +37,7 @@ export default function AlertDropdown({ accessToken, dropdownRef }: AlertDropdow
   };
 
   const handleClick = (link: string) => {
-    navigate(link.startsWith('/') ? link : `/${link}`);
+    navigate(link.startsWith("/") ? link : `/${link}`);
   };
 
   const handleDelete = async (id: number) => {
@@ -56,7 +61,7 @@ export default function AlertDropdown({ accessToken, dropdownRef }: AlertDropdow
         {alerts.slice(0, visibleAlerts).map(({ id, type, content, creationDate, link, read }) => (
           <div
             key={id}
-            className={`alert-item ${read ? 'read' : 'unread'}`}
+            className={`alert-item ${read ? "read" : "unread"}`}
             onMouseEnter={() => handleMouseEnter(id, read)}
           >
             <div className="alert-main" onClick={() => handleClick(link)}>

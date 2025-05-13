@@ -453,11 +453,7 @@ export const getBoardRequest = async (boardSequence: number | string, accessToke
 };
 
 // function: get board list API 요청 함수 //
-export const getBoardListRequest = async (
-  tag: string,
-  page: number,
-  sort: string = "LATEST",
-) => {
+export const getBoardListRequest = async (tag: string, page: number, sort: string = "LATEST") => {
   const responseBody = await axios
     .get(GET_BOARD_LIST_URL(tag, page, sort))
     .then(responseSuccessHandler<GetBoardListResponseDto>)
@@ -665,7 +661,10 @@ export const deleteDailyCommentRequest = async (
 };
 
 // function: post used trade API 요청 함수 //
-export const postUsedTradeRequest = async (requestBody: PostUsedTradeRequestDto, accessToken: string) => {
+export const postUsedTradeRequest = async (
+  requestBody: PostUsedTradeRequestDto,
+  accessToken: string
+) => {
   const responseBody = await axios
     .post(POST_USED_TRADE_URL, requestBody, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
@@ -907,7 +906,6 @@ export const getNewAlertCountByUserIdRequest = async (accessToken: string) => {
     .get(GET_NEW_ALERT_BY_USER_ID_URL, bearerAuthorization(accessToken))
     .then(responseSuccessHandler)
     .catch(responseErrorHandler);
-  console.log("response", response);
   return response;
 };
 
