@@ -898,7 +898,7 @@ export const getUserNicknameByIdRequest = async (userId: string, accessToken: st
       Authorization: `Bearer ${accessToken}`
     }
   });
-  return response.data; // string
+  return response.data;
 };
 
 // function: userId 기반 새 메시지 알림 조회 API 요청 함수 //
