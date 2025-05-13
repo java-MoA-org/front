@@ -9,6 +9,10 @@ import { GetDailyListResponseDto } from "../../../apis/dto/response/daily";
 import ResponseDto from "../../../apis/dto/response/response.dto";
 import { getDailyListRequest, searchDailyRequest } from "../../../apis";
 import Pagination from "../../../components/pagination";
+import likeIcon from '../../../assets/images/likeClick.png';
+import commentIcon from '../../../assets/images/comment.png';
+import viewsIcon from '../../../assets/images/views.png';
+import imageIcon from '../../../assets/images/image.png';
 
 // interface: 일상 게시판 테이블 레코드 컴포넌트 속성 //
 interface TableItemProps {
@@ -33,6 +37,8 @@ function TableItem({ daily }: TableItemProps) {
     return tempDiv.textContent || tempDiv.innerText || "";
   }
 
+  const thumbnailUrl = images[0];
+
   // event handler: 레코드 클릭 이벤트 처리 //
   const onClick = () => {
     navigator(DAILY_VIEW_ABSOLUTE_PATH(dailySequence));
@@ -41,10 +47,13 @@ function TableItem({ daily }: TableItemProps) {
   // render: 일상 게시판 테이블 레코드 컴포넌트 렌더링 //
   return (
     <div className="daily-item" onClick={onClick}>
+      <img src={thumbnailUrl} alt="thumbnail" className="daily-thumbnail" />
       <div className="daily-header">
         <div className="daily-title">{title}</div>
         <div className="daily-stats">
-          <span className="view-count">{views}</span>
+          <span className="view-count">
+            <img src={viewsIcon} alt="Views" className="icon" /> {views}
+          </span>
         </div>
       </div>
       <div className="daily-content">
@@ -57,8 +66,12 @@ function TableItem({ daily }: TableItemProps) {
           <span className="creation-date">{elapsedTime}</span>
         </div>
         <div className="footer-right">
-          <span className="like-count">{likeCount}</span>
-          <span className="comment-count">{commentCount}</span>
+          <span className="like-count">
+            <img src={likeIcon} alt="Like" className="icon" /> {likeCount}
+          </span>
+          <span className="comment-count">
+            <img src={commentIcon} alt="Comment" className="icon" /> {commentCount}
+          </span>
         </div>
       </div>
     </div>

@@ -188,6 +188,13 @@
   color: #888;
 }
 
+#board-main-wrapper .icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
 #board-main-wrapper .footer-right .like-count,
 #board-main-wrapper .footer-right .comment-count {
   font-weight: bold;

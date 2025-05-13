@@ -13,7 +13,7 @@ const TransactionStatusModal: React.FC<Props> = ({ isOpen, onClose, onSelect, se
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="transaction-modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h3>거래 상태</h3>
         <button

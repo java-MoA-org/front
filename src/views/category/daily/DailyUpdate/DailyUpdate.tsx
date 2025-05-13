@@ -119,7 +119,7 @@ export default function DailyUpdate() {
 
   // effect: 로그인 유저 닉네임과 작성자 닉네임이 변경될시 실행할 함수 //
   useEffect(() => {
-    if (writerNickname !== userNickname) {
+    if (writerNickname && writerNickname !== userNickname) {
       alert('권한이 없습니다.');
       navigator(DAILY_ABSOLUTE_PATH);
     }

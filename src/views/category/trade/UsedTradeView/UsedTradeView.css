@@ -204,6 +204,12 @@
     cursor: pointer;
   }
 
+  #trade-view-wrapper .writer-name {
+    cursor: pointer;
+  }
+
+
+
   #trade-view-wrapper .location-box {
     display: flex;
     flex-direction: column;
@@ -227,8 +233,8 @@
   }
 
   #trade-view-wrapper .icon {
-    width: 30px;
-    height: 30px;
+    width: 18px;
+    height: 18px;
     margin-right: 5px;
     vertical-align: middle;
   }
