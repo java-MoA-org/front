@@ -127,7 +127,7 @@ export default function UsedTradeView() {
       title, content,
       creationDate, views,
       itemTypeTag, likeCount,
-      writerNickname, imageUrls,
+      writerNickname, images,
       price, location,
       detailLocation, profileImage,
       transactionStatus, usedItemStatusTag,
@@ -146,6 +146,7 @@ export default function UsedTradeView() {
     setDetailLocation(detailLocation);
     setPrice(price);
     setUsedItemStatusTag(usedItemStatusTag);
+    setImages(images);
   };
 
   // function: delete used trade response 처리 함수 //
@@ -265,7 +266,7 @@ export default function UsedTradeView() {
         )}
         <div className="object-container">
           <div className="object-images">
-            <img src={profileImage} alt="프로필 이미지" className="trade-object-images" />
+            <img src={images[0]} alt="상품 이미지" className="trade-object-images" />
           </div>
           <div className="object-details">
             <div className="object-status-container">

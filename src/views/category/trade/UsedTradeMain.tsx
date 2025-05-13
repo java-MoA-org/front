@@ -27,7 +27,7 @@ interface TableItemProps {
 function TableItem({ trade }: TableItemProps) {
 
   // destructuring: 중고거래글 정보 추출 //
-  const { price, title, tradeSequence, creationDate, views, likeCount, userNickname, thumbnailImage, profileImage, usedItemStatusTag, location, transactionStatus } = trade;
+  const { price, title, tradeSequence, creationDate, views, likeCount, userNickname, images, profileImage, usedItemStatusTag, location, transactionStatus } = trade;
 
   console.log("transactionStatus: ", transactionStatus);
 
@@ -57,11 +57,13 @@ function TableItem({ trade }: TableItemProps) {
     return tempDiv.textContent || tempDiv.innerText || '';
   }
 
+  const thumbnailUrl = images[0];
+
   // event handler: 레코드 클릭 이벤트 처리 //
   const onClick = () => {
     navigator(USED_TRADE_VIEW_ABSOLUTE_PATH(tradeSequence));
   };
-
+  
   // render: 중고거래글 테이블 레코드 컴포넌트 렌더링 //
   return (
     <div className="trade-item" onClick={onClick}>
@@ -79,7 +81,7 @@ function TableItem({ trade }: TableItemProps) {
         {transactionStatus === 'RESERVED' && (
           <div className="sold-out-tag">예약중</div>
         )}
-        <img src={thumbnailImage} alt="썸네일 이미지" className="thumbnail-img" />
+        <img src={thumbnailUrl} alt="thumbnail" className="trade-thumbnail" />
       </div>
       <div className="profile-list">
         <img src={profileImage} alt="프로필 이미지" className="trade-profile-image" />
@@ -236,7 +238,6 @@ export default function UsedTradeMain() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => { document.removeEventListener('mousedown', handleClickOutside); };
   }, []);
-  
 
   // effect: 컴포넌트 로드시 게시글 목록 요청 //
   useEffect(() => {

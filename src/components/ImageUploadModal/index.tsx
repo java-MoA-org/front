@@ -45,14 +45,22 @@ const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ isOpen, onClose, on
 
   const handleImageDelete = (index: number) => {
     const newImageList = [...imageList];
-    newImageList[index] = null;
+  
+    for (let i = index; i < newImageList.length - 1; i++) {
+      newImageList[i] = newImageList[i + 1];
+    }
+  
+    newImageList[newImageList.length - 1] = null;
+  
     setImageList(newImageList);
   };
 
   const findEmptySlot = () => imageList.findIndex(img => img === null);
 
   const handleSave = () => {
-    const validImages = imageList.filter((img) => img !== null) as string[];
+    const validImages = imageList
+      .filter((img) => img !== null)
+      .flat() as string[]; 
     onSave(validImages);
     onClose();
   };
