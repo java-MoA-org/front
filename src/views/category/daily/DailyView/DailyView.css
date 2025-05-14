@@ -108,6 +108,7 @@
   height: 36px;
   background-size: 100%;
   border-radius: 50%;
+  border: 1px solid #ccc;
   cursor: pointer;
 }
 
@@ -191,6 +192,14 @@
   height: 30px;
 }
 
+#daily-view-wrapper .like-user-list {
+  width: fit-content;
+  cursor: pointer;
+  padding-bottom: 20px;
+  padding-left: 15px;
+  font-weight: bold;
+}
+
 /* 댓글 입력창 영역 */
 #daily-view-wrapper .comment-write {
   border-top: 1px solid #bbbfca;
@@ -262,6 +271,7 @@
   background-size: 100%;
   border-radius: 50%;
   cursor: pointer;
+  border: 1px solid #ccc;
 }
 
 #daily-view-wrapper .user-name {
