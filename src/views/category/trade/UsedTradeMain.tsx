@@ -29,8 +29,6 @@ function TableItem({ trade }: TableItemProps) {
   // destructuring: 중고거래글 정보 추출 //
   const { price, title, tradeSequence, creationDate, views, likeCount, userNickname, images, profileImage, usedItemStatusTag, location, transactionStatus } = trade;
 
-  console.log("transactionStatus: ", transactionStatus);
-
   // hook: 작성 시간 계산 //
   const elapsedTime = useElapsedTime(creationDate);
 

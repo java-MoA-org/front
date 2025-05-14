@@ -1,8 +1,8 @@
 import "./NoticeWrite.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import { useCookies } from "react-cookie";
+import TextEditor from "../../../../components/TextEditor";
 
 import { NOTICE_ABSOLUTE_PATH } from "../../../../constants";
 import { postNoticeRequest } from "../../../../apis";
@@ -15,15 +15,8 @@ const NoticeWrite = () => {
   const [content, setContent] = useState("");
 
   const navigate = useNavigate();
+  const [cookies] = useCookies(["accessToken"]);
 
-  // effect: 관리자 권한 확인 //
-  useEffect(() => {
-    const role = localStorage.getItem("userRole");
-    if (role !== "ADMIN") {
-      alert("관리자만 접근 가능합니다.");
-      navigate(NOTICE_ABSOLUTE_PATH);
-    }
-  }, []);
 
   // event handler: 공지 등록 요청 처리 //
   const handleSubmit = async () => {
@@ -32,7 +25,8 @@ const NoticeWrite = () => {
       return;
     }
 
-    const accessToken = localStorage.getItem("accessToken");
+    // const accessToken = localStorage.getItem("accessToken");
+    const accessToken = cookies.accessToken;
     if (!accessToken) {
       alert("로그인이 필요합니다.");
       return;
@@ -62,12 +56,7 @@ const NoticeWrite = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <ReactQuill
-          className="notice-write-editor"
-          value={content}
-          onChange={setContent}
-          placeholder="공지 내용을 입력해주세요"
-        />
+        <TextEditor content={content} setContent={setContent} type="notice" />
         <div className="notice-write-button-wrapper">
           <button className="notice-write-button" onClick={handleSubmit}>
             등록

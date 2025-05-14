@@ -1,6 +1,7 @@
 import "./NoticeView.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import {
   NOTICE_ABSOLUTE_PATH,
   NOTICE_UPDATE_ABSOLUTE_PATH,
@@ -16,7 +17,8 @@ const NoticeView = () => {
   // state: 공지사항 데이터 및 관리자 권한
   const [notice, setNotice] = useState<NoticeDetail | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-
+  // state: 쿠키 //
+  const [cookies] = useCookies(["accessToken"]);
   // effect: 관리자 권한 확인 //
   useEffect(() => {
     const role = localStorage.getItem("userRole");
@@ -42,26 +44,25 @@ const NoticeView = () => {
       });
   }, [noticeId]);
 
-  // event handler: 공지사항 삭제 처리 //
-  const handleDelete = async () => {
-    const confirmDelete = window.confirm("정말 삭제하시겠습니까?");
-    if (!confirmDelete || !noticeId) return;
+// event handler: 삭제 요청 //
+const handleDelete = async () => {
+  if (!noticeId) return;
 
-    const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
+  const accessToken = cookies.accessToken;
+  if (!accessToken) {
+    alert("로그인이 필요합니다.");
+    return;
+  }
 
-    try {
-      await deleteNoticeRequest(noticeId, accessToken);
-      alert("삭제 완료");
-      navigate(NOTICE_ABSOLUTE_PATH);
-    } catch (err) {
-      console.error("삭제 실패:", err);
-      alert("삭제 중 문제가 발생했습니다.");
-    }
-  };
+  try {
+    await deleteNoticeRequest(parseInt(noticeId, 10), accessToken);
+    alert("공지사항이 삭제되었습니다.");
+    navigate(NOTICE_ABSOLUTE_PATH);
+  } catch (error) {
+    console.error("공지사항 삭제 실패:", error);
+    alert("삭제에 실패했습니다.");
+  }
+};
 
   // render: 로딩 중 화면 //
   if (!notice) 
