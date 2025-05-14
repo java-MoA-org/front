@@ -26,14 +26,21 @@ export default function DailyUpdate() {
   const [writerNickname, setWriterNickname] = useState<string>('');
   const [writeDate, setWriteDate] = useState<string>('');
   const [title, setTitle] = useState<string>('');
+  const [imageList, setImageList] = useState<string[]>([]);
   const [content, setContent] = useState<string>('');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   // variable: acess token //
   const accessToken = cookies[ACCESS_TOKEN];
 
+  const getTextOnlyLength = (html: string) => {
+    const tempEl = document.createElement("div");
+    tempEl.innerHTML = html;
+    return tempEl.textContent?.length || 0;
+  };
+
   // variable: 게시글 수정 가능 여부 //
-  const isActive = title !== '' && content !== "";
+  const isActive = title !== "" && getTextOnlyLength(content) > 0 && imageList.length > 0;
   // variable: 게시글 수정 버튼 클래스 //
   const updateButtonClass = isActive ? 'button middle primary' : 'button middle disable';
 
@@ -101,6 +108,17 @@ export default function DailyUpdate() {
     setContent(value);
   };
 
+  // 이미지 업로드 이후 content에 삽입
+  const onImageUpload = (imageUrl: string) => {
+    const imageTag = `<img src="${imageUrl}" alt="업로드 이미지" />`;
+    setContent(prev => prev + imageTag);
+  };
+
+  // event handler: 이미지 목록 변경 이벤트 처리 //
+  const onImageListChangeHandler = (imageList: string[]) => {
+    setImageList(imageList);
+  };
+
   // event handler: 게시글 수정 버튼 클릭 이벤트 처리 //
   const onUpdateButtonClickHandler = () => {
     if (!isActive || !accessToken || !dailySequence) return;
@@ -138,7 +156,13 @@ export default function DailyUpdate() {
           <div className='input-column-box'>
             <div className='title'>내용 ({content.length}/2000)</div>
             {isLoaded &&
-            <TextEditor content={content}setContent={onContentChangeHandler} />
+            <TextEditor
+              content={content}
+              setContent={onContentChangeHandler}
+              onImageListChange={onImageListChangeHandler}
+              onImageUpload={onImageUpload}
+              type="daily"
+            />
             }
           </div>
           <div className="button-box">

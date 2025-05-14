@@ -8,7 +8,7 @@ import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import axios from 'axios';
 
-import "./style.css";
+import './style.css';
 import { UPLOAD_IMAGES_URL } from '../../apis';
 
 // interface: Text Editor Menu Bar 컴포넌트 속성 //
@@ -66,18 +66,32 @@ interface Props {
 }
 
 // component: tiptap Text Editor 컴포넌트 //
-export default function TextEditor({ content, setContent, onImageListChange, onImageUpload, type }: Props) {
+export default function TextEditor({
+  content,
+  setContent,
+  onImageListChange,
+  onImageUpload,
+  type,
+}: Props) {
   const [isUploading, setIsUploading] = useState(false);
   const [imageList, setImageList] = useState<Set<string>>(new Set());
-
-  // editor 상태 변수
   const [initialized, setInitialized] = useState(false);
 
   const editor = useEditor({
     extensions,
     content,
     onUpdate: ({ editor }) => {
-      setContent(editor.getHTML());
+      const html = editor.getHTML();
+      setContent(html);
+
+      // 이미지 URL 추출 및 imageList 갱신
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      const currentImages = Array.from(div.getElementsByTagName('img')).map((img) => img.src);
+
+      const updatedSet = new Set(currentImages);
+      setImageList(updatedSet);
+      onImageListChange?.(Array.from(updatedSet));
     },
   });
 
@@ -92,8 +106,10 @@ export default function TextEditor({ content, setContent, onImageListChange, onI
     const files = event.target.files;
     if (!files || files.length === 0) return;
   
-    const validFiles = Array.from(files).filter((file) =>
-      ['image/jpeg', 'image/png'].includes(file.type) && file.size <= 5 * 1024 * 1024
+    const validFiles = Array.from(files).filter(
+      (file) =>
+        ['image/jpeg', 'image/png'].includes(file.type) &&
+        file.size <= 5 * 1024 * 1024
     );
   
     if (validFiles.length === 0) {
@@ -103,7 +119,7 @@ export default function TextEditor({ content, setContent, onImageListChange, onI
   
     setIsUploading(true);
   
-    const uploadedUrls: string[] = [];
+    const newImages: string[] = [];
   
     for (const file of validFiles) {
       const formData = new FormData();
@@ -116,35 +132,36 @@ export default function TextEditor({ content, setContent, onImageListChange, onI
         });
   
         const imageUrl = response.data.data;
-        if (Array.isArray(imageUrl)) {
-          uploadedUrls.push(...imageUrl);
-        } else {
-          uploadedUrls.push(imageUrl);
+        const urls = Array.isArray(imageUrl) ? imageUrl : [imageUrl];
+  
+        for (const url of urls) {
+          if (!imageList.has(url)) {
+            editor?.chain().focus().setImage({ src: url }).run(); // 실제로 에디터에 넣기
+            newImages.push(url); // 신규 이미지만 모으기
+          }
         }
-  
-        setImageList((prevList) => {
-          const updatedList = new Set(prevList);
-          uploadedUrls.forEach((url) => updatedList.add(url));
-          onImageListChange?.([...updatedList]);
-          return updatedList;
-        });
-  
-        editor?.chain().focus().setImage({ src: imageUrl }).run();
-        onImageUpload?.(imageUrl);
       } catch (error) {
         console.error('이미지 업로드 실패:', error);
         alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
       }
     }
   
+    setImageList((prev) => {
+      const updated = new Set(prev);
+      newImages.forEach((url) => updated.add(url));
+      return updated;
+    });
+  
     setIsUploading(false);
   };
-  
-  
 
   return (
     <>
-      <MenuBar editor={editor} isUploading={isUploading} handleImageUpload={handleImageUpload} />
+      <MenuBar
+        editor={editor}
+        isUploading={isUploading}
+        handleImageUpload={handleImageUpload}
+      />
       <EditorContent editor={editor} className="editor-content" />
     </>
   );

@@ -3,12 +3,13 @@ import './DailyView.css';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import useSignInUserStore from '../../../../stores/sign-in-user.store';
-import { GetDailyCommentResponseDto, GetDailyResponseDto } from '../../../../apis/dto/response/daily';
+import { GetDailyCommentResponseDto, GetDailyResponseDto, GetLikedUserListResponseDto } from '../../../../apis/dto/response/daily';
 import ResponseDto from '../../../../apis/dto/response/response.dto';
 import { ACCESS_TOKEN, DAILY_ABSOLUTE_PATH, DAILY_UPDATE_ABSOLUTE_PATH, MY_USER_ABSOLUTE_PATH } from '../../../../constants';
 import {
   deleteDailyRequest,
   getDailyCommentRequest,
+  getDailyLikesRequest,
   getDailyRequest,
   postCommentAlertRequest,
   postDailyCommentRequest,
@@ -23,6 +24,8 @@ import likeClickIcon from '../../../../assets/images/likeClick.png';
 import likeIcon from '../../../../assets/images/like.png';
 import commentIcon from '../../../../assets/images/comment.png';
 import viewsIcon from '../../../../assets/images/views.png';
+import DailyLikesModal from '../../../../components/DailyLIkeUserLIst';
+import { LikedUserDto } from '../../../../apis/dto/response/daily/get-liked-user-list.resopnse.dto';
 
 // interface: 댓글 컴포넌트 속성 //
 interface CommentItemProps {
@@ -31,12 +34,17 @@ interface CommentItemProps {
 
 // component: 댓글 컴포넌트 //
 function CommentItem({ commentItem }: CommentItemProps) {
+
+  const { userId } = useSignInUserStore();
+
   const { writerNickname, commentWriteDate, comment, profileImage } = commentItem;
+
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
   // event handler: 프로필 클릭 이벤트 처리 //
   const onProfileClickHandler = () => {
+    if(!userId) return;
     navigator(MY_USER_ABSOLUTE_PATH(writerNickname));
   }
 
@@ -63,7 +71,7 @@ export default function DailyView() {
   const { dailySequence } = useParams();
 
   // state: 로그인 사용자 닉네임 상태 //
-  const { userNickname } = useSignInUserStore();
+  const { userNickname, userId } = useSignInUserStore();
 
   // state: 일상 게시글 내용 상태 //
   const [writerNickname, setWriterNickname] = useState<string>('');
@@ -88,6 +96,10 @@ export default function DailyView() {
 
   // state: 이미지 목록 상태 //
   const [images, setImages] = useState<string[]>([]);
+
+  // state: 좋아요 유저 목록 상태 //
+  const [likedUsers, setLikedUsers] = useState<any[]>([]);  
+  const [showLikesModal ,setShowLikesModal] = useState<boolean>(false);  
 
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
@@ -182,6 +194,28 @@ export default function DailyView() {
     navigator(DAILY_ABSOLUTE_PATH);
   };
 
+  // function: get likes response 처리 함수 //
+  const getDailyLikesResponse = (responseBody: any) => {
+    const message = !responseBody
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'AF'
+      ? '인증에 실패했습니다.'
+      : responseBody.code === 'ND'
+      ? '존재하지 않는 게시글입니다.'
+      : '';
+  
+    const isSuccess = responseBody !== null && responseBody.code === 'SU';
+    if (!isSuccess) {
+      alert(message);
+      return;
+    }
+
+    const { likedUserList } = responseBody as GetLikedUserListResponseDto;
+    setLikedUsers(likedUserList);
+  };
+
   // function: put likes response 처리 함수 //
   const putLikeResponse = (responseBody: ResponseDto | null) => {
     const message = !responseBody
@@ -257,6 +291,57 @@ export default function DailyView() {
     }
   };
 
+  const onLikesModalOpen = () => {
+    setShowLikesModal(true);
+  };
+
+  const onLikesModalClose = () => {
+    setShowLikesModal(false);
+  };
+
+  const renderLikesButtonText = () => {
+    if (!likedUsers || likedUsers.length === 0) {
+      return '';
+    }
+  
+    if (likeCount === 0) {
+      return "";
+    }
+  
+    if (likeCount > 50) {
+      const formattedCount = likeCount >= 10000
+        ? `${(likeCount / 10000).toFixed(1)}만개`
+        : `좋아요 ${likeCount}개`;
+      return `좋아요 ${formattedCount}`;
+    }
+  
+    if (!userNickname) {
+      return '';
+    }
+  
+    const isLikedByMe = likedUsers.some(user => user.userNickname === userNickname);
+    const otherUsers = likedUsers.filter(user => user.userNickname !== userNickname);
+    const firstOtherUser = otherUsers[0]?.userNickname;
+  
+    if (isLikedByMe) {
+      if (otherUsers.length === 0) {
+        return "회원님이 좋아합니다";
+      } else if (otherUsers.length === 1) {
+        return `회원님, ${firstOtherUser}님이 좋아합니다`;
+      } else {
+        return `회원님 외 ${otherUsers.length}명이 좋아합니다`;
+      }
+    }
+  
+    if (likeCount === 1) {
+      return `${likedUsers[0].userNickname}님이 좋아합니다`;
+    }
+  
+    return `${likedUsers[0].userNickname}님 외 ${likeCount - 1}명이 좋아합니다`;
+  };
+  
+  
+
   // event handler: 좋아요 버튼 클릭 이벤트 처리 //
   const onLikeClickHandler = () => {
     if (!dailySequence || !accessToken) return;
@@ -282,6 +367,7 @@ export default function DailyView() {
 
   // event handler: 프로필 클릭 이벤트 처리 //
   const onProfileClickHandler = () => {
+    if(!userId) return;
     navigator(MY_USER_ABSOLUTE_PATH(writerNickname));
   }
 
@@ -293,6 +379,7 @@ export default function DailyView() {
     }
     getDailyRequest(dailySequence, accessToken).then(getDailyResponse);
     getDailyCommentRequest(dailySequence, accessToken).then(getDailyCommentResponse);
+    getDailyLikesRequest(dailySequence, accessToken).then(getDailyLikesResponse);
   }, []);
 
   // render: 일상 게시판 게시글 상세보기 컴포넌트 렌더링 //
@@ -350,13 +437,14 @@ export default function DailyView() {
               className={likedClass}
               onClick={onLikeClickHandler}
             />
-            {likeCount}
           </div>
           <div className="comment-button" onClick={onCommentIconClickHandler}>
             <img src={commentIcon} alt="Comment" className="icon" />
           </div>
         </div>
       </div>
+      <div className='like-user-list' onClick={onLikesModalOpen}>{renderLikesButtonText()}</div>
+      <DailyLikesModal dailySequence={parseInt(dailySequence || '')} writerNickname={writerNickname} isOpen={showLikesModal} onClose={onLikesModalClose} />
 
       {showCommentInput && accessToken && (
         <div className="comment-write">

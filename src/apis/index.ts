@@ -92,7 +92,7 @@ const DELETE_DAILY_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL
 const SEARCH_DAILY_LIST_URL = (keyword: string, page: number) => `${DAILY_MODULE_URL}/search?keyword=${keyword}&page=${page}`;
 
 const TOGGLE_DAILY_LIKE_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/likes`;
-const GET_DAILY_LIKES_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/likes`;
+const GET_DAILY_LIKES_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/list/likes`;
 
 const POST_DAILY_COMMENT_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/comments`;
 const GET_DAILY_COMMENT_URL = (dailySequence: number | string) => `${DAILY_MODULE_URL}/${dailySequence}/comments`;
