@@ -6,6 +6,7 @@ import axios from 'axios';
 import useSignInUserStore from '../../stores/sign-in-user.store';
 import useChatSocket from '../../hooks/useChatSocket';
 import { getUserProfileImageByIdRequest, getUserNicknameByIdRequest } from '../../apis';
+import defaultProfile from '../../assets/images/default-profile.png';
 
 // interface: 메시지 방 요약 정보 인터페이스 정의 //
 interface MessageRoomSummary {
@@ -33,7 +34,8 @@ const MessageList = () => {
     const partnerId = isIncoming ? message.senderId : message.receiverId;
 
     const nickname = await getUserNicknameByIdRequest(partnerId, accessToken);
-    const profileImage = await getUserProfileImageByIdRequest(partnerId, accessToken);
+    const profileImageRaw = await getUserProfileImageByIdRequest(partnerId, accessToken);
+    const profileImage = profileImageRaw === 'default-profile' ? defaultProfile : profileImageRaw;
 
     setRooms((prev) => {
       const updated = [...prev];
@@ -43,7 +45,7 @@ const MessageList = () => {
         partnerId,
         nickname,
         profileImage,
-        lastMessage: message.type?.toUpperCase() === 'IMAGE' ? '(사진)' : message.content,
+        lastMessage: message.type === 'IMAGE' ? '(사진)' : message.content,
         timestamp: message.timestamp,
         unread: isIncoming,
         messageType: message.type,
@@ -88,7 +90,12 @@ const MessageList = () => {
 
         fetchedRooms = fetchedRooms.map((room) => ({
           ...room,
-          lastMessage: room.messageType?.toUpperCase() === 'IMAGE' ? '(사진)' : room.lastMessage,
+          lastMessage: room.messageType === 'IMAGE' ? '(사진)' : room.lastMessage,
+          // 프로필 이미지가 null, undefined, 빈 문자열, 또는 'default-profile'일 경우 defaultProfile 사용
+          profileImage:
+            !room.profileImage || room.profileImage === 'default-profile'
+              ? defaultProfile
+              : room.profileImage,
         }));
 
         setRooms(fetchedRooms);

@@ -43,11 +43,14 @@ const MessageRoom = () => {
   // state: 이미지 업로드 파일 //
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  // 이미지 input ref
-  const imageInputRef = useRef<HTMLInputElement>(null);
-
   // New state for image preview modal
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  // New state for image preview before sending
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  // 이미지 input ref
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   // 이미지 업로드 버튼 클릭 시 input 트리거
   const handleImageButtonClick = () => {
@@ -57,7 +60,9 @@ const MessageRoom = () => {
   // event handler: 이미지 파일 선택 시 파일 상태를 업데이트하고, 입력창에 포커스 맞춤 //
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
       setTimeout(() => {
         document.querySelector<HTMLInputElement>('input[type="text"]')?.focus();
       }, 0);
@@ -112,8 +117,16 @@ const MessageRoom = () => {
 
     // 상대방 프로필 이미지 요청
     getUserProfileImageByIdRequest(partnerId!, accessToken)
-      .then((url) => {setPartnerProfileImage(url || defaultProfile)})
-      .catch(() => {setPartnerProfileImage(defaultProfile)});
+    .then((url) => {
+      if (!url || url === 'default-profile') {
+        setPartnerProfileImage(defaultProfile); // 기본 이미지로 대체
+      } else {
+        setPartnerProfileImage(url); 
+      }
+    })
+    .catch(() => {
+      setPartnerProfileImage(defaultProfile); // 에러 시에도 기본 이미지
+    });
 
     // 상대방 닉네임 요청
     getUserNicknameByIdRequest(partnerId!, accessToken)
@@ -185,6 +198,7 @@ const MessageRoom = () => {
     sendMessage(newMsg); // WebSocket으로 서버 전송
     setInput(''); // 입력창 초기화
     setImageFile(null); // 이미지 초기화
+    setImagePreview(null); // 이미지 프리뷰 제거
   };
 
   // event handler: 입력창에서 Enter 키 입력 시 전송 처리
@@ -242,6 +256,16 @@ const MessageRoom = () => {
           onChange={handleImageChange}
           style={{ display: 'none' }}
         />
+        {imagePreview && (
+          <div className="image-preview-wrapper">
+            <img src={imagePreview} className="image-preview" alt="preview" />
+            <button className="image-remove-button"
+              onClick={() => {
+                setImageFile(null);
+                setImagePreview(null);
+              }}>×</button>
+          </div>
+        )}
         <input
           type="text"
           value={input}
