@@ -130,7 +130,7 @@ function App() {
       const messageCountResponse = await getNewAlertCountByUserIdRequest(accessToken);
       setUnreadCount(messageCountResponse);
       setIsMessageRead(messageCountResponse === 0);
-    }, 10000);
+    }, 1000);
 
     return () => clearInterval(intervalId);
   }, [cookies]);
