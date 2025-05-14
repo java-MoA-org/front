@@ -77,9 +77,6 @@ function App() {
     setUserInterests
   } = useSignInUserStore();
 
-  const { unreadCount, isMessageRead, setUnreadCount, setIsMessageRead } = useMessageAlertStore();
-
-  const { setAlerts } = useNotificationStore();
   const [cookies] = useCookies([ACCESS_TOKEN]);
   // const [cookies] = useCookies();
   useEffect(() => {
@@ -114,25 +111,6 @@ function App() {
     };
 
     fetchUserInfo();
-  }, [cookies]);
-
-  useEffect(() => {
-    const accessToken = cookies[ACCESS_TOKEN];
-    if (!accessToken) return;
-
-    const intervalId = setInterval(async () => {
-      const response = await GetUserAlertRequest(accessToken);
-      if (response && response.code === "SU") {
-        const { alerts } = response as GetUserAlertResponseDto;
-        setAlerts(alerts);
-      }
-
-      const messageCountResponse = await getNewAlertCountByUserIdRequest(accessToken);
-      setUnreadCount(messageCountResponse);
-      setIsMessageRead(messageCountResponse === 0);
-    }, 1000000);
-
-    return () => clearInterval(intervalId);
   }, [cookies]);
 
   return (

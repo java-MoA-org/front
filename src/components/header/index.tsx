@@ -1,17 +1,18 @@
-import './style.css';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { useCookies } from 'react-cookie';
+import "./style.css";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useCookies } from "react-cookie";
 import {
   searchUserRequest,
   refreshAccessTokenRequest,
   userSignOutRequest,
   getNewAlertCountByUserIdRequest,
-} from '../../apis';
-import moaHeaderLogo from '../../assets/images/moa_main_logo.png';
-import defaultProfile from '../../assets/images/default-profile.png';
-import cameraIcon from '../../assets/images/camera.png';
-import sessionIcon from '../../assets/images/session.png';
+  GetUserAlertRequest
+} from "../../apis";
+import moaHeaderLogo from "../../assets/images/moa_main_logo.png";
+import defaultProfile from "../../assets/images/default-profile.png";
+import cameraIcon from "../../assets/images/camera.png";
+import sessionIcon from "../../assets/images/session.png";
 import {
   ACCESS_TOKEN,
   REFRESH_TOKEN,
@@ -19,13 +20,14 @@ import {
   BOARD_ABSOLUTE_PATH,
   DAILY_ABSOLUTE_PATH,
   USED_TRADE_ABSOLUTE_PATH,
-  AUTH_ABSOLUTE_PATH,
-} from '../../constants';
-import useSignInUserStore from '../../stores/sign-in-user.store';
-import useSessionTimerStore from '../../stores/session-timer.store';
-import AlertDropdown from '../Alert';
-import useNotificationStore from '../../stores/alert-read.store';
-import useMessageAlertStore from '../../stores/message-alert.store';
+  AUTH_ABSOLUTE_PATH
+} from "../../constants";
+import useSignInUserStore from "../../stores/sign-in-user.store";
+import useSessionTimerStore from "../../stores/session-timer.store";
+import AlertDropdown from "../Alert";
+import useNotificationStore from "../../stores/alert-read.store";
+import useMessageAlertStore from "../../stores/message-alert.store";
+import GetUserAlertResponseDto from "../../apis/dto/response/alert/get-user-alert.response.dto";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -43,7 +45,7 @@ const Header = () => {
   const [cookieReady, setCookieReady] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -53,7 +55,7 @@ const Header = () => {
   }, [alerts]);
 
   useEffect(() => {
-    console.log('alertOpen 상태:', alertOpen);
+    console.log("alertOpen 상태:", alertOpen);
   }, [alertOpen]);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -88,15 +90,16 @@ const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      const isClickOutsideProfile = dropdownRef.current && !dropdownRef.current.contains(e.target as Node);
+      const isClickOutsideProfile =
+        dropdownRef.current && !dropdownRef.current.contains(e.target as Node);
       const isClickOutsideAlert = alertRef.current && !alertRef.current.contains(e.target as Node);
 
       if (isClickOutsideProfile) setDropdownOpen(false);
       if (isClickOutsideAlert) setAlertOpen(false);
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -109,11 +112,34 @@ const Header = () => {
           setShowSearchDropdown(true);
         }
       })
-      .catch((err) => console.error('친구 검색 에러:', err));
+      .catch((err) => console.error("친구 검색 에러:", err));
   }, [searchKeyword]);
 
+  const { setUnreadCount, setIsMessageRead } = useMessageAlertStore();
+
+  const { setAlerts } = useNotificationStore();
+
+  useEffect(() => {
+    const accessToken = cookies[ACCESS_TOKEN];
+    if (!accessToken) return;
+
+    const intervalId = setInterval(async () => {
+      const response = await GetUserAlertRequest(accessToken);
+      if (response && response.code === "SU") {
+        const { alerts } = response as GetUserAlertResponseDto;
+        setAlerts(alerts);
+      }
+
+      const messageCountResponse = await getNewAlertCountByUserIdRequest(accessToken);
+      setUnreadCount(messageCountResponse);
+      setIsMessageRead(messageCountResponse === 0);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [cookies]);
+
   const getValidProfileImage = (img?: string | null) => {
-    if (!img || img === 'default-profile' || img.trim() === '') return defaultProfile;
+    if (!img || img === "default-profile" || img.trim() === "") return defaultProfile;
     return img;
   };
 
@@ -129,14 +155,14 @@ const Header = () => {
     setIsLoggingOut(true);
     userSignOutRequest(accessToken);
     logout();
-    alert('로그아웃 하셨습니다.');
+    alert("로그아웃 하셨습니다.");
   };
 
   const onExtendSessionClickHandler = useCallback(async () => {
     try {
       if (!accessToken) return;
       const expirationTime = await refreshAccessTokenRequest();
-      if (!expirationTime) throw new Error('토큰 갱신 실패');
+      if (!expirationTime) throw new Error("토큰 갱신 실패");
       setTimeLeft(parseInt(expirationTime, 10));
     } catch (e) {
       console.error(e);
@@ -145,17 +171,17 @@ const Header = () => {
   }, [accessToken, setTimeLeft, logout]);
 
   const formatTime = (seconds: number) => {
-    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-    const s = String(seconds % 60).padStart(2, '0');
+    const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const s = String(seconds % 60).padStart(2, "0");
     return `${m}:${s}`;
   };
 
   return (
     <div className="header-wrapper">
       <div className="header-top">
-        <div className="logo" onClick={() => navigate('/')}>
-          {' '}
-          <img src={moaHeaderLogo} className="logo-img" alt="로고" />{' '}
+        <div className="logo" onClick={() => navigate("/")}>
+          {" "}
+          <img src={moaHeaderLogo} className="logo-img" alt="로고" />{" "}
         </div>
         <div className="user-info">
           {accessToken ? (
@@ -164,8 +190,8 @@ const Header = () => {
                 <span className="message" onClick={() => navigate(`/message/${userId}`)}>
                   💬
                 </span>
-                <div className={`message-alert ${isMessageRead ? 'new' : 'none'}`}>
-                  {typeof unreadCount === 'number' ? unreadCount : ''}
+                <div className={`message-alert ${isMessageRead ? "new" : "none"}`}>
+                  {typeof unreadCount === "number" ? unreadCount : ""}
                 </div>
               </div>
 
@@ -175,7 +201,7 @@ const Header = () => {
                     setAlertOpen(true);
                     setDropdownOpen(false);
                   }}
-                  className={`alert-image ${isRead ? 'read' : 'unread'}`}
+                  className={`alert-image ${isRead ? "read" : "unread"}`}
                 />
                 {alertOpen && <AlertDropdown accessToken={accessToken} dropdownRef={alertRef} />}
               </div>
@@ -226,10 +252,10 @@ const Header = () => {
       <div className="nav-container">
         <nav className="nav">
           {[
-            ['게시판', BOARD_ABSOLUTE_PATH],
-            ['일상', DAILY_ABSOLUTE_PATH],
-            ['중고거래', USED_TRADE_ABSOLUTE_PATH],
-            ['공지사항', '/notice'],
+            ["게시판", BOARD_ABSOLUTE_PATH],
+            ["일상", DAILY_ABSOLUTE_PATH],
+            ["중고거래", USED_TRADE_ABSOLUTE_PATH],
+            ["공지사항", "/notice"]
           ].map(([label, path]) => (
             <div className="nav-item" key={label}>
               <button onClick={() => navigate(path)}>{label}</button>
@@ -245,7 +271,7 @@ const Header = () => {
                 className="session-button"
                 onClick={() => {
                   onExtendSessionClickHandler();
-                  console.log('refresh clicked');
+                  console.log("refresh clicked");
                 }}
               >
                 연장

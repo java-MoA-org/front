@@ -1,28 +1,29 @@
-import "./style.css";
-import userImage from "../../assets/images/default-profile.png";
-import { useNavigate, useParams } from "react-router-dom";
+import './style.css';
+import userImage from '../../assets/images/default-profile.png';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   ACCESS_TOKEN,
   MY_USER_BOARD_ABSOLUTE_PATH,
   MY_USER_FOLLOW_ABSOLUTE_PATH,
-  ROOT_ABSOULTE_PATH
-} from "../../constants";
-import FollowButton from "../../components/FollowButton";
-import { Board, Daily, Trade } from "../../types/interfaces";
-import UserInterest from "../../types/interfaces/user-interest.interface";
-import UpdateButton from "../../components/UpdateButton";
-import useSignInUserStore from "../../stores/sign-in-user.store";
-import { useCookies } from "react-cookie";
-import { useEffect, useState } from "react";
+  ROOT_ABSOULTE_PATH,
+} from '../../constants';
+import FollowButton from '../../components/FollowButton';
+import { Board, Daily, Trade } from '../../types/interfaces';
+import UserInterest from '../../types/interfaces/user-interest.interface';
+import UpdateButton from '../../components/UpdateButton';
+import useSignInUserStore from '../../stores/sign-in-user.store';
+import { useCookies } from 'react-cookie';
+import { useEffect, useState } from 'react';
 import {
   getFollowRequest,
   getUserPageInfoRequest,
   getUserPageRequest,
-  postFollowRequest
-} from "../../apis";
-import GetUserInfoResponseDto from "../../apis/dto/response/user/get-user-info.response.dto";
-import ResponseDto from "../../apis/dto/response/response.dto";
-import GetFollowResponseDto from "../../apis/dto/response/follow/get-follow.response.dto";
+  postFollowAlertRequest,
+  postFollowRequest,
+} from '../../apis';
+import GetUserInfoResponseDto from '../../apis/dto/response/user/get-user-info.response.dto';
+import ResponseDto from '../../apis/dto/response/response.dto';
+import GetFollowResponseDto from '../../apis/dto/response/follow/get-follow.response.dto';
 
 // interface: 게시판, 일상, 중고거래 레코드 컴포넌트 속성 //
 interface MyUserPageProps {
@@ -42,7 +43,7 @@ export default function MyUserPage({
   interests,
   userIntroduce,
   userProfileImage,
-  userPageId
+  userPageId,
 }: MyUserPageProps) {
   const { nickname } = useParams(); // ✅ URL에서 :nickname 추출
   const [cookies] = useCookies([ACCESS_TOKEN]);
@@ -61,7 +62,7 @@ export default function MyUserPage({
 
   const activeInterests = Object.entries(interests)
     .filter(([_, value]) => value)
-    .map(([key]) => key.replace("userInterest", ""));
+    .map(([key]) => key.replace('userInterest', ''));
 
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
@@ -83,19 +84,22 @@ export default function MyUserPage({
   // function: get follow response 처리 함수 //
   const getFollowResponse = (responseBody: GetFollowResponseDto | ResponseDto | null) => {
     const message = !responseBody
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "DBE"
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "AF"
-      ? "인증에 실패했습니다."
-      : responseBody.code === "NEU"
-      ? "존재하지 않는 유저입니다."
-      : "";
-    const isSuccess = responseBody !== null && responseBody.code === "SU";
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'AF'
+      ? '인증에 실패했습니다.'
+      : responseBody.code === 'NEU'
+      ? '존재하지 않는 유저입니다.'
+      : '';
+    const isSuccess = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccess) {
       alert(message);
       navigator(ROOT_ABSOULTE_PATH);
       return;
+    }
+    if (responseBody.data == 'follow') {
+      postFollowAlertRequest(nickname, accessToken);
     }
     const { followers, followees } = responseBody as GetFollowResponseDto;
     const followersCount = followers.length;
@@ -135,14 +139,14 @@ export default function MyUserPage({
   };
 
   const interestMap: { label: string; key: keyof UserInterest }[] = [
-    { label: "🛩️여행", key: "userInterestTrip" },
-    { label: "🎮게임", key: "userInterestGame" },
-    { label: "👚패션", key: "userInterestFashion" },
-    { label: "🏀운동", key: "userInterestWorkout" },
-    { label: "🍗맛집", key: "userInterestFood" },
-    { label: "🎵음악", key: "userInterestMusic" },
-    { label: "💸경제", key: "userInterestEconomics" },
-    { label: "🏠일상", key: "userInterestNull" }
+    { label: '🛩️여행', key: 'userInterestTrip' },
+    { label: '🎮게임', key: 'userInterestGame' },
+    { label: '👚패션', key: 'userInterestFashion' },
+    { label: '🏀운동', key: 'userInterestWorkout' },
+    { label: '🍗맛집', key: 'userInterestFood' },
+    { label: '🎵음악', key: 'userInterestMusic' },
+    { label: '💸경제', key: 'userInterestEconomics' },
+    { label: '🏠일상', key: 'userInterestNull' },
   ];
 
   // render: 공통 레이아웃 컴포넌트 렌더링 //
@@ -166,11 +170,7 @@ export default function MyUserPage({
                 </div>
               </div>
               <div className="profile-image">
-                <img
-                  src={!userProfileImage ? userImage : userProfileImage}
-                  alt="User"
-                  className="profile-img"
-                />
+                <img src={!userProfileImage ? userImage : userProfileImage} alt="User" className="profile-img" />
               </div>
               <div className="follower-followee-container">
                 <div className="follower" onClick={onFollowerPageClickHandler}>
@@ -207,10 +207,7 @@ export default function MyUserPage({
             </div>
 
             <div className="board-type">
-              <div
-                className="board-type-daily"
-                onClick={dailys.length === 0 ? undefined : onUserDailyClickHandler}
-              >
+              <div className="board-type-daily" onClick={dailys.length === 0 ? undefined : onUserDailyClickHandler}>
                 <div className="board-type-text">일상</div>
                 {dailys.length === 0 ? (
                   <div className="no-content">아직 작성한 글이 없습니다.</div>
@@ -224,16 +221,13 @@ export default function MyUserPage({
                         <div className="board-title">{title}</div>
                         <div className="board-view">{views}</div>
                         <div className="board-like">{likeCount}</div>
-                        <div className="board-date">{creationDate.split("T")[0]}</div>
+                        <div className="board-date">{creationDate.split('T')[0]}</div>
                       </div>
                     ))
                 )}
               </div>
 
-              <div
-                className="board-type-used"
-                onClick={trades.length === 0 ? undefined : onUserTradeClickHandler}
-              >
+              <div className="board-type-used" onClick={trades.length === 0 ? undefined : onUserTradeClickHandler}>
                 <div className="board-type-text">중고 거래</div>
 
                 {trades.length === 0 ? (
@@ -248,16 +242,13 @@ export default function MyUserPage({
                         <div className="board-title">{title}</div>
                         <div className="board-view">{views}</div>
                         <div className="board-like">{likeCount}</div>
-                        <div className="board-date">{creationDate.split("T")[0]}</div>
+                        <div className="board-date">{creationDate.split('T')[0]}</div>
                       </div>
                     ))
                 )}
               </div>
 
-              <div
-                className="board-type-just"
-                onClick={boards.length === 0 ? undefined : onUserBoardClickHandler}
-              >
+              <div className="board-type-just" onClick={boards.length === 0 ? undefined : onUserBoardClickHandler}>
                 <div className="board-type-text">게시글</div>
 
                 {boards.length === 0 ? (
@@ -272,7 +263,7 @@ export default function MyUserPage({
                         <div className="board-title">{title}</div>
                         <div className="board-view">{views}</div>
                         <div className="board-like">{likeCount}</div>
-                        <div className="board-date">{creationDate.split("T")[0]}</div>
+                        <div className="board-date">{creationDate.split('T')[0]}</div>
                       </div>
                     ))
                 )}
