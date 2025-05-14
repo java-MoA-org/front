@@ -13,4 +13,5 @@ export default interface GetDailyResponseDto extends ResponseDto {
   likeCount: number;
   comments: Comment[];
   imageUrls: string[];
+  liked: boolean;
 }

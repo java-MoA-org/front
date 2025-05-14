@@ -3,7 +3,12 @@ import './UsedTradeView.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import useSignInUserStore from '../../../../stores/sign-in-user.store';
-import { ACCESS_TOKEN, MY_USER_ABSOLUTE_PATH, USED_TRADE_ABSOLUTE_PATH, USED_TRADE_UPDATE_ABSOLUTE_PATH } from '../../../../constants';
+import {
+  ACCESS_TOKEN,
+  MY_USER_ABSOLUTE_PATH,
+  USED_TRADE_ABSOLUTE_PATH,
+  USED_TRADE_UPDATE_ABSOLUTE_PATH,
+} from '../../../../constants';
 import { GetUsedTradeResponseDto } from '../../../../apis/dto/response/usedtrade';
 import ResponseDto from '../../../../apis/dto/response/response.dto';
 import {
@@ -58,31 +63,27 @@ export default function UsedTradeView() {
   // state: 좋아요 여부 //
   const [liked, setLiked] = useState<boolean>(false);
 
-  // variable: 좋아요 여부 //
-  const isLiked = liked;
   // variable: 좋아요 클래스 //
-  const likedClass = isLiked ? 'icon-likes-click' : 'icon-likes';
+  const likedClass = liked ? 'icon-likes-click' : 'icon-likes';
 
   // state: 이미지 목록 상태 //
   const [images, setImages] = useState<string[]>([]);
 
   const onSaveTransactionStatus = (status: '판매중' | '판매완료' | '예약중') => {
-    const updatedStatus: "ON_SALE" | "SOLD_OUT" | "RESERVED" =
-    status === '판매중' ? 'ON_SALE' :
-    status === '판매완료' ? 'SOLD_OUT' : 'RESERVED';
-  
+    const updatedStatus: 'ON_SALE' | 'SOLD_OUT' | 'RESERVED' =
+      status === '판매중' ? 'ON_SALE' : status === '판매완료' ? 'SOLD_OUT' : 'RESERVED';
+
     if (!tradeSequence || !accessToken) return;
-  
-    patchTransactionStatusRequest(tradeSequence, accessToken + `&status=${updatedStatus}`)
-      .then((response) => {
-        if (!response || response.code !== 'SU') {
-          alert('거래 상태 변경에 실패했습니다.');
-          return;
-        }
-  
-        setTransactionStatus(updatedStatus);
-        alert('거래 상태가 변경되었습니다.');
-      });
+
+    patchTransactionStatusRequest(tradeSequence, updatedStatus, accessToken).then((response) => {
+      if (!response || response.code !== 'SU') {
+        alert('거래 상태 변경에 실패했습니다.');
+        return;
+      }
+
+      setTransactionStatus(updatedStatus);
+      alert('거래 상태가 변경되었습니다.');
+    });
   };
 
   // variable: access token //
@@ -98,7 +99,7 @@ export default function UsedTradeView() {
   const openLocationModal = () => {
     setIsModalOpen(true);
   };
-  
+
   // function: 거래상태 선택 모달 닫기 //
   const closeLocationModal = () => {
     setIsModalOpen(false);
@@ -125,13 +126,21 @@ export default function UsedTradeView() {
     }
 
     const {
-      title, content,
-      creationDate, views,
-      itemTypeTag, likeCount,
-      writerNickname, images,
-      price, location,
-      detailLocation, profileImage,
-      transactionStatus, usedItemStatusTag,
+      title,
+      content,
+      creationDate,
+      views,
+      itemTypeTag,
+      likeCount,
+      writerNickname,
+      images,
+      price,
+      location,
+      detailLocation,
+      profileImage,
+      transactionStatus,
+      usedItemStatusTag,
+      liked
     } = responseBody as GetUsedTradeResponseDto;
 
     setTitle(title);
@@ -148,6 +157,7 @@ export default function UsedTradeView() {
     setPrice(price);
     setUsedItemStatusTag(usedItemStatusTag);
     setImages(images);
+    setLiked(liked);
   };
 
   // function: delete used trade response 처리 함수 //
@@ -226,7 +236,7 @@ export default function UsedTradeView() {
   // event handler: 프로필 클릭 이벤트 처리 //
   const onProfileClickHandler = () => {
     navigator(MY_USER_ABSOLUTE_PATH(writerNickname));
-  }
+  };
 
   // effect: 컴포넌트 로드시 실행할 함수 //
   useEffect(() => {
@@ -243,7 +253,7 @@ export default function UsedTradeView() {
       <div className="trade-view-main">
         {userNickname === writerNickname && (
           <div className="button-group">
-            <div className='sale-button' onClick={openLocationModal}>
+            <div className="sale-button" onClick={openLocationModal}>
               거래 상태
               <TransactionStatusModal
                 isOpen={isModalOpen}
@@ -252,8 +262,8 @@ export default function UsedTradeView() {
                   onSaveTransactionStatus(status);
                   closeLocationModal();
                 }}
-                selectedStatus={  transactionStatus === 'ON_SALE' ? '판매중' : 
-                                  transactionStatus === 'SOLD_OUT' ? '판매완료' : '예약중'
+                selectedStatus={
+                  transactionStatus === 'ON_SALE' ? '판매중' : transactionStatus === 'SOLD_OUT' ? '판매완료' : '예약중'
                 }
               />
             </div>
@@ -293,12 +303,12 @@ export default function UsedTradeView() {
               <div className="item-status-tag">{usedItemStatusTag}</div>
             </div>
             <div className="object-content">{content}</div>
-            <div className='click-box'>
+            <div className="click-box">
               <div className={likedClass} onClick={onLikeClickHandler}>
-                <img src={isLiked ? likeClickIcon : likeIcon} alt="Like" style={{ width: '25px', height: '25px' }} />
+                <img src={liked ? likeClickIcon : likeIcon} alt="Like" style={{ width: '25px', height: '25px' }} />
                 <span>{likeCount}</span>
               </div>
-              <div className='icon-message'>
+              <div className="icon-message">
                 <img src={messageIcon} alt="Message" style={{ width: '25px', height: '25px' }} />
                 <span>메시지</span>
               </div>
@@ -307,8 +317,15 @@ export default function UsedTradeView() {
         </div>
         <div className="user-info-container">
           <div className="user">
-            <img src={profileImage} alt="프로필 이미지" className="trade-profile-image" onClick={onProfileClickHandler} />
-            <div className="writer-name" onClick={onProfileClickHandler}>{writerNickname}</div>
+            <img
+              src={profileImage}
+              alt="프로필 이미지"
+              className="trade-profile-image"
+              onClick={onProfileClickHandler}
+            />
+            <div className="writer-name" onClick={onProfileClickHandler}>
+              {writerNickname}
+            </div>
           </div>
           <div className="location-box">
             <div className="location-header">

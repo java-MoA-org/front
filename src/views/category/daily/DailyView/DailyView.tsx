@@ -92,10 +92,8 @@ export default function DailyView() {
   // variable: access token //
   const accessToken = cookies[ACCESS_TOKEN];
 
-  // variable: 좋아요 여부 //
-  const isLiked = liked;
   // variable: 좋아요 클래스 //
-  const likedClass = isLiked ? 'icon likes-click' : 'icon likes';
+  const likedClass = liked ? 'icon likes-click' : 'icon likes';
 
   // variable: 댓글 작성 가능 여부 //
   const isActive = comment !== '';
@@ -125,7 +123,7 @@ export default function DailyView() {
       return;
     }
 
-    const { title, content, creationDate, views, likeCount, writerNickname, imageUrls, profileImage } = responseBody as GetDailyResponseDto;
+    const { title, content, creationDate, views, likeCount, writerNickname, imageUrls, profileImage, liked } = responseBody as GetDailyResponseDto;
 
     setTitle(title);
     setContent(content);
@@ -136,6 +134,7 @@ export default function DailyView() {
     setProfileImage(profileImage);
     const uniqueImages = Array.from(new Set(imageUrls));
     setImages(uniqueImages);
+    setLiked(liked);
   };
 
   // function: get comment response 처리 함수 //
@@ -346,7 +345,7 @@ export default function DailyView() {
         <div className="content-bottom-bar">
           <div className="like-button">
             <img
-              src={isLiked ? likeClickIcon : likeIcon}
+              src={liked ? likeClickIcon : likeIcon}
               alt="Like"
               className={likedClass}
               onClick={onLikeClickHandler}

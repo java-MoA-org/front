@@ -29,7 +29,6 @@ export default function UsedTradeWrite() {
   const [price, setPrice] = useState<number>(0);
 
   const filteredImages = imageList.filter((img): img is string => img !== null);
-  console.log("🟣 필터링된 이미지 리스트:", filteredImages);
 
   // state: 모달창 여부 //
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -129,7 +128,6 @@ export default function UsedTradeWrite() {
       });
   
       const imageUrls = Array.isArray(response.data.data) ? response.data.data : [response.data.data];
-      console.log("업로드된 URL:", imageUrls);
   
       const newImageList = [...imageList, ...imageUrls].slice(0, 5);
       setImageList(newImageList);
@@ -162,15 +160,9 @@ export default function UsedTradeWrite() {
     setPrice(priceValue);
   };
 
+  // state: 이미지 저장하는 함수 //
   const onSaveImageList = (newImageList: (string | null)[]) => {
-    console.log("🟢 Write 컴포넌트에서 받은 이미지 리스트:", newImageList);
     setImageList(newImageList);
-  };
-
-  // state: 거래 위치와 상세 주소를 상태에 저장하는 함수 //
-  const onSaveLocation = (location: string, detailLocation: string) => {
-    setLocation(location);
-    setDetailLocation(detailLocation);
   };
 
   // function: 이미지 업로드 모달 열기 //
@@ -181,6 +173,12 @@ export default function UsedTradeWrite() {
   const closeImageUploadModal = () => {
     setIsImageModalOpen(false);
   }
+
+  // state: 거래 위치와 상세 주소를 상태에 저장하는 함수 //
+  const onSaveLocation = (location: string, detailLocation: string) => {
+    setLocation(location);
+    setDetailLocation(detailLocation);
+  };
 
   // function: 거래 위치 입력 모달 열기 //
   const openLocationModal = () => {
@@ -206,7 +204,6 @@ export default function UsedTradeWrite() {
       price,
       imageList: filteredImages,
     };
-    console.log("🔵 서버로 보낼 이미지 리스트:", filteredImages);
     postUsedTradeRequest(requestBody, accessToken).then(postUsedTradeResponse);
   };
 
@@ -226,7 +223,7 @@ export default function UsedTradeWrite() {
             multiple
           />
           <ImageUploadModal isOpen={isImageModalOpen} onClose={closeImageUploadModal} onSave={onSaveImageList} />
-          <div className="image-preview" onClick={openImageUploadModal} >
+          <div className="trade-image-preview" onClick={openImageUploadModal} >
             {imageList[0] ? (
               <img src={imageList[0]} alt="썸네일" className="thumbnail-image" />
             ) : (
