@@ -62,7 +62,7 @@ const Home = () => {
     getUsedTradeListRequest("ALL", 1, "LATEST", accessToken).then((res) => {
       if (res && res.code === "SU" && "usedTradeList" in res) {
         const typed = res as GetUsedTradeListResponseDto;
-        setTradeList(typed.usedTradeList.slice(0, 5));
+        setTradeList(typed.usedTradeList.slice(0, 4));
       }
     });
   }, []);
@@ -318,7 +318,7 @@ const Home = () => {
                     key={item.tradeSequence}
                     onClick={() => navigate(`/usedtrade/${item.tradeSequence}`)}
                   >
-                    <img className="trade-img" src={iphoneImg} />
+                    <img className="trade-img" src={item.images?.[0] || ""} />
                     <div className="product-title">{item.title}</div>
                     <div className="product-info">
                       <span>{item.userNickname}</span>
