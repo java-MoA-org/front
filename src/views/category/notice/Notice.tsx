@@ -60,9 +60,7 @@ const Notice = () => {
           <h2
             className={`section-title ${activeTab === "설명" ? "active" : ""}`}
             onClick={() => handleTabClick("설명")}
-          >
-            설명
-          </h2>
+          >설명</h2>
           <h2
             className={`section-title ${
               activeTab === "공지사항" ? "active" : ""
@@ -76,12 +74,8 @@ const Notice = () => {
         {/* render: 공지 작성 버튼 */}
         {activeTab === "공지사항" && isAdmin && (
           <div className="notice-write-button-wrapper">
-            <button
-              className="notice-write-button"
-              onClick={() => navigate(NOTICE_WRITE_ABSOLUTE_PATH)}
-            >
-              ✏️ 공지 작성
-            </button>
+            <button className="notice-write-button" onClick={() => navigate(NOTICE_WRITE_ABSOLUTE_PATH)}>공지 작성
+</button>
           </div>
         )}
 
