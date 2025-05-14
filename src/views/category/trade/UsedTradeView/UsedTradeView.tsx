@@ -40,7 +40,7 @@ export default function UsedTradeView() {
   const [cookies] = useCookies();
 
   // state: 로그인 사용자 아이디 상태 //
-  const { userNickname } = useSignInUserStore();
+  const { userNickname, userId } = useSignInUserStore();
 
   // state: 중고거래 판매글 내용 상태
   const [writerNickname, setWriterNickname] = useState<string>('');
@@ -235,6 +235,7 @@ export default function UsedTradeView() {
 
   // event handler: 프로필 클릭 이벤트 처리 //
   const onProfileClickHandler = () => {
+    if(!userId) return;
     navigator(MY_USER_ABSOLUTE_PATH(writerNickname));
   };
 
