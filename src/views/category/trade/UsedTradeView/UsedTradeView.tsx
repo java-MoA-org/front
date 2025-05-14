@@ -1,35 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import './UsedTradeView.css';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import useSignInUserStore from '../../../../stores/sign-in-user.store';
+import React, { useEffect, useState } from "react";
+import "./UsedTradeView.css";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import useSignInUserStore from "../../../../stores/sign-in-user.store";
 import {
   ACCESS_TOKEN,
   MY_USER_ABSOLUTE_PATH,
   USED_TRADE_ABSOLUTE_PATH,
   USED_TRADE_UPDATE_ABSOLUTE_PATH,
-} from '../../../../constants';
-import { GetUsedTradeResponseDto } from '../../../../apis/dto/response/usedtrade';
-import ResponseDto from '../../../../apis/dto/response/response.dto';
+} from "../../../../constants";
+import { GetUsedTradeResponseDto } from "../../../../apis/dto/response/usedtrade";
+import ResponseDto from "../../../../apis/dto/response/response.dto";
 import {
   deleteUsedTradeRequest,
   getUsedTradeRequest,
   patchTransactionStatusRequest,
   postLikeAlertRequest,
   putUsedTradeLikeRequest,
-} from '../../../../apis';
-import likeIcon from '../../../../assets/images/trade-like.png';
-import likeClickIcon from '../../../../assets/images/trade-like-click.png';
-import likeCountIcon from '../../../../assets/images/tradeLike.png';
-import viewsIcon from '../../../../assets/images/tradeViews.png';
-import timeIcon from '../../../../assets/images/time.png';
-import locationIcon from '../../../../assets/images/place.png';
-import messageIcon from '../../../../assets/images/chat.png';
+} from "../../../../apis";
+import likeIcon from "../../../../assets/images/trade-like.png";
+import likeClickIcon from "../../../../assets/images/trade-like-click.png";
+import likeCountIcon from "../../../../assets/images/tradeLike.png";
+import viewsIcon from "../../../../assets/images/tradeViews.png";
+import timeIcon from "../../../../assets/images/time.png";
+import locationIcon from "../../../../assets/images/place.png";
+import messageIcon from "../../../../assets/images/chat.png";
 
-import { useElapsedTime } from '../../../../hooks';
-import PostLikeAlertRequestDto from '../../../../apis/dto/request/alert/post-like-alert.request.dto';
-import TransactionStatusModal from '../../../../components/TransactionStatus';
-import TradeImageSlider from '../../../../components/TradeImageSlider';
+import { useElapsedTime } from "../../../../hooks";
+import PostLikeAlertRequestDto from "../../../../apis/dto/request/alert/post-like-alert.request.dto";
+import TransactionStatusModal from "../../../../components/TransactionStatus";
+import TradeImageSlider from "../../../../components/TradeImageSlider";
 
 // component: 중고거래 판매글 상세보기 컴포넌트 //
 export default function UsedTradeView() {
@@ -43,19 +43,19 @@ export default function UsedTradeView() {
   const { userNickname, userId } = useSignInUserStore();
 
   // state: 중고거래 판매글 내용 상태
-  const [writerNickname, setWriterNickname] = useState<string>('');
-  const [writeDate, setWriteDate] = useState<string>('');
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
+  const [writerNickname, setWriterNickname] = useState<string>("");
+  const [writeDate, setWriteDate] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
   const [views, setViews] = useState<number>(0);
   const [likeCount, setLikeCount] = useState<number>(0);
-  const [price, setPrice] = useState<string>('');
-  const [location, setLocation] = useState<string>('');
-  const [detailLocation, setDetailLocation] = useState<string>('');
-  const [itemTypeTag, setItemTypeTag] = useState<string>('');
-  const [transactionStatus, setTransactionStatus] = useState<string>('');
-  const [profileImage, setProfileImage] = useState<string>('');
-  const [usedItemStatusTag, setUsedItemStatusTag] = useState<string>('');
+  const [price, setPrice] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [detailLocation, setDetailLocation] = useState<string>("");
+  const [itemTypeTag, setItemTypeTag] = useState<string>("");
+  const [transactionStatus, setTransactionStatus] = useState<string>("");
+  const [profileImage, setProfileImage] = useState<string>("");
+  const [usedItemStatusTag, setUsedItemStatusTag] = useState<string>("");
 
   // state: 모달창 여부 //
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -64,25 +64,35 @@ export default function UsedTradeView() {
   const [liked, setLiked] = useState<boolean>(false);
 
   // variable: 좋아요 클래스 //
-  const likedClass = liked ? 'icon-likes-click' : 'icon-likes';
+  const likedClass = liked ? "icon-likes-click" : "icon-likes";
 
   // state: 이미지 목록 상태 //
   const [images, setImages] = useState<string[]>([]);
 
-  const onSaveTransactionStatus = (status: '판매중' | '판매완료' | '예약중') => {
-    const updatedStatus: 'ON_SALE' | 'SOLD_OUT' | 'RESERVED' =
-      status === '판매중' ? 'ON_SALE' : status === '판매완료' ? 'SOLD_OUT' : 'RESERVED';
+  const onSaveTransactionStatus = (
+    status: "판매중" | "판매완료" | "예약중"
+  ) => {
+    const updatedStatus: "ON_SALE" | "SOLD_OUT" | "RESERVED" =
+      status === "판매중"
+        ? "ON_SALE"
+        : status === "판매완료"
+        ? "SOLD_OUT"
+        : "RESERVED";
 
     if (!tradeSequence || !accessToken) return;
 
-    patchTransactionStatusRequest(tradeSequence, updatedStatus, accessToken).then((response) => {
-      if (!response || response.code !== 'SU') {
-        alert('거래 상태 변경에 실패했습니다.');
+    patchTransactionStatusRequest(
+      tradeSequence,
+      updatedStatus,
+      accessToken
+    ).then((response) => {
+      if (!response || response.code !== "SU") {
+        alert("거래 상태 변경에 실패했습니다.");
         return;
       }
 
       setTransactionStatus(updatedStatus);
-      alert('거래 상태가 변경되었습니다.');
+      alert("거래 상태가 변경되었습니다.");
     });
   };
 
@@ -106,18 +116,20 @@ export default function UsedTradeView() {
   };
 
   // function: get board response 처리 함수 //
-  const getUsedTradeResponse = (responseBody: GetUsedTradeResponseDto | ResponseDto | null) => {
+  const getUsedTradeResponse = (
+    responseBody: GetUsedTradeResponseDto | ResponseDto | null
+  ) => {
     const message = !responseBody
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'DBE'
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'AF'
-      ? '인증에 실패했습니다.'
-      : responseBody.code === 'NU'
-      ? '존재하지 않는 판매글입니다.'
-      : '';
+      ? "서버에 문제가 있습니다."
+      : responseBody.code === "DBE"
+      ? "서버에 문제가 있습니다."
+      : responseBody.code === "AF"
+      ? "인증에 실패했습니다."
+      : responseBody.code === "NU"
+      ? "존재하지 않는 판매글입니다."
+      : "";
 
-    const isSuccess = responseBody !== null && responseBody.code === 'SU';
+    const isSuccess = responseBody !== null && responseBody.code === "SU";
 
     if (!isSuccess) {
       alert(message);
@@ -140,7 +152,7 @@ export default function UsedTradeView() {
       profileImage,
       transactionStatus,
       usedItemStatusTag,
-      liked
+      liked,
     } = responseBody as GetUsedTradeResponseDto;
 
     setTitle(title);
@@ -163,38 +175,38 @@ export default function UsedTradeView() {
   // function: delete used trade response 처리 함수 //
   const deleteUsedTradeResponse = (responseBody: ResponseDto | null) => {
     const message = !responseBody
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'DBE'
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'AF'
-      ? '인증에 실패했습니다.'
-      : responseBody.code === 'NU'
-      ? '존재하지 않는 판매글입니다.'
-      : responseBody.code === 'NP'
-      ? '권한이 없습니다.'
-      : '';
+      ? "서버에 문제가 있습니다."
+      : responseBody.code === "DBE"
+      ? "서버에 문제가 있습니다."
+      : responseBody.code === "AF"
+      ? "인증에 실패했습니다."
+      : responseBody.code === "NU"
+      ? "존재하지 않는 판매글입니다."
+      : responseBody.code === "NP"
+      ? "권한이 없습니다."
+      : "";
 
-    const isSuccess = responseBody !== null && responseBody.code === 'SU';
+    const isSuccess = responseBody !== null && responseBody.code === "SU";
     if (!isSuccess) {
       alert(message);
       return;
     }
 
-    alert('삭제에 성공했습니다.');
+    alert("삭제에 성공했습니다.");
     navigator(USED_TRADE_ABSOLUTE_PATH);
   };
 
   // function: put likes response 처리 함수 //
   const putLikeResponse = (responseBody: ResponseDto | null) => {
     const message = !responseBody
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'DBE'
-      ? '서버에 문제가 있습니다.'
-      : responseBody.code === 'AF'
-      ? '인증에 실패했습니다.'
-      : '';
+      ? "서버에 문제가 있습니다."
+      : responseBody.code === "DBE"
+      ? "서버에 문제가 있습니다."
+      : responseBody.code === "AF"
+      ? "인증에 실패했습니다."
+      : "";
 
-    const isSuccess = responseBody !== null && responseBody.code === 'SU';
+    const isSuccess = responseBody !== null && responseBody.code === "SU";
     if (!isSuccess) {
       alert(message);
       return;
@@ -211,10 +223,12 @@ export default function UsedTradeView() {
   // event handler: 삭제 버튼 클릭 이벤트 처리 //
   const onDeleteClickHandler = () => {
     if (!tradeSequence || !accessToken) return;
-    const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
+    const isConfirm = window.confirm("정말로 삭제하시겠습니까?");
     if (!isConfirm) return;
 
-    deleteUsedTradeRequest(tradeSequence, accessToken).then(deleteUsedTradeResponse);
+    deleteUsedTradeRequest(tradeSequence, accessToken).then(
+      deleteUsedTradeResponse
+    );
   };
 
   // event handler: 수정 버튼 클릭 이벤트 처리 //
@@ -228,14 +242,17 @@ export default function UsedTradeView() {
     if (!tradeSequence || !accessToken) return;
     putUsedTradeLikeRequest(tradeSequence, accessToken).then(putLikeResponse);
 
-    const requestBody: PostLikeAlertRequestDto = { boardType: 'usedTrade', sequence: tradeSequence };
-    console.log('like:', requestBody);
+    const requestBody: PostLikeAlertRequestDto = {
+      boardType: "usedTrade",
+      sequence: tradeSequence,
+    };
+    console.log("like:", requestBody);
     postLikeAlertRequest(requestBody, accessToken);
   };
 
   // event handler: 프로필 클릭 이벤트 처리 //
   const onProfileClickHandler = () => {
-    if(!userId) return;
+    if (!userId) return;
     navigator(MY_USER_ABSOLUTE_PATH(writerNickname));
   };
 
@@ -264,7 +281,11 @@ export default function UsedTradeView() {
                   closeLocationModal();
                 }}
                 selectedStatus={
-                  transactionStatus === 'ON_SALE' ? '판매중' : transactionStatus === 'SOLD_OUT' ? '판매완료' : '예약중'
+                  transactionStatus === "ON_SALE"
+                    ? "판매중"
+                    : transactionStatus === "SOLD_OUT"
+                    ? "판매완료"
+                    : "예약중"
                 }
               />
             </div>
@@ -287,13 +308,15 @@ export default function UsedTradeView() {
                 <div className="item-type">{itemTypeTag}</div>
                 <div className="info-container">
                   <div className="like-count">
-                    <img src={likeCountIcon} alt="Like" className="icon" /> {likeCount}
+                    <img src={likeCountIcon} alt="Like" className="icon" />{" "}
+                    {likeCount}
                   </div>
                   <div className="view-count">
                     <img src={viewsIcon} alt="View" className="icon" /> {views}
                   </div>
                   <div className="write-date">
-                    <img src={timeIcon} alt="Time" className="icon" /> {elapsedTime}
+                    <img src={timeIcon} alt="Time" className="icon" />{" "}
+                    {elapsedTime}
                   </div>
                 </div>
               </div>
@@ -306,11 +329,19 @@ export default function UsedTradeView() {
             <div className="object-content">{content}</div>
             <div className="click-box">
               <div className={likedClass} onClick={onLikeClickHandler}>
-                <img src={liked ? likeClickIcon : likeIcon} alt="Like" style={{ width: '25px', height: '25px' }} />
+                <img
+                  src={liked ? likeClickIcon : likeIcon}
+                  alt="Like"
+                  style={{ width: "25px", height: "25px" }}
+                />
                 <span>{likeCount}</span>
               </div>
-              <div className="icon-message">
-                <img src={messageIcon} alt="Message" style={{ width: '25px', height: '25px' }} />
+              <div className="icon-message"> {/* 나중에 writerId로 messageRoom으로 이동하게금 만들 예정 */}
+                <img
+                  src={messageIcon}
+                  alt="Message"
+                  style={{ width: "25px", height: "25px" }}
+                />
                 <span>메시지</span>
               </div>
             </div>
