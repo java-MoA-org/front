@@ -8,6 +8,7 @@ import { ACCESS_TOKEN, BOARD_ABSOLUTE_PATH, BOARD_UPDATE_ABSOLUTE_PATH } from '.
 import { GetBoardCommentResponseDto, GetBoardResponseDto } from '../../../../apis/dto/response/board';
 import ResponseDto from '../../../../apis/dto/response/response.dto';
 import {
+  deleteBoardCommentRequest,
   deleteBoardRequest,
   getBoardCommentRequest,
   getBoardRequest,
@@ -21,6 +22,7 @@ import likeClickIcon from '../../../../assets/images/likeClick.png';
 import likeIcon from '../../../../assets/images/like.png';
 import commentIcon from '../../../../assets/images/comment.png';
 import viewsIcon from '../../../../assets/images/views.png';
+import deleteIcon from '../../../../assets/images/close.png';
 import PostCommentAlertRequestDto from '../../../../apis/dto/request/alert/post-comment-alert.request.dto';
 import PostLikeAlertRequestDto from '../../../../apis/dto/request/alert/post-like-alert.request.dto';
 
@@ -31,7 +33,46 @@ interface CommentItemProps {
 
 // component: 댓글 컴포넌트 //
 function CommentItem({ commentItem }: CommentItemProps) {
-  const { anonymizedWriterId, commentWriteDate, comment } = commentItem;
+  const { anonymizedWriterId, commentWriteDate, comment, commentSequence, commentWriterId } = commentItem;
+
+  // state: cookie 상태 //
+  const [cookies] = useCookies();
+
+  // state: 로그인 사용자 아이디 상태 //
+  const { userId } = useSignInUserStore();
+
+  // variable: access token //
+  const accessToken = cookies[ACCESS_TOKEN];
+
+  // function: delete comment response 처리 함수 //
+  const deleteCommentResponse = (responseBody: ResponseDto | null) => {
+    const message = !responseBody
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'AF'
+      ? '인증에 실패했습니다.'
+      : responseBody.code === 'NC'
+      ? '존재하지 않는 댓글입니다.'
+      : responseBody.code === 'NP'
+      ? '권한이 없습니다.'
+      : '';
+
+      const isSuccess = responseBody !== null && responseBody.code === 'SU';
+      if (!isSuccess) {
+        alert(message);
+        return;
+      }
+      alert('삭제에 성공했습니다.');
+  }
+
+  // event handler: 댓글 삭제 버튼 클릭 이벤트 처리//
+  const onDeleteCommentClickHandler = () => {
+    if (!commentSequence || !accessToken) return;
+    const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
+    if (!isConfirm) return;
+    deleteBoardCommentRequest(commentSequence, accessToken).then(deleteCommentResponse);
+  }
 
   // render: 댓글 컴포넌트 렌더링 //
   return (
@@ -41,6 +82,9 @@ function CommentItem({ commentItem }: CommentItemProps) {
         <div className="user-name">{anonymizedWriterId}</div>
         <div className="divider"></div>
         <div className="write-date">{commentWriteDate}</div>
+        {userId === commentWriterId && (
+          <img src={deleteIcon} alt="Delete" className="comment-delete icon" onClick={onDeleteCommentClickHandler} />
+        )}
       </div>
       <div className="comment">{comment}</div>
     </div>
@@ -241,8 +285,8 @@ export default function BoardView() {
     setComment(value);
   };
 
-  // event handler: 삭제 버튼 클릭 이벤트 처리 //
-  const onDeleteClickHandler = () => {
+  // event handler: 글삭제 버튼 클릭 이벤트 처리 //
+  const onDeleteBoardClickHandler = () => {
     if (!boardSequence || !accessToken) return;
     const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
     if (!isConfirm) return;
@@ -316,7 +360,7 @@ export default function BoardView() {
             <div className="patch-button" onClick={onUpdateClickHandler}>
               수정하기
             </div>
-            <div className="delete-button" onClick={onDeleteClickHandler}>
+            <div className="delete-button" onClick={onDeleteBoardClickHandler}>
               삭제하기
             </div>
           </div>

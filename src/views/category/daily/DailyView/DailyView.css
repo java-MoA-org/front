@@ -137,7 +137,6 @@
   margin-left: auto;
 }
 
-#daily-view-wrapper .like-count,
 #daily-view-wrapper .view-count {
   display: flex;
   align-items: center;
@@ -308,4 +307,8 @@
   height: 18px;
   margin-right: 5px;
   vertical-align: middle;
+}
+
+#daily-view-wrapper .comment-delete {
+  margin-left: auto;
 }
