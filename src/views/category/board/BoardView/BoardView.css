@@ -297,3 +297,8 @@
   margin-right: 5px;
   vertical-align: middle;
 }
+
+#board-view-wrapper .comment-delete {
+  margin-left: auto;
+  cursor: pointer;
+}

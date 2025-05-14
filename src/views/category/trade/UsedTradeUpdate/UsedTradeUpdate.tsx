@@ -268,6 +268,7 @@ export default function UsedTradeUpdate() {
         <div className="item-name-container">
           <div className="item-name">상품명</div>
           <input className="item-name-box" type="text" placeholder="상품명을 입력해 주세요." value={title} onChange={onTitleChangeHandler} />
+          <div className='length'>({title.length}/50)</div>
         </div>
       
         <div className="item-category-container">
@@ -307,6 +308,7 @@ export default function UsedTradeUpdate() {
           {isLoaded &&
           <textarea className="item-content-box" placeholder="브랜드, 모델명, 구매 시기, 하자 유무 등 상품 설명을 최대한 자세히 적어주세요." value={content} onChange={(e) => onContentChangeHandler(e.target.value)} />
           }
+          <div className='title'>({content.length}/500)</div>
         </div>
 
         <div className="transaction-location-container">

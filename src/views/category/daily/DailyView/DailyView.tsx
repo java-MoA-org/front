@@ -24,8 +24,8 @@ import likeClickIcon from '../../../../assets/images/likeClick.png';
 import likeIcon from '../../../../assets/images/like.png';
 import commentIcon from '../../../../assets/images/comment.png';
 import viewsIcon from '../../../../assets/images/views.png';
+import deleteIcon from '../../../../assets/images/close.png';
 import DailyLikesModal from '../../../../components/DailyLIkeUserLIst';
-import { LikedUserDto } from '../../../../apis/dto/response/daily/get-liked-user-list.resopnse.dto';
 
 // interface: 댓글 컴포넌트 속성 //
 interface CommentItemProps {
@@ -37,8 +37,42 @@ function CommentItem({ commentItem }: CommentItemProps) {
 
   const { userId } = useSignInUserStore();
 
-  const { writerNickname, commentWriteDate, comment, profileImage } = commentItem;
+  const [cookies] = useCookies();
 
+  const { writerNickname, commentWriteDate, comment, profileImage, commentSequence, commentWriterId } = commentItem;  // state: cookie 상태 //
+
+  // variable: access token //
+  const accessToken = cookies[ACCESS_TOKEN];
+
+  // function: delete comment response 처리 함수 //
+  const deleteCommentResponse = (responseBody: ResponseDto | null) => {
+    const message = !responseBody
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'AF'
+      ? '인증에 실패했습니다.'
+      : responseBody.code === 'NC'
+      ? '존재하지 않는 댓글입니다.'
+      : responseBody.code === 'NP'
+      ? '권한이 없습니다.'
+      : '';
+
+      const isSuccess = responseBody !== null && responseBody.code === 'SU';
+      if (!isSuccess) {
+        alert(message);
+        return;
+      }
+      alert('삭제에 성공했습니다.');
+  }
+
+  // event handler: 댓글 삭제 버튼 클릭 이벤트 처리//
+  const onDeleteCommentClickHandler = () => {
+    if (!commentSequence || !accessToken) return;
+    const isConfirm = window.confirm('정말로 삭제하시겠습니까?');
+    if (!isConfirm) return;
+    deleteDailyRequest(commentSequence, accessToken).then(deleteCommentResponse);
+  }
   // function: 네비게이터 함수 //
   const navigator = useNavigate();
 
@@ -56,6 +90,9 @@ function CommentItem({ commentItem }: CommentItemProps) {
         <div className="user-name" onClick={onProfileClickHandler}>{writerNickname}</div>
         <div className="divider"></div>
         <div className="write-date">{commentWriteDate}</div>
+        {userId === commentWriterId && (
+          <img src={deleteIcon} alt="Delete" className="comment-delete icon" onClick={onDeleteCommentClickHandler} />
+        )}
       </div>
       <div className="comment">{comment}</div>
     </div>
@@ -291,32 +328,40 @@ export default function DailyView() {
     }
   };
 
+  // event handler: 좋아요 유저 목록 모달 열기 //
   const onLikesModalOpen = () => {
     setShowLikesModal(true);
   };
 
+  // event handler: 좋아요 유저 목록 모달 닫기 //
   const onLikesModalClose = () => {
     setShowLikesModal(false);
   };
 
+  // function: 좋아요 표시 변환 함수 //
   const renderLikesButtonText = () => {
-    if (!likedUsers || likedUsers.length === 0) {
-      return '';
-    }
+
+    if (!likedUsers || likedUsers.length === 0) return '';
   
-    if (likeCount === 0) {
-      return "";
-    }
+    if (likeCount === 0) return "";
   
+    if (!userId) {
+      if (likeCount === 1 && likedUsers.length > 0) {
+        return `${likedUsers[0]?.userNickname || '회원님'}님이 좋아합니다`;
+      }
+      if (likeCount > 50) {
+        const formattedCount = likeCount >= 10000
+          ? `${(likeCount / 10000).toFixed(1)}만개`
+          : `좋아요 ${likeCount}개`;
+        return `좋아요 ${formattedCount}`;
+      }
+    }
+
     if (likeCount > 50) {
       const formattedCount = likeCount >= 10000
         ? `${(likeCount / 10000).toFixed(1)}만개`
         : `좋아요 ${likeCount}개`;
       return `좋아요 ${formattedCount}`;
-    }
-  
-    if (!userNickname) {
-      return '';
     }
   
     const isLikedByMe = likedUsers.some(user => user.userNickname === userNickname);
@@ -339,8 +384,6 @@ export default function DailyView() {
   
     return `${likedUsers[0].userNickname}님 외 ${likeCount - 1}명이 좋아합니다`;
   };
-  
-  
 
   // event handler: 좋아요 버튼 클릭 이벤트 처리 //
   const onLikeClickHandler = () => {
@@ -414,9 +457,6 @@ export default function DailyView() {
             <div className="date">{writeDate}</div>
           </div>
           <div className="stats">
-            <div className="like-count">
-              <img src={likeClickIcon} alt="Like" className="icon" /> {likeCount}
-            </div>
             <div className="view-count">
               <img src={viewsIcon} alt="Views" className="icon" /> {views}
             </div>

@@ -176,7 +176,7 @@ export default function DailyMain() {
   useEffect(() => {
     if(searchQuery) return;
     getDailyListRequest(page, sort, accessToken).then(getDailyListResponse);
-  }, []);
+  }, [currentPage, sort, searchQuery]);
 
   // component: 일상 게시판 컴포넌트 렌더링 //
   return (
