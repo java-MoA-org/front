@@ -803,7 +803,7 @@ export const getUserProfileImageByIdRequest = async (userId: string, accessToken
       Authorization: `Bearer ${accessToken}`,
     },
   });
-  return response.data; // string
+  return response.data; 
 };
 
 // function: userId를 기반으로 닉네임만 조회하는 API 요청 함수 //

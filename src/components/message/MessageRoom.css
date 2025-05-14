@@ -111,7 +111,7 @@
   }
   
   .input-area button {
-    background-color: #3b82f6;
+    background-color: #4c4c4c;
     border: none;
     color: white;
     padding: 8px 16px;
@@ -239,4 +239,50 @@
     max-height: 90%;
     border-radius: 10px;
     z-index: 1001;
+  }
+.image-preview-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px; /* 입력창 위 간격 */
+  padding: 0 12px;
+  position: relative;
+  flex-wrap: wrap; /* ensure thumbnails wrap properly if multiple */
+}
+
+.image-preview {
+    width: 80px;
+    height: 80px;
+}
+
+.image-preview-thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+
+
+.image-remove-button {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .image-preview-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-right: 8px;
   }
