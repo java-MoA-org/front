@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import "./style.css";
-import ResponseDto from "../../apis/dto/response/response.dto";
-import { getFollowRequest, postFollowRequest } from "../../apis";
-import { useParams } from "react-router-dom";
-import { useCookies } from "react-cookie";
-import { ACCESS_TOKEN, ROOT_ABSOULTE_PATH } from "../../constants";
-import useSignInUserStore from "../../stores/sign-in-user.store";
-import GetFollowResponseDto from "../../apis/dto/response/follow/get-follow.response.dto";
+import { useEffect, useState } from 'react';
+import './style.css';
+import ResponseDto from '../../apis/dto/response/response.dto';
+import { getFollowRequest, postFollowAlertRequest, postFollowRequest } from '../../apis';
+import { useParams } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import { ACCESS_TOKEN, ROOT_ABSOULTE_PATH } from '../../constants';
+import useSignInUserStore from '../../stores/sign-in-user.store';
+import GetFollowResponseDto from '../../apis/dto/response/follow/get-follow.response.dto';
 
 interface Prop {
   getFollow: () => void;
@@ -32,7 +32,7 @@ export default function FollowButton({ getFollow, targetUserNickname, isFollowed
   const fetchFollowState = async () => {
     if (!accessToken || !targetNickname) return;
     const response = await getFollowRequest(targetNickname, accessToken);
-    if (response && response.code === "SU") {
+    if (response && response.code === 'SU') {
       const followees = (response as GetFollowResponseDto).followees;
       setFollows(followees);
       setInternalFollow(followees.includes(userId));
@@ -42,14 +42,14 @@ export default function FollowButton({ getFollow, targetUserNickname, isFollowed
   // function: put follow response 처리 함수 //
   const postFollowResponse = (responseBody: ResponseDto | null) => {
     const message = !responseBody
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "DBE"
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "AF"
-      ? "인증에 실패했습니다."
-      : "";
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'AF'
+      ? '인증에 실패했습니다.'
+      : '';
 
-    const isSuccess = responseBody !== null && responseBody.code === "SU";
+    const isSuccess = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccess) {
       alert(message);
       return;
@@ -59,21 +59,24 @@ export default function FollowButton({ getFollow, targetUserNickname, isFollowed
     if (isSuccess) {
       getFollow();
       getFollowRequest(nickname, accessToken).then(getFollowResponse);
+      if (isFollowed === undefined) fetchFollowState(); // 외부값이 없을 경우만 갱신
+      console.log(targetNickname);
+      postFollowAlertRequest(targetNickname, accessToken);
     }
   };
 
   // function: get follow response 처리 함수 //
   const getFollowResponse = (responseBody: GetFollowResponseDto | ResponseDto | null) => {
     const message = !responseBody
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "DBE"
-      ? "서버에 문제가 있습니다."
-      : responseBody.code === "AF"
-      ? "인증에 실패했습니다."
-      : responseBody.code === "NEU"
-      ? "존재하지 않는 유저입니다."
-      : "";
-    const isSuccess = responseBody !== null && responseBody.code === "SU";
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'DBE'
+      ? '서버에 문제가 있습니다.'
+      : responseBody.code === 'AF'
+      ? '인증에 실패했습니다.'
+      : responseBody.code === 'NEU'
+      ? '존재하지 않는 유저입니다.'
+      : '';
+    const isSuccess = responseBody !== null && responseBody.code === 'SU';
     if (!isSuccess) {
       alert(message);
       return;
@@ -99,30 +102,22 @@ export default function FollowButton({ getFollow, targetUserNickname, isFollowed
   }, [targetNickname, isFollowed]);
 
   // event handler: 팔로우, 팔로잉 버튼 클릭 처리 //
-  const onFollowButtonClickHandler = () => {
-    if (!nickname || !accessToken) return;
-    postFollowRequest(nickname, accessToken).then(postFollowResponse);
-  };
-
   const onFollowClick = () => {
     if (!targetNickname || !accessToken) return;
-    postFollowRequest(targetNickname, accessToken).then(() => {
-      getFollow(); // 상위 상태 갱신
-      if (isFollowed === undefined) fetchFollowState(); // 외부값이 없을 경우만 갱신
-    });
+    postFollowRequest(targetNickname, accessToken).then(postFollowResponse);
   };
 
   const isNowFollowed = isFollowed ?? internalFollow ?? false;
   // variable: 팔로우 클래스 //
-  const followClass = isNowFollowed ? "do following" : "do follow";
+  const followClass = isNowFollowed ? 'do following' : 'do follow';
 
   return (
     <div
       className={followClass}
       onClick={onFollowClick}
-      style={targetNickname === userNickname ? { visibility: "hidden" } : {}}
+      style={targetNickname === userNickname ? { visibility: 'hidden' } : {}}
     >
-      {isNowFollowed ? "팔로잉" : "팔로우"}
+      {isNowFollowed ? '팔로잉' : '팔로우'}
     </div>
   );
 }
