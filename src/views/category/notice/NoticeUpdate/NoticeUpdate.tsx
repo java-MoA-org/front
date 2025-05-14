@@ -2,8 +2,9 @@ import "./NoticeUpdate.css";
 import "react-quill/dist/quill.snow.css";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ReactQuill from "react-quill";
+import { useCookies } from "react-cookie";
 
+import TextEditor from "../../../../components/TextEditor";
 import { getNoticeRequest, patchNoticeRequest } from "../../../../apis";
 import { PatchNoticeRequestDto } from "../../../../apis/dto/request/notice";
 import { NOTICE_ABSOLUTE_PATH } from "../../../../constants";
@@ -16,10 +17,11 @@ const NoticeUpdate = () => {
   // state: 제목 및 내용
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [cookies] = useCookies(["accessToken"]);
 
   // effect: 기존 공지사항 데이터 불러오기 //
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken") || "";
+    const accessToken = cookies.accessToken || "";
     if (!noticeId) return;
 
     getNoticeRequest(noticeId, accessToken)
@@ -37,11 +39,11 @@ const NoticeUpdate = () => {
         alert("공지사항을 불러오지 못했습니다.");
         navigate(NOTICE_ABSOLUTE_PATH);
       });
-  }, [noticeId, navigate]);
+  }, [noticeId, navigate, cookies.accessToken]);
 
   // event handler: 수정 요청 //
   const handleUpdate = async () => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = cookies.accessToken;
     if (!accessToken || !noticeId) {
       alert("로그인이 필요하거나 잘못된 접근입니다.");
       return;
@@ -71,12 +73,7 @@ const NoticeUpdate = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <ReactQuill
-          className="notice-update-editor"
-          value={content}
-          onChange={setContent}
-          placeholder="공지 내용을 입력해주세요"
-        />
+        <TextEditor content={content} setContent={setContent} type="notice" />
         <div className="notice-update-button-wrapper">
           <button className="notice-update-button" onClick={handleUpdate}>
             수정 완료
