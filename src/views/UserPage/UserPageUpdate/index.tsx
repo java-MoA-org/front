@@ -293,7 +293,7 @@ export default function UserPageUpdate() {
 
       if (!response || response.code === "DBE") {
         setErrorMessage("서버 오류가 발생했습니다");
-      } else if (response.code === "NPW") {
+      } else if (response.code === "PNR") {
         setErrorMessage("비밀번호가 일치하지 않습니다.");
       } else if (response.code === "SU") {
         onNext(currentPassword);
