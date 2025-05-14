@@ -61,7 +61,9 @@ export default function FollowButton({ getFollow, targetUserNickname, isFollowed
       getFollowRequest(nickname, accessToken).then(getFollowResponse);
       if (isFollowed === undefined) fetchFollowState(); // 외부값이 없을 경우만 갱신
       console.log(targetNickname);
-      postFollowAlertRequest(targetNickname, accessToken);
+      if (responseBody.data == 'follow') {
+        postFollowAlertRequest(targetNickname, accessToken);
+      }
     }
   };
 
