@@ -15,4 +15,5 @@ export default interface GetBoardResponseDto extends ResponseDto {
   likeCount: number;
   comments: Comment[];
   imageUrls: string[];
+  liked: boolean;
 }
