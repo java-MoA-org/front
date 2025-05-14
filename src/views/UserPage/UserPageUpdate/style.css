@@ -98,8 +98,6 @@
   justify-content: center;
   align-items: center;
 
-  margin-bottom: 50px;
-
   border-radius: 6px;
   width: 70px;
   height: 44px;
@@ -127,8 +125,6 @@
   justify-content: center;
   align-items: center;
 
-  margin-bottom: 50px;
-
   border-radius: 6px;
   width: 70px;
   height: 44px;
@@ -153,6 +149,7 @@
 
 .modal-button-container {
   display: flex;
+  margin-top: 10px;
 }
 
 .button-modal-ok {
