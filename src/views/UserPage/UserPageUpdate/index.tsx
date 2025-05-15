@@ -338,6 +338,8 @@ export default function UserPageUpdate() {
     const [confirmPw, setConfirmPw] = useState("");
     const [pwMessage, setPwMessage] = useState("");
     const [confirmMessage, setConfirmMessage] = useState("");
+    const [saveValid, setSaveValid] = useState(false);
+    const [equalValid, setEqualValid] = useState(false);
 
     const handleNewPwChange = (e: ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
@@ -347,6 +349,7 @@ export default function UserPageUpdate() {
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+[\]{};:'",.<>/?\\|`~]).{8,12}$/.test(value) ||
         value === "";
       setPwMessage(isValid ? "" : "비밀번호를 다시 확인해주세요.");
+      setSaveValid(isValid);
     };
 
     const handleConfirmPwChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -355,6 +358,7 @@ export default function UserPageUpdate() {
 
       const isValid = newPw === value || value === "";
       setConfirmMessage(isValid ? "" : "비밀번호가 일치하지 않습니다.");
+      setEqualValid(isValid);
     };
 
     const handleSave = () => {
@@ -385,7 +389,11 @@ export default function UserPageUpdate() {
           message={confirmMessage}
         />
         <div className="modal-button-container">
-          <button className="button-modal-ok" onClick={handleSave}>
+          <button
+            className="button-modal-ok"
+            onClick={handleSave}
+            disabled={!(saveValid && equalValid)}
+          >
             저장
           </button>
           <button className="button-modal-cancel" onClick={onCancel}>
