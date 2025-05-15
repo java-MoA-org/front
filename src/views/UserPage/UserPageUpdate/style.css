@@ -172,6 +172,10 @@
 
   border: 1px solid rgba(0, 0, 0, 0.5);
 }
+
+.button-modal-ok:disabled {
+  opacity: 60%;
+}
 .button-modal-cancel {
   display: flex;
   justify-content: center;
